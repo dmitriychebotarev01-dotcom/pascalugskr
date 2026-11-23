@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Паскаль — помощник по должностным регламентам | УГСКР Липецкой области</title>
-<meta name="description" content="Веб-компаньон чат-бота Паскаль: составление, согласование и направление должностных регламентов государственных гражданских служащих Липецкой области.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<meta name="description" content="Паскаль — цифровой помощник гражданского служащего: как составить должностной регламент, блоки по направлениям деятельности, согласование и контакты отдела кадровой экспертизы УГСКР Липецкой области.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗂️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
   --text:#eaf0fb; --muted:#94a2bd; --acc:#7c5cff; --acc2:#22d3ee; --gold:#ffb020;
   --grad:linear-gradient(135deg,#7c5cff 0%,#22d3ee 100%);
   --glow:0 10px 40px rgba(124,92,255,.35); --shadow:0 20px 60px rgba(0,0,0,.45);
-  --ok:#34d399; --warn:#fbbf24; --r:18px;
+  --ok:#34d399; --r:18px;
 }
 [data-theme="light"]{
   --bg:#f3f5fb; --bg2:#ffffff; --card:#ffffff; --card2:#eef1f9;
@@ -24,30 +24,28 @@
   --glow:0 10px 30px rgba(124,92,255,.22); --shadow:0 18px 45px rgba(30,40,90,.12);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
 body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;transition:background .4s,color .4s}
 ::selection{background:rgba(124,92,255,.4)}
 a{color:var(--acc2);text-decoration:none}
 a:hover{text-decoration:underline}
 h1,h2,h3,.disp{font-family:'Unbounded',sans-serif}
-img{max-width:100%}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
-/* ---------- scroll progress ---------- */
 #scrollbar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad);z-index:400;box-shadow:0 0 12px rgba(34,211,238,.8)}
-/* ---------- nav ---------- */
 nav{position:fixed;top:0;left:0;right:0;z-index:300;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:color-mix(in srgb,var(--bg) 72%,transparent);border-bottom:1px solid transparent;transition:.3s}
 nav.scrolled{border-bottom-color:var(--stroke);box-shadow:0 8px 30px rgba(0,0,0,.25)}
-.nav-in{display:flex;align-items:center;gap:18px;height:70px}
+.nav-in{display:flex;align-items:center;gap:14px;height:70px}
 .logo{display:flex;align-items:center;gap:12px;font-family:'Unbounded';font-weight:700;font-size:17px;color:var(--text);white-space:nowrap}
 .logo:hover{text-decoration:none}
-.logo-bot{width:42px;height:42px;border-radius:13px;background:var(--grad);display:grid;place-items:center;font-size:22px;box-shadow:var(--glow);animation:bob 4s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+.logo-bot{width:42px;height:42px;border-radius:13px;background:var(--grad);display:grid;place-items:center;font-size:21px;box-shadow:var(--glow);animation:bob 5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
 .logo small{display:block;font-family:'Manrope';font-weight:600;font-size:10.5px;color:var(--muted);letter-spacing:.4px}
-.nav-links{display:flex;gap:4px;margin-left:auto;align-items:center}
-.nav-links a{color:var(--muted);font-weight:600;font-size:14px;padding:8px 12px;border-radius:10px;transition:.2s}
+.nav-links{display:flex;gap:2px;margin-left:auto;align-items:center}
+.nav-links a{color:var(--muted);font-weight:600;font-size:13.5px;padding:8px 11px;border-radius:10px;transition:.2s;white-space:nowrap}
 .nav-links a:hover{color:var(--text);background:var(--card2);text-decoration:none}
-.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--stroke);background:var(--card);color:var(--text);font-size:17px;display:grid;place-items:center;transition:.2s}
+.nav-links a.active{color:var(--acc2);background:var(--card2)}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--stroke);background:var(--card);color:var(--text);font-size:17px;display:grid;place-items:center;transition:.2s;flex:none}
 .icon-btn:hover{border-color:var(--acc);transform:translateY(-2px)}
 .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:14px;font-weight:800;font-size:15px;border:none;transition:.25s;text-decoration:none!important;white-space:nowrap}
 .btn-p{background:var(--grad);color:#fff;box-shadow:var(--glow)}
@@ -56,58 +54,52 @@ nav.scrolled{border-bottom-color:var(--stroke);box-shadow:0 8px 30px rgba(0,0,0,
 .btn-g:hover{border-color:var(--acc2);transform:translateY(-3px)}
 .btn-sm{padding:9px 16px;font-size:13.5px;border-radius:11px}
 #burger{display:none}
-/* ---------- hero ---------- */
-header{position:relative;padding:150px 0 70px;overflow:hidden}
+header{position:relative;padding:140px 0 60px;overflow:hidden}
 .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none;animation:drift 14s ease-in-out infinite alternate}
 .b1{width:520px;height:520px;background:#5b3df5;top:-160px;left:-120px}
 .b2{width:460px;height:460px;background:#0891b2;top:60px;right:-140px;animation-delay:-5s}
 .b3{width:300px;height:300px;background:#ffb020;bottom:-140px;left:38%;opacity:.18;animation-delay:-9s}
 @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,35px) scale(1.12)}}
 .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--stroke) 1px,transparent 1px),linear-gradient(90deg,var(--stroke) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 75% 65% at 50% 35%,#000 30%,transparent 75%);opacity:.5;pointer-events:none}
-.hero{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--stroke2);background:var(--card);font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.3px}
+.hero{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:52px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--stroke2);background:var(--card);font-size:12.5px;font-weight:700;color:var(--muted)}
 .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.hero h1{font-size:clamp(30px,4.6vw,54px);font-weight:900;line-height:1.14;margin:22px 0 18px;letter-spacing:-.5px}
+.hero h1{font-size:clamp(29px,4.4vw,52px);font-weight:900;line-height:1.14;margin:20px 0 16px;letter-spacing:-.5px}
 .grad-t{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p.lead{font-size:17.5px;color:var(--muted);max-width:560px;margin-bottom:28px}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.hero p.lead{font-size:17px;color:var(--muted);max-width:570px;margin-bottom:26px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
 .gov-chips{display:flex;gap:10px;flex-wrap:wrap}
 .gov-chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted);border:1px dashed var(--stroke2);padding:7px 14px;border-radius:999px;transition:.2s}
 .gov-chip:hover{color:var(--acc2);border-color:var(--acc2);text-decoration:none;transform:translateY(-2px)}
-/* hero phone */
 .phone{position:relative;background:var(--bg2);border:1px solid var(--stroke2);border-radius:26px;box-shadow:var(--shadow);overflow:hidden;animation:float 7s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .phone-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--stroke);background:var(--card)}
-.avatar{width:42px;height:42px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:21px;flex:none;box-shadow:var(--glow)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:20px;flex:none;box-shadow:var(--glow)}
 .phone-head b{font-size:15px}
 .phone-head span{display:block;font-size:12px;color:var(--ok);font-weight:700}
-.phone-body{padding:18px;display:flex;flex-direction:column;gap:10px;min-height:330px}
-.bub{max-width:86%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.55;opacity:0;animation:pop .5s forwards}
+.phone-body{padding:18px;display:flex;flex-direction:column;gap:10px;min-height:320px}
+.bub{max-width:88%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.55;opacity:0;animation:pop .5s forwards}
 .bub.bot{background:var(--card2);border:1px solid var(--stroke);border-bottom-left-radius:5px;align-self:flex-start}
 .bub.user{background:var(--grad);color:#fff;border-bottom-right-radius:5px;align-self:flex-end;font-weight:600}
 @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
 .d1{animation-delay:.4s}.d2{animation-delay:1.1s}.d3{animation-delay:1.8s}.d4{animation-delay:2.6s}.d5{animation-delay:3.4s}
 .mini-chips{display:flex;flex-wrap:wrap;gap:6px;opacity:0;animation:pop .5s forwards;animation-delay:2.2s}
 .mini-chips span{font-size:11.5px;font-weight:700;border:1px solid var(--stroke2);border-radius:999px;padding:5px 11px;color:var(--acc2);background:var(--card)}
-/* stats */
-.stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
-.stat{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:22px;text-align:center;transition:.25s}
+.stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:58px}
+.stat{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:20px;text-align:center;transition:.25s}
 .stat:hover{transform:translateY(-5px);border-color:var(--acc);box-shadow:var(--glow)}
-.stat b{font-family:'Unbounded';font-size:30px;display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.stat span{font-size:13px;color:var(--muted);font-weight:600}
-/* ticker */
-.ticker{border-block:1px solid var(--stroke);background:var(--card);overflow:hidden;padding:13px 0;margin:70px 0 0}
-.ticker-in{display:flex;gap:44px;white-space:nowrap;width:max-content;animation:tick 32s linear infinite;font-weight:700;font-size:14px;color:var(--muted)}
+.stat b{font-family:'Unbounded';font-size:29px;display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+.ticker{border-block:1px solid var(--stroke);background:var(--card);overflow:hidden;padding:13px 0;margin:62px 0 0}
+.ticker-in{display:flex;gap:44px;white-space:nowrap;width:max-content;animation:tick 36s linear infinite;font-weight:700;font-size:14px;color:var(--muted)}
 .ticker:hover .ticker-in{animation-play-state:paused}
 @keyframes tick{to{transform:translateX(-50%)}}
 .ticker-in i{font-style:normal;color:var(--acc2)}
-/* sections */
-section{padding:90px 0}
+section{padding:86px 0}
 .eyebrow{font-size:12px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--acc2);margin-bottom:12px}
-.sec-h{font-size:clamp(24px,3vw,36px);font-weight:700;margin-bottom:14px;letter-spacing:-.3px}
-.sec-p{color:var(--muted);max-width:680px;margin-bottom:42px;font-size:16px}
-/* features */
+.sec-h{font-size:clamp(23px,3vw,35px);font-weight:700;margin-bottom:14px;letter-spacing:-.3px}
+.sec-p{color:var(--muted);max-width:700px;margin-bottom:38px;font-size:16px}
 .f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .f-card{position:relative;background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:26px;transition:.28s;overflow:hidden;display:flex;flex-direction:column;gap:10px}
 .f-card::before{content:"";position:absolute;inset:0;background:var(--grad);opacity:0;transition:.3s}
@@ -120,143 +112,150 @@ section{padding:90px 0}
 .f-link{font-weight:800;font-size:13.5px;color:var(--acc2)}
 .f-chat{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--stroke);border-radius:999px;padding:5px 12px;transition:.2s}
 .f-chat:hover{color:#fff;background:var(--grad);border-color:transparent}
-/* constructor */
-#constructor{background:var(--bg2);border-block:1px solid var(--stroke)}
-.con-top{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
-.search-box{position:relative;flex:1;min-width:260px}
+#constructor,#blocks{background:var(--bg2);border-block:1px solid var(--stroke)}
+.con-top{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.search-box{position:relative;flex:1;min-width:250px}
 .search-box input{width:100%;padding:14px 18px 14px 46px;border-radius:14px;border:1px solid var(--stroke2);background:var(--card);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:.2s}
 .search-box input:focus{border-color:var(--acc);box-shadow:0 0 0 4px rgba(124,92,255,.18)}
 .search-box::before{content:"🔎";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:16px}
-#searchRes{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg2);border:1px solid var(--stroke2);border-radius:14px;box-shadow:var(--shadow);max-height:320px;overflow:auto;z-index:50;display:none}
-#searchRes button{display:block;width:100%;text-align:left;padding:12px 16px;background:none;border:none;border-bottom:1px solid var(--stroke);color:var(--text);font-size:13.5px}
-#searchRes button:hover{background:var(--card2)}
-#searchRes b{color:var(--acc2)}
-#searchRes small{display:block;color:var(--muted);margin-top:2px}
-.progress-card{background:var(--card);border:1px solid var(--stroke);border-radius:14px;padding:12px 18px;min-width:250px}
+.sres{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg2);border:1px solid var(--stroke2);border-radius:14px;box-shadow:var(--shadow);max-height:330px;overflow:auto;z-index:50;display:none}
+.sres button{display:block;width:100%;text-align:left;padding:12px 16px;background:none;border:none;border-bottom:1px solid var(--stroke);color:var(--text);font-size:13.5px}
+.sres button:hover{background:var(--card2)}
+.sres b{color:var(--acc2)}
+.sres small{display:block;color:var(--muted);margin-top:2px}
+.progress-card{background:var(--card);border:1px solid var(--stroke);border-radius:14px;padding:12px 18px;min-width:240px}
 .progress-card .p-row{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;margin-bottom:7px}
 .progress-card .p-row a{color:var(--muted);font-weight:600}
 .p-bar{height:9px;border-radius:99px;background:var(--card2);overflow:hidden}
 .p-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .6s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 0 12px rgba(34,211,238,.7)}
-.con-grid{display:grid;grid-template-columns:320px 1fr;gap:22px;align-items:start}
-.con-nav{position:sticky;top:90px;display:flex;flex-direction:column;gap:8px}
-.con-nav button{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 15px;border-radius:14px;border:1px solid var(--stroke);background:var(--card);color:var(--text);font-weight:700;font-size:13.5px;transition:.2s}
-.con-nav button:hover{border-color:var(--acc2);transform:translateX(4px)}
-.con-nav button.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--glow)}
-.con-num{width:30px;height:30px;flex:none;border-radius:9px;background:var(--card2);display:grid;place-items:center;font-family:'Unbounded';font-size:13px}
-.con-nav button.active .con-num{background:rgba(255,255,255,.22)}
-.con-check{margin-left:auto;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid var(--stroke2);display:grid;place-items:center;font-size:12px;color:transparent;transition:.2s;background:transparent}
+.con-grid{display:grid;grid-template-columns:310px 1fr;gap:22px;align-items:start}
+.side-nav{position:sticky;top:90px;display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 120px);overflow-y:auto;padding-right:4px}
+.side-nav::-webkit-scrollbar{width:5px}
+.side-nav::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:99px}
+.side-nav button{display:flex;align-items:center;gap:11px;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--stroke);background:var(--card);color:var(--text);font-weight:700;font-size:13.2px;transition:.2s}
+.side-nav button:hover{border-color:var(--acc2);transform:translateX(4px)}
+.side-nav button.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--glow)}
+.con-num{width:29px;height:29px;flex:none;border-radius:9px;background:var(--card2);display:grid;place-items:center;font-family:'Unbounded';font-size:12.5px}
+.side-nav button.active .con-num{background:rgba(255,255,255,.22)}
+.con-check{margin-left:auto;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid var(--stroke2);display:grid;place-items:center;font-size:12px;color:transparent;transition:.2s}
 .con-check.done{background:var(--ok);border-color:var(--ok);color:#04220f;box-shadow:0 0 10px rgba(52,211,153,.6)}
-.con-content{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:28px;min-height:420px}
-.con-content .c-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:8px}
-.c-num{width:46px;height:46px;flex:none;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-family:'Unbounded';font-weight:700;font-size:19px;box-shadow:var(--glow)}
-.con-content h3{font-size:19px}
-.con-content .c-full{color:var(--muted);font-size:13.5px;margin:2px 0 20px}
+.panel{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:26px;min-height:420px}
+.panel .c-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.c-num{width:46px;height:46px;flex:none;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-family:'Unbounded';font-weight:700;font-size:18px;box-shadow:var(--glow)}
+.panel h3{font-size:18.5px;line-height:1.35}
+.panel .c-full{color:var(--muted);font-size:13.3px;margin:2px 0 16px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tool{font-size:12.3px;font-weight:800;color:var(--muted);background:var(--card2);border:1px solid var(--stroke2);border-radius:999px;padding:7px 14px;transition:.2s}
+.tool:hover{color:#fff;background:var(--grad);border-color:transparent}
 .acc{border:1px solid var(--stroke);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--bg2);transition:border-color .2s}
 .acc.open{border-color:var(--acc)}
-.acc-head{width:100%;display:flex;align-items:center;gap:12px;padding:15px 18px;background:none;border:none;color:var(--text);font-weight:800;font-size:15px;text-align:left}
-.acc-head .k{color:var(--acc2);font-family:'Unbounded';font-size:13.5px}
-.acc-head .chev{margin-left:auto;transition:.3s;color:var(--muted)}
+.acc-head{width:100%;display:flex;align-items:center;gap:12px;padding:14px 17px;background:none;border:none;color:var(--text);font-weight:800;font-size:14.5px;text-align:left}
+.acc-head .k{color:var(--acc2);font-family:'Unbounded';font-size:13px;flex:none}
+.acc-head .ttl{flex:1;line-height:1.4}
+.acc-head .ttl small{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-top:2px}
+.acc-head .chev{transition:.3s;color:var(--muted);flex:none}
 .acc.open .chev{transform:rotate(180deg)}
 .acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s ease}
 .acc.open .acc-body{grid-template-rows:1fr}
 .acc-inner{overflow:hidden;min-height:0}
-.acc-text{padding:0 18px 14px;font-size:14.5px;color:var(--text);opacity:.92}
-.acc-foot{padding:0 18px 16px}
-.copy-btn{font-size:12.5px;font-weight:800;color:var(--acc2);background:var(--card2);border:1px solid var(--stroke2);border-radius:999px;padding:7px 15px;transition:.2s}
+.acc-text{padding:0 17px 12px;font-size:14.3px}
+.lst{list-style:none;padding:0 17px 12px}
+.lst li{position:relative;padding-left:20px;margin-bottom:8px;font-size:14.2px;line-height:1.6}
+.lst li::before{content:"";position:absolute;left:4px;top:9px;width:6px;height:6px;border-radius:2px;background:var(--grad)}
+.note{margin:0 17px 12px;padding:10px 14px;border-left:3px solid var(--gold);background:rgba(255,176,32,.08);border-radius:0 10px 10px 0;font-size:13.2px;color:var(--muted)}
+.acc-foot{padding:0 17px 15px}
+.copy-btn{font-size:12.3px;font-weight:800;color:var(--acc2);background:var(--card2);border:1px solid var(--stroke2);border-radius:999px;padding:7px 15px;transition:.2s}
 .copy-btn:hover{background:var(--grad);color:#fff;border-color:transparent}
-.desc-card{background:var(--bg2);border:1px solid var(--stroke);border-radius:14px;padding:22px;font-size:14.5px}
-.desc-card .copy-btn{margin-top:16px}
-mark{background:rgba(255,176,32,.35);color:inherit;border-radius:4px;padding:0 2px}
-/* approval */
-.timeline{position:relative;max-width:820px;margin:0 auto;padding-left:34px}
-.timeline::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:3px;background:var(--grad);border-radius:99px;opacity:.7}
-.t-step{position:relative;background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:24px 26px;margin-bottom:20px;transition:.25s}
-.t-step:hover{transform:translateX(6px);border-color:var(--acc)}
-.t-step::before{content:attr(data-n);position:absolute;left:-34px;top:22px;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;box-shadow:var(--glow)}
-.t-step h3{font-size:16px;margin-bottom:8px}
-.t-step p{font-size:14.5px;color:var(--muted)}
-.t-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.4);color:var(--gold);font-weight:800;font-size:13.5px;padding:9px 18px;border-radius:999px;margin-top:6px}
-/* example banner */
-.dl-banner{display:flex;align-items:center;gap:22px;flex-wrap:wrap;background:var(--grad);border-radius:22px;padding:30px 34px;margin-top:46px;box-shadow:var(--glow);color:#fff;position:relative;overflow:hidden}
+.target{font-size:11.5px;font-weight:800;color:var(--gold);border:1px solid rgba(255,176,32,.4);background:rgba(255,176,32,.1);border-radius:999px;padding:4px 10px;flex:none}
+.desc-card{background:var(--bg2);border:1px solid var(--stroke);border-radius:14px;padding:20px;font-size:14.3px}
+.desc-card .copy-btn{margin-top:14px}
+.dl-banner{display:flex;align-items:center;gap:22px;flex-wrap:wrap;background:var(--grad);border-radius:22px;padding:28px 32px;margin-top:38px;box-shadow:var(--glow);color:#fff;position:relative;overflow:hidden}
 .dl-banner::after{content:"📄";position:absolute;right:-14px;bottom:-26px;font-size:130px;opacity:.16;transform:rotate(-12deg)}
-.dl-banner h3{font-size:20px;margin-bottom:5px}
-.dl-banner p{opacity:.92;font-size:14.5px;max-width:560px}
+.dl-banner h3{font-size:19px;margin-bottom:5px}
+.dl-banner p{opacity:.94;font-size:14.3px;max-width:560px}
 .dl-banner .btn{background:#fff;color:#3b2bb8;margin-left:auto;position:relative;z-index:1}
 .dl-banner .btn:hover{transform:translateY(-3px) scale(1.03)}
-/* contacts */
-.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.contact{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:26px;transition:.25s;position:relative}
+.ver-pill{display:inline-block;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:800;margin-left:8px;vertical-align:middle}
+.whatsnew{margin-top:22px;background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:24px}
+.whatsnew h3{font-size:16px;margin-bottom:14px}
+.wn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.wn{display:flex;gap:11px;font-size:13.6px;color:var(--muted);line-height:1.55}
+.wn i{font-style:normal;font-size:17px;flex:none}
+.wn b{color:var(--text);font-weight:700}
+.timeline{position:relative;max-width:830px;margin:0 auto;padding-left:34px}
+.timeline::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:3px;background:var(--grad);border-radius:99px;opacity:.7}
+.t-step{position:relative;background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:22px 26px;margin-bottom:18px;transition:.25s}
+.t-step:hover{transform:translateX(6px);border-color:var(--acc)}
+.t-step::before{content:attr(data-n);position:absolute;left:-34px;top:20px;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;box-shadow:var(--glow)}
+.t-step h3{font-size:16px;margin-bottom:8px}
+.t-step p{font-size:14.3px;color:var(--muted)}
+.t-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.4);color:var(--gold);font-weight:800;font-size:13.3px;padding:9px 18px;border-radius:999px;margin-top:6px}
+.c-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px}
+.contact{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:26px;transition:.25s}
 .contact:hover{transform:translateY(-6px);border-color:var(--acc2);box-shadow:var(--glow)}
-.c-ava{width:62px;height:62px;border-radius:19px;background:var(--grad);display:grid;place-items:center;font-family:'Unbounded';font-weight:700;font-size:20px;color:#fff;margin-bottom:16px;box-shadow:var(--glow)}
+.c-ava{width:60px;height:60px;border-radius:19px;background:var(--grad);display:grid;place-items:center;font-family:'Unbounded';font-weight:700;font-size:19px;color:#fff;margin-bottom:15px;box-shadow:var(--glow)}
 .contact h3{font-size:16px;line-height:1.4;margin-bottom:4px}
-.c-role{font-size:12.5px;font-weight:700;color:var(--acc2);margin-bottom:16px}
+.c-role{font-size:12.5px;font-weight:700;color:var(--acc2);margin-bottom:14px}
 .c-role.alt{color:var(--muted)}
 .c-row{display:flex;align-items:center;gap:9px;font-size:13.5px;padding:9px 0;border-top:1px dashed var(--stroke)}
 .c-row a{color:var(--text);font-weight:600;word-break:break-all}
 .c-row a:hover{color:var(--acc2)}
 .c-copy{margin-left:auto;background:none;border:none;color:var(--muted);font-size:14px;padding:4px;border-radius:7px;transition:.2s;flex:none}
 .c-copy:hover{color:var(--acc2);background:var(--card2)}
-/* links */
-.tabs{display:flex;gap:10px;margin-bottom:26px}
+.tabs{display:flex;gap:10px;margin-bottom:24px}
 .tab{padding:11px 24px;border-radius:999px;border:1px solid var(--stroke2);background:var(--card);color:var(--muted);font-weight:800;font-size:14.5px;transition:.2s}
 .tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--glow)}
 .l-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.l-card{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--stroke);border-radius:15px;padding:16px 18px;transition:.2s;color:var(--text)}
+.l-card{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--stroke);border-radius:15px;padding:15px 18px;transition:.2s;color:var(--text)}
 .l-card:hover{border-color:var(--acc2);transform:translateY(-3px);text-decoration:none;box-shadow:var(--glow)}
 .l-n{width:32px;height:32px;flex:none;border-radius:10px;background:var(--card2);display:grid;place-items:center;font-size:16px}
-.l-card b{font-size:13.8px;font-weight:700;display:block;line-height:1.45}
+.l-card b{font-size:13.6px;font-weight:700;display:block;line-height:1.45}
 .l-card small{color:var(--muted);font-size:12px;word-break:break-all}
 .l-card .ext{margin-left:auto;color:var(--muted);flex:none;transition:.2s}
 .l-card:hover .ext{color:var(--acc2);transform:translate(2px,-2px)}
-/* faq */
-.faq{max-width:820px;margin:0 auto}
-.faq .acc-head{font-size:15px}
+.faq{max-width:830px;margin:0 auto}
 .faq .acc-text{color:var(--muted)}
-/* feedback */
-.fb-panel{position:relative;background:var(--grad);border-radius:26px;padding:52px 46px;text-align:center;color:#fff;overflow:hidden;box-shadow:var(--glow)}
+.fb-panel{position:relative;background:var(--grad);border-radius:26px;padding:48px 44px;text-align:center;color:#fff;overflow:hidden;box-shadow:var(--glow)}
 .fb-panel::before{content:"💡";position:absolute;font-size:150px;opacity:.14;left:-20px;top:-30px;transform:rotate(-15deg)}
 .fb-panel::after{content:"📊";position:absolute;font-size:150px;opacity:.14;right:-20px;bottom:-40px;transform:rotate(12deg)}
-.fb-panel h2{font-size:clamp(22px,3vw,32px);margin-bottom:12px}
-.fb-panel p{opacity:.94;max-width:600px;margin:0 auto 26px;font-size:16px}
+.fb-panel h2{font-size:clamp(21px,3vw,31px);margin-bottom:12px}
+.fb-panel p{opacity:.94;max-width:620px;margin:0 auto 24px;font-size:15.5px}
 .fb-panel .btn{background:#fff;color:#3b2bb8}
 .fb-panel .btn-g{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.5)}
-/* footer */
-footer{border-top:1px solid var(--stroke);background:var(--bg2);padding:54px 0 34px;margin-top:40px}
-.f-grid2{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;margin-bottom:36px}
+footer{border-top:1px solid var(--stroke);background:var(--bg2);padding:50px 0 32px;margin-top:36px}
+.f-grid2{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;margin-bottom:32px}
 footer h4{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 footer ul{list-style:none}
 footer li{margin-bottom:9px}
 footer li a{color:var(--text);font-size:14px;font-weight:600;opacity:.85}
 footer li a:hover{color:var(--acc2);opacity:1}
-.f-note{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--stroke);padding-top:22px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
-/* back to top */
+.f-note{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--stroke);padding-top:20px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
 #toTop{position:fixed;left:22px;bottom:22px;width:46px;height:46px;border-radius:50%;background:var(--card);border:1px solid var(--stroke2);color:var(--text);font-size:18px;z-index:250;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(10px)}
 #toTop.show{opacity:1;pointer-events:auto}
 #toTop:hover{background:var(--grad);color:#fff;border-color:transparent}
-/* ---------- chat widget ---------- */
-#chatFab{position:fixed;right:22px;bottom:22px;width:64px;height:64px;border-radius:50%;background:var(--grad);border:none;font-size:29px;z-index:350;box-shadow:var(--glow);display:grid;place-items:center;transition:.25s;color:#fff}
-#chatFab:hover{transform:scale(1.1) rotate(8deg)}
+#chatFab{position:fixed;right:22px;bottom:22px;width:64px;height:64px;border-radius:50%;background:var(--grad);border:none;font-size:27px;z-index:350;box-shadow:var(--glow);display:grid;place-items:center;transition:.25s;color:#fff}
+#chatFab:hover{transform:scale(1.1) rotate(6deg)}
 #chatFab::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(124,92,255,.55);animation:ring 2.4s infinite}
 @keyframes ring{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.35);opacity:0}}
-#chatBadge{position:absolute;top:-3px;right:-3px;min-width:23px;height:23px;border-radius:99px;background:var(--gold);color:#241500;font-size:12.5px;font-weight:800;display:none;place-items:center;padding:0 6px;box-shadow:0 4px 12px rgba(0,0,0,.35)}
-#chatPanel{position:fixed;right:22px;bottom:100px;width:400px;max-width:calc(100vw - 28px);height:min(620px,calc(100vh - 140px));background:var(--bg2);border:1px solid var(--stroke2);border-radius:22px;box-shadow:var(--shadow);z-index:360;display:flex;flex-direction:column;overflow:hidden;transform:translateY(24px) scale(.94);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.9,.3,1.15);transform-origin:bottom right}
+#chatBadge{position:absolute;top:-3px;right:-3px;min-width:23px;height:23px;border-radius:99px;background:var(--gold);color:#241500;font-size:12.5px;font-weight:800;display:none;place-items:center;padding:0 6px}
+#chatPanel{position:fixed;right:22px;bottom:100px;width:410px;max-width:calc(100vw - 28px);height:min(640px,calc(100vh - 140px));background:var(--bg2);border:1px solid var(--stroke2);border-radius:22px;box-shadow:var(--shadow);z-index:360;display:flex;flex-direction:column;overflow:hidden;transform:translateY(24px) scale(.94);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.9,.3,1.15);transform-origin:bottom right}
 #chatPanel.open{transform:none;opacity:1;pointer-events:auto}
-.ch-head{display:flex;align-items:center;gap:12px;padding:15px 16px;background:var(--grad);color:#fff;flex:none}
+.ch-head{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--grad);color:#fff;flex:none}
 .ch-head .avatar{background:rgba(255,255,255,.2);box-shadow:none}
 .ch-head b{font-size:15px;display:block}
 .ch-head span{font-size:11.5px;opacity:.9;font-weight:700}
 .ch-head button{margin-left:auto;background:rgba(255,255,255,.16);border:none;color:#fff;width:32px;height:32px;border-radius:10px;font-size:15px;transition:.2s}
 .ch-head button:hover{background:rgba(255,255,255,.32)}
 .ch-head button+button{margin-left:6px}
-#chMsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+#chMsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
 #chMsgs::-webkit-scrollbar{width:5px}
 #chMsgs::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:99px}
-.msg{max-width:88%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.6;animation:pop .3s;word-wrap:break-word}
+.msg{max-width:90%;padding:11px 14px;border-radius:16px;font-size:13.4px;line-height:1.6;animation:pop .3s;word-wrap:break-word}
 .msg.bot{background:var(--card2);border:1px solid var(--stroke);border-bottom-left-radius:5px;align-self:flex-start}
 .msg.user{background:var(--grad);color:#fff;border-bottom-right-radius:5px;align-self:flex-end;font-weight:600}
 .msg a{color:var(--acc2);font-weight:600}
-.msg.user a{color:#fff;text-decoration:underline}
 .msg .time{display:block;font-size:10px;opacity:.55;margin-top:5px;text-align:right}
+.msg .hint{display:block;font-size:11.5px;color:var(--acc2);font-weight:800;margin-bottom:6px}
 .attach{display:flex;align-items:center;gap:11px;margin-top:10px;background:var(--bg2);border:1px solid var(--stroke2);border-radius:12px;padding:10px 12px}
 .attach .a-ico{font-size:26px}
 .attach b{font-size:12.5px;display:block;line-height:1.35}
@@ -265,78 +264,63 @@ footer li a:hover{color:var(--acc2);opacity:1}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:tp 1.1s infinite}
 .typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
 @keyframes tp{0%,60%,100%{transform:none;opacity:.4}30%{transform:translateY(-6px);opacity:1}}
-#chChips{flex:none;display:flex;flex-wrap:wrap;gap:7px;padding:10px 14px;border-top:1px solid var(--stroke);max-height:132px;overflow-y:auto;background:var(--card)}
+#chChips{flex:none;display:flex;flex-wrap:wrap;gap:7px;padding:10px 14px;border-top:1px solid var(--stroke);max-height:140px;overflow-y:auto;background:var(--card)}
 #chChips button{font-size:12px;font-weight:800;color:var(--acc2);background:var(--bg2);border:1px solid var(--stroke2);border-radius:999px;padding:7px 13px;transition:.18s;animation:pop .3s}
 #chChips button:hover{background:var(--grad);color:#fff;border-color:transparent;transform:translateY(-2px)}
 .ch-input{flex:none;display:flex;gap:9px;padding:12px 14px;border-top:1px solid var(--stroke)}
-.ch-input input{flex:1;padding:11px 15px;border-radius:12px;border:1px solid var(--stroke2);background:var(--card);color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
+.ch-input input{flex:1;padding:11px 15px;border-radius:12px;border:1px solid var(--stroke2);background:var(--card);color:var(--text);font-size:13.4px;font-family:inherit;outline:none}
 .ch-input input:focus{border-color:var(--acc)}
 .ch-input button{width:44px;height:44px;border-radius:12px;background:var(--grad);border:none;color:#fff;font-size:17px;box-shadow:var(--glow);transition:.2s}
 .ch-input button:hover{transform:scale(1.08)}
-/* toast */
 #toasts{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:9px;align-items:center;pointer-events:none}
-.toast{background:var(--bg2);border:1px solid var(--acc);color:var(--text);font-size:13.5px;font-weight:700;padding:12px 22px;border-radius:999px;box-shadow:var(--glow);animation:toastIn .3s,toastOut .4s 2.4s forwards}
+.toast{background:var(--bg2);border:1px solid var(--acc);color:var(--text);font-size:13.5px;font-weight:700;padding:12px 22px;border-radius:999px;box-shadow:var(--glow);animation:toastIn .3s,toastOut .4s 2.4s forwards;max-width:90vw;text-align:center}
 @keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1}}
 @keyframes toastOut{to{opacity:0;transform:translateY(10px)}}
-/* confetti */
 .conf{position:fixed;top:-30px;font-size:22px;z-index:600;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
-/* reveal */
-.reveal{opacity:0;transform:translateY(28px);transition:.7s cubic-bezier(.2,.7,.3,1)}
+.reveal{opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.7,.3,1)}
 .reveal.in{opacity:1;transform:none}
-/* responsive */
 @media(max-width:1020px){
-  .hero{grid-template-columns:1fr}
-  .phone{max-width:440px;margin:0 auto}
+  .hero{grid-template-columns:1fr}.phone{max-width:440px;margin:0 auto}
   .f-grid{grid-template-columns:repeat(2,1fr)}
   .con-grid{grid-template-columns:1fr}
-  .con-nav{position:static;display:grid;grid-template-columns:repeat(2,1fr)}
-  .c-grid{grid-template-columns:1fr}
+  .side-nav{position:static;display:grid;grid-template-columns:repeat(2,1fr);max-height:none}
   .stats{grid-template-columns:repeat(2,1fr)}
-  .f-grid2{grid-template-columns:1fr 1fr}
+  .f-grid2{grid-template-columns:1fr 1fr}.wn-grid{grid-template-columns:1fr}
 }
 @media(max-width:760px){
-  .nav-links{position:fixed;top:70px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--stroke);flex-direction:column;align-items:stretch;padding:14px 20px;display:none}
+  .nav-links{position:fixed;top:70px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--stroke);flex-direction:column;align-items:stretch;padding:14px 20px;display:none;max-height:70vh;overflow:auto}
   .nav-links.open{display:flex}
-  #burger{display:grid}
-  #tgBtn{display:none}
-  .f-grid,.l-grid,.con-nav{grid-template-columns:1fr}
-  section{padding:64px 0}
+  #burger{display:grid;margin-left:auto}
+  .f-grid,.l-grid,.side-nav,.c-grid{grid-template-columns:1fr}
+  section{padding:60px 0}
   #chatPanel{right:10px;left:10px;bottom:88px;width:auto;height:calc(100vh - 110px)}
   .dl-banner .btn{margin-left:0}
   .f-grid2{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-
 <div id="scrollbar"></div>
 
-<!-- ======================= NAV ======================= -->
 <nav id="nav">
   <div class="wrap nav-in">
-    <a class="logo" href="#top">
-      <span class="logo-bot">🤖</span>
-      <span>Паскаль<small>УГСКР · Липецкая область</small></span>
-    </a>
+    <a class="logo" href="#top"><span class="logo-bot">🗂️</span><span>Паскаль<small>УГСКР · Липецкая область</small></span></a>
     <div class="nav-links" id="navLinks">
       <a href="#features">Возможности</a>
-      <a href="#constructor">Конструктор ДР</a>
+      <a href="#constructor">Как составить ДР</a>
+      <a href="#blocks">Блоки</a>
       <a href="#approval">Согласование</a>
       <a href="#contacts">Контакты</a>
       <a href="#links">Ссылки</a>
       <a href="#faq">FAQ</a>
     </div>
     <button class="icon-btn" id="themeBtn" title="Сменить тему">🌙</button>
-    <a class="btn btn-p btn-sm" id="tgBtn" href="#" target="_blank" rel="noopener">✈️ Открыть бота</a>
     <button class="icon-btn" id="burger" title="Меню">☰</button>
   </div>
 </nav>
 
-<!-- ======================= HERO ======================= -->
 <header id="top">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
   <div class="grid-bg"></div>
@@ -344,80 +328,74 @@ footer li a:hover{color:var(--acc2);opacity:1}
     <div>
       <span class="badge"><span class="dot"></span> Отдел кадровой экспертизы УГСКР Правительства Липецкой области</span>
       <h1>Должностной регламент — <span class="grad-t">без стресса и бюрократии</span></h1>
-      <p class="lead">👋 Привет! Я Паскаль — цифровой напарник гражданского служащего. Бззз… контакт установлен! Подскажу, как составить ДР по всем 9 разделам, куда его направить и как проходит согласование. Давайте вместе творить будущее! 🚀</p>
+      <p class="lead">👋 Привет! Я Паскаль — цифровой помощник гражданского служащего. С радостью подскажу, как составить твой должностной регламент по всем 9 разделам, куда его направить и как проходит согласование. Всё получится! 🚀</p>
       <div class="hero-cta">
-        <button class="btn btn-p" data-open-chat>💬 Чат с Паскалем</button>
+        <button class="btn btn-p" data-open-chat>💬 Спросить Паскаля</button>
         <a class="btn btn-g" id="dlHero" href="#" download>📤 Примерный ДР</a>
       </div>
       <div class="gov-chips">
         <a class="gov-chip" href="https://gosservice48.ru/" target="_blank" rel="noopener">🏛 gosservice48.ru — сайт УГСКР</a>
-        <a class="gov-chip" href="https://липецкаяобласть.рф/" target="_blank" rel="noopener">🌐 липецкаяобласть.рф — Правительство области</a>
+        <a class="gov-chip" href="https://липецкаяобласть.рф/" target="_blank" rel="noopener">🌐 липецкаяобласть.рф</a>
         <a class="gov-chip" href="https://gossluzhba.gov.ru/" target="_blank" rel="noopener">📖 Портал госслужбы</a>
       </div>
     </div>
     <div class="phone" aria-hidden="true">
-      <div class="phone-head">
-        <span class="avatar">🤖</span>
-        <div><b>Паскаль</b><span>● онлайн 24/7</span></div>
-      </div>
+      <div class="phone-head"><span class="avatar">🗂️</span><div><b>Паскаль</b><span>● онлайн 24/7</span></div></div>
       <div class="phone-body">
         <div class="bub bot d1">👋 Привет! Чем я могу помочь?</div>
-        <div class="bub user d2">✍️ Как составить ДР?</div>
-        <div class="bub bot d3">Выберите раздел для просмотра подробностей:</div>
-        <div class="mini-chips"><span>Раздел 1 «Общие положения»</span><span>Раздел 2 «Квал. требования»</span><span>Раздел 3 «Долж. обязанности»</span></div>
-        <div class="bub user d4">1.5</div>
-        <div class="bub bot d5">📋 В пункте 1.5. указывается порядок назначения на должность и освобождения от должности… ✨</div>
+        <div class="bub user d2">а где про стаж писать?</div>
+        <div class="bub bot d3">🔎 Похоже, вас интересует пункт 2.2 — требования к стажу:</div>
+        <div class="mini-chips"><span>п. 2.2 · стаж</span><span>Раздел 2 «Квал. требования»</span></div>
+        <div class="bub user d4">2.2</div>
+        <div class="bub bot d5">📌 В подпункте 2.2 указывается продолжительность стажа гражданской службы или стажа работы по специальности… ✨</div>
       </div>
     </div>
   </div>
   <div class="wrap stats">
     <div class="stat reveal"><b data-count="9">0</b><span>разделов регламента</span></div>
     <div class="stat reveal"><b data-count="22">0</b><span>пункта с подсказками</span></div>
+    <div class="stat reveal"><b data-count="12">0</b><span>блоков по направлениям</span></div>
     <div class="stat reveal"><b>7–10</b><span>рабочих дней — согласование</span></div>
-    <div class="stat reveal"><b>24/7</b><span>Паскаль на связи</span></div>
   </div>
 </header>
 
-<!-- ticker -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-in" id="ticker">
     <span>🐝 Бззз… контакт установлен</span><i>✦</i>
     <span>✍️ 9 разделов · 22 пункта</span><i>✦</i>
+    <span>🧩 12 блоков по направлениям деятельности</span><i>✦</i>
     <span>⚡ Конструктор ДР в 1С</span><i>✦</i>
+    <span>🤖 Требования к работе с ИИ — в новой версии</span><i>✦</i>
     <span>📚 Справочник квалификационных требований</span><i>✦</i>
-    <span>😄 59 фирменных ответов Паскаля</span><i>✦</i>
     <span>🤝 УГСКР Правительства Липецкой области</span><i>✦</i>
-    <span>🔥 ДР — это проще, чем кажется</span><i>✦</i>
   </div>
 </div>
 
-<!-- ======================= FEATURES ======================= -->
 <section id="features">
   <div class="wrap">
     <div class="eyebrow reveal">Возможности</div>
-    <h2 class="sec-h reveal">Всё то же, что в боте — <span class="grad-t">и даже больше</span></h2>
-    <p class="sec-p reveal">Шесть фирменных кнопок Паскаля. Нажимайте на карточки, чтобы перейти к разделу сайта, или спросите то же самое в чате — ответы полностью совпадают с Telegram-ботом.</p>
+    <h2 class="sec-h reveal">Чем я могу быть <span class="grad-t">полезен</span></h2>
+    <p class="sec-p reveal">Шесть направлений, в которых Паскаль помогает каждый день. Нажмите на карточку, чтобы перейти к нужному разделу, или задайте вопрос своими словами в чате — я пойму.</p>
     <div class="f-grid">
       <div class="f-card reveal"><div class="f-ico">📤</div><h3>Направь примерный ДР</h3><p>Готовый шаблон должностного регламента от отдела кадровой экспертизы — скачивайте и заполняйте.</p><div class="f-actions"><a class="f-link" id="dlCard" href="#" download>Скачать файл →</a><button class="f-chat" data-chat-action="📤 Направь примерный ДР">💬 в чате</button></div></div>
       <div class="f-card reveal"><div class="f-ico">📩</div><h3>Как и куда направить ДР?</h3><p>Контакты сотрудников отдела кадровой экспертизы УГСКР: почта и рабочие телефоны.</p><div class="f-actions"><a class="f-link" href="#contacts">Смотреть контакты →</a><button class="f-chat" data-chat-action="📩 Как и куда направить ДР?">💬 в чате</button></div></div>
-      <div class="f-card reveal"><div class="f-ico">✍️</div><h3>Как составить ДР?</h3><p>Интерактивный разбор всех 9 разделов и 22 пунктов — с формулировками, поиском и копированием.</p><div class="f-actions"><a class="f-link" href="#constructor">Открыть конструктор →</a><button class="f-chat" data-chat-action="✍️ Как составить ДР?">💬 в чате</button></div></div>
+      <div class="f-card reveal"><div class="f-ico">✍️</div><h3>Как составить ДР?</h3><p>Разбор всех 9 разделов и 22 пунктов — с формулировками, поиском и копированием.</p><div class="f-actions"><a class="f-link" href="#constructor">Открыть инструкцию →</a><button class="f-chat" data-chat-action="✍️ Как составить ДР?">💬 в чате</button></div></div>
+      <div class="f-card reveal"><div class="f-ico">🧩</div><h3>Блоки по направлениям</h3><p>КНД, антитеррор, антикоррупция, цифровая трансформация, закупки, мобилизация и другие — готовые формулировки.</p><div class="f-actions"><a class="f-link" href="#blocks">Открыть блоки →</a><button class="f-chat" data-chat-action="🧩 Блоки по направлениям">💬 в чате</button></div></div>
       <div class="f-card reveal"><div class="f-ico">🔄</div><h3>Как происходит согласование ДР?</h3><p>Пошаговый маршрут документа: от подготовки до согласования с начальником УГСКР.</p><div class="f-actions"><a class="f-link" href="#approval">Смотреть этапы →</a><button class="f-chat" data-chat-action="🔄 Как происходит согласование ДР?">💬 в чате</button></div></div>
-      <div class="f-card reveal"><div class="f-ico">📊</div><h3>Обратная связь</h3><p>Остались вопросы или есть идея, как сделать Паскаля лучше? Напишите разработчику напрямую.</p><div class="f-actions"><a class="f-link" href="https://t.me/DmChebotarev" target="_blank" rel="noopener">t.me/DmChebotarev →</a><button class="f-chat" data-chat-action="📊 Обратная связь">💬 в чате</button></div></div>
-      <div class="f-card reveal"><div class="f-ico">🔗</div><h3>Полезные ссылки</h3><p>14 нормативных правовых актов и 14 официальных ресурсов — всё для грамотного составления ДР.</p><div class="f-actions"><a class="f-link" href="#links">Открыть библиотеку →</a><button class="f-chat" data-chat-action="🔗 Полезные ссылки">💬 в чате</button></div></div>
+      <div class="f-card reveal"><div class="f-ico">📊</div><h3>Обратная связь</h3><p>Остались вопросы или есть идея, как сделать Паскаля лучше? Напишите разработчику напрямую.</p><div class="f-actions"><a class="f-link" id="maxCard" href="#" target="_blank" rel="noopener">Профиль в MAX →</a><button class="f-chat" data-chat-action="📊 Обратная связь">💬 в чате</button></div></div>
     </div>
   </div>
 </section>
 
-<!-- ======================= CONSTRUCTOR ======================= -->
 <section id="constructor">
   <div class="wrap">
     <div class="eyebrow reveal">✍️ Как составить ДР</div>
-    <h2 class="sec-h reveal">Конструктор регламента <span class="grad-t">по пунктам</span></h2>
+    <h2 class="sec-h reveal">Инструкция <span class="grad-t">по пунктам</span></h2>
     <p class="sec-p reveal">Выбирайте раздел, раскрывайте пункты, копируйте формулировки. Отмечайте готовые разделы — прогресс сохраняется в браузере. 🔎 Поиск работает по всем пунктам сразу.</p>
     <div class="con-top reveal">
       <div class="search-box">
-        <input id="conSearch" type="text" placeholder="Поиск: «стаж», «1.7», «госуслуги», «коррупции»…" autocomplete="off">
-        <div id="searchRes"></div>
+        <input id="conSearch" type="text" placeholder="Поиск: «стаж», «1.7», «госуслуги», «подчин»…" autocomplete="off">
+        <div class="sres" id="conRes"></div>
       </div>
       <div class="progress-card">
         <div class="p-row"><span id="pLabel">Готово 0 из 9</span><a href="#" id="pReset">сбросить</a></div>
@@ -425,49 +403,68 @@ footer li a:hover{color:var(--acc2);opacity:1}
       </div>
     </div>
     <div class="con-grid reveal">
-      <div class="con-nav" id="conNav"></div>
-      <div class="con-content" id="conContent"></div>
+      <div class="side-nav" id="conNav"></div>
+      <div class="panel" id="conContent"></div>
     </div>
     <div class="dl-banner reveal">
       <div>
-        <h3>📤 Примерный должностной регламент</h3>
-        <p>✨ Конечно! Направляю Вам примерный ДР! <span id="dlVer"></span> Используйте его как основу — а конструктор выше подскажет, что писать в каждом пункте.</p>
+        <h3>📤 Примерный должностной регламент <span class="ver-pill" id="verPill"></span></h3>
+        <p>✨ Конечно! Направляю Вам примерный ДР! Используйте его как основу — а инструкция выше подскажет, что писать в каждом пункте.</p>
       </div>
       <a class="btn" id="dlBanner" href="#" download>⬇️ Скачать .docx</a>
+    </div>
+    <div class="whatsnew reveal">
+      <h3>🆕 Что нового в версии от 23.11.2026</h3>
+      <div class="wn-grid" id="wnGrid"></div>
     </div>
   </div>
 </section>
 
-<!-- ======================= APPROVAL ======================= -->
+<section id="blocks">
+  <div class="wrap">
+    <div class="eyebrow reveal">🧩 Блоки</div>
+    <h2 class="sec-h reveal">Готовые формулировки <span class="grad-t">по направлениям</span></h2>
+    <p class="sec-p reveal">Дополнительные блоки из примерного регламента: выбирайте своё направление деятельности и переносите нужные положения в соответствующие пункты ДР. У каждого блока указано, куда его вставлять.</p>
+    <div class="con-top reveal">
+      <div class="search-box">
+        <input id="blkSearch" type="text" placeholder="Поиск по блокам: «жалоб», «паспорт безопасности», «ЕПГУ», «промпт»…" autocomplete="off">
+        <div class="sres" id="blkRes"></div>
+      </div>
+    </div>
+    <div class="con-grid reveal">
+      <div class="side-nav" id="blkNav"></div>
+      <div class="panel" id="blkContent"></div>
+    </div>
+  </div>
+</section>
+
 <section id="approval">
   <div class="wrap">
     <div class="eyebrow reveal">🔄 Согласование</div>
     <h2 class="sec-h reveal">Маршрут вашего ДР — <span class="grad-t">3 шага</span></h2>
     <p class="sec-p reveal">📌 Согласование ДР происходит следующим образом.</p>
     <div class="timeline">
-      <div class="t-step reveal" data-n="1"><h3>✅ Подготовка</h3><p>Вы осуществляете подготовку ДР. При подготовке Вы можете воспользоваться «Конструктором ДР» в системе 1С, функционалом чат-бота Паскаль или связаться с сотрудниками отдела кадровой экспертизы — подробная инструкция в разделе <a href="#contacts">«Контакты»</a>.</p></div>
-      <div class="t-step reveal" data-n="2"><h3>✅ Направление в отдел</h3><p>Вы направляете документ сотруднику отдела кадровой экспертизы: Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Людмиле Олеговне Сурниной или Ольге Александровне Малявиной на электронную почту (адреса — в разделе <a href="#contacts">«Контакты»</a>).</p></div>
+      <div class="t-step reveal" data-n="1"><h3>✅ Подготовка</h3><p>Вы осуществляете подготовку ДР. При подготовке можно воспользоваться «Конструктором ДР» в системе 1С, помощью Паскаля или связаться с сотрудниками отдела кадровой экспертизы — инструкция в разделе <a href="#contacts">«Контакты»</a>.</p></div>
+      <div class="t-step reveal" data-n="2"><h3>✅ Направление в отдел</h3><p>Вы направляете документ сотруднику отдела кадровой экспертизы: Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Наталии Михайловне Ханыковой на электронную почту (адреса — в разделе <a href="#contacts">«Контакты»</a>).</p></div>
       <div class="t-step reveal" data-n="3"><h3>✅ Экспертиза и согласование</h3><p>Сотрудники внимательно изучат Ваш документ. Если возникнут вопросы, они обязательно свяжутся с Вами для уточнения деталей. По завершении согласования с начальником УГСКР Правительства области сотрудники оповестят Вас о том, что ДР готов!</p><span class="t-badge">⏱ Обычно 7–10 рабочих дней · срок зависит от количества регламентов в работе отдела</span></div>
     </div>
   </div>
 </section>
 
-<!-- ======================= CONTACTS ======================= -->
-<section id="contacts" style="padding-top:20px">
+<section id="contacts" style="padding-top:16px">
   <div class="wrap">
     <div class="eyebrow reveal">📩 Как и куда направить ДР</div>
     <h2 class="sec-h reveal">Отдел кадровой экспертизы <span class="grad-t">УГСКР</span></h2>
-    <p class="sec-p reveal">📞 Направить должностной регламент можно сотрудникам отдела кадровой экспертизы УГСКР. Основной контакт — Дмитрий Дмитриевич; при его временном отсутствии — Людмила Олеговна или Ольга Александровна.</p>
+    <p class="sec-p reveal">📞 Направить должностной регламент можно сотрудникам отдела кадровой экспертизы УГСКР. Основной контакт — Дмитрий Дмитриевич; при его временном отсутствии — Наталия Михайловна.</p>
     <div class="c-grid" id="cGrid"></div>
   </div>
 </section>
 
-<!-- ======================= LINKS ======================= -->
-<section id="links" style="padding-top:20px">
+<section id="links" style="padding-top:16px">
   <div class="wrap">
     <div class="eyebrow reveal">🔗 Полезные ссылки</div>
     <h2 class="sec-h reveal">Библиотека <span class="grad-t">для разработчика ДР</span></h2>
-    <p class="sec-p reveal">Нормативно-правовые акты и официальные ресурсы — тот же список, что Паскаль отправляет в Telegram.</p>
+    <p class="sec-p reveal">Нормативно-правовые акты и официальные ресурсы — всё для грамотного составления должностного регламента.</p>
     <div class="tabs reveal">
       <button class="tab active" data-tab="npa">📚 НПА · 14</button>
       <button class="tab" data-tab="sites">🌐 Сайты · 14</button>
@@ -476,8 +473,7 @@ footer li a:hover{color:var(--acc2);opacity:1}
   </div>
 </section>
 
-<!-- ======================= FAQ ======================= -->
-<section id="faq" style="padding-top:20px">
+<section id="faq" style="padding-top:16px">
   <div class="wrap">
     <div class="eyebrow reveal">Вопрос — ответ</div>
     <h2 class="sec-h reveal" style="text-align:center">Частые вопросы <span class="grad-t">о ДР</span></h2>
@@ -486,27 +482,25 @@ footer li a:hover{color:var(--acc2);opacity:1}
   </div>
 </section>
 
-<!-- ======================= FEEDBACK ======================= -->
-<section id="feedback" style="padding-top:20px">
+<section id="feedback" style="padding-top:16px">
   <div class="wrap">
     <div class="fb-panel reveal">
       <h2>📊 Сделаем Паскаля ещё полезнее — вместе!</h2>
-      <p>🔍 У вас остались вопросы по составлению ДР? 🧐 Или хотите предложить улучшения нашему чат-боту? 💡 Нам важно ваше мнение! 📈 Вместе сделаем чат-бот ещё полезнее и удобнее!</p>
+      <p>🔍 У вас остались вопросы по составлению ДР? 🧐 Или хотите предложить улучшения? 💡 Нам важно ваше мнение! 📈 Вместе сделаем помощника ещё удобнее.</p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a class="btn" href="https://t.me/DmChebotarev" target="_blank" rel="noopener">✍️ Написать разработчику</a>
+        <a class="btn" id="maxBtn" href="#" target="_blank" rel="noopener">✍️ Написать разработчику</a>
         <button class="btn btn-g" data-open-chat>💬 Спросить Паскаля</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ======================= FOOTER ======================= -->
 <footer>
   <div class="wrap">
     <div class="f-grid2">
       <div>
-        <a class="logo" href="#top" style="margin-bottom:16px"><span class="logo-bot">🤖</span><span>Паскаль<small>Цифровой помощник по ДР</small></span></a>
-        <p style="font-size:13.5px;color:var(--muted);max-width:340px">Веб-компаньон Telegram-бота отдела кадровой экспертизы УГСКР Правительства Липецкой области. Разработка регламентов — не такая сложная задача, как кажется! 😉</p>
+        <a class="logo" href="#top" style="margin-bottom:16px"><span class="logo-bot">🗂️</span><span>Паскаль<small>Цифровой помощник по ДР</small></span></a>
+        <p style="font-size:13.5px;color:var(--muted);max-width:340px">Помощник отдела кадровой экспертизы УГСКР Правительства Липецкой области. Разработка регламентов — не такая сложная задача, как кажется! 😉</p>
       </div>
       <div>
         <h4>Официальные ресурсы</h4>
@@ -514,18 +508,18 @@ footer li a:hover{color:var(--acc2);opacity:1}
           <li><a href="https://gosservice48.ru/" target="_blank" rel="noopener">🏛 Сайт УГСКР — gosservice48.ru</a></li>
           <li><a href="https://липецкаяобласть.рф/" target="_blank" rel="noopener">🌐 Правительство Липецкой области</a></li>
           <li><a href="https://artamonovigor.ru/" target="_blank" rel="noopener">🏢 Сайт Губернатора Липецкой области</a></li>
-          <li><a href="https://gossluzhba.gov.ru/" target="_blank" rel="noopener">📖 Портал государственной гражданской службы</a></li>
-          <li><a href="https://mintrud.gov.ru/ministry/programms/gossluzhba/16/1" target="_blank" rel="noopener">📚 Справочник квалификационных требований</a></li>
+          <li><a href="https://gossluzhba.gov.ru/" target="_blank" rel="noopener">📖 Портал гражданской службы</a></li>
+          <li><a href="https://mintrud.gov.ru/ministry/programms/gossluzhba/16/1" target="_blank" rel="noopener">📚 Справочник квалтребований</a></li>
         </ul>
       </div>
       <div>
         <h4>Навигация</h4>
         <ul>
-          <li><a href="#constructor">✍️ Конструктор ДР</a></li>
+          <li><a href="#constructor">✍️ Как составить ДР</a></li>
+          <li><a href="#blocks">🧩 Блоки по направлениям</a></li>
           <li><a href="#approval">🔄 Согласование</a></li>
           <li><a href="#contacts">📩 Контакты отдела</a></li>
-          <li><a href="#links">🔗 НПА и сайты</a></li>
-          <li><a href="https://t.me/DmChebotarev" target="_blank" rel="noopener">💡 Обратная связь — разработчик</a></li>
+          <li><a id="maxFoot" href="#" target="_blank" rel="noopener">💡 Обратная связь — MAX</a></li>
         </ul>
       </div>
     </div>
@@ -537,63 +531,57 @@ footer li a:hover{color:var(--acc2);opacity:1}
 </footer>
 
 <button id="toTop" title="Наверх">↑</button>
-
-<!-- ======================= CHAT ======================= -->
-<button id="chatFab" title="Чат с Паскалем">🤖<span id="chatBadge">1</span></button>
+<button id="chatFab" title="Чат с Паскалем">🗂️<span id="chatBadge">1</span></button>
 <div id="chatPanel" role="dialog" aria-label="Чат с Паскалем">
   <div class="ch-head">
-    <span class="avatar">🤖</span>
-    <div><b>Паскаль</b><span>● онлайн · отвечает мгновенно</span></div>
-    <button id="chReset" title="Начать заново (/start)">↺</button>
+    <span class="avatar">🗂️</span>
+    <div><b>Паскаль</b><span>● онлайн · понимаю вопросы своими словами</span></div>
+    <button id="chReset" title="Начать заново">↺</button>
     <button id="chClose" title="Свернуть">✕</button>
   </div>
   <div id="chMsgs"></div>
   <div id="chChips"></div>
   <div class="ch-input">
-    <input id="chInput" type="text" placeholder="Напишите сообщение…" autocomplete="off">
+    <input id="chInput" type="text" placeholder="Спросите своими словами: «где про стаж?»" autocomplete="off">
     <button id="chSend" title="Отправить">➤</button>
   </div>
 </div>
-
 <div id="toasts"></div>
 
 <script>
 "use strict";
-/* =====================================================================
-   НАСТРОЙКИ — единственное место, которое нужно трогать при обновлениях
-   ===================================================================== */
+/* ================= НАСТРОЙКИ ================= */
 const CONFIG = {
-  botUsername: "your_bot_username",              // ← username вашего бота из BotFather (без @)
-  developer:   "https://t.me/DmChebotarev",
-  exampleFile: "Примерный ДР от 14.07.2025.docx",// ← файл положите рядом с index.html
-  exampleVer:  "Версия от 14.07.2025."           // ← подпись версии (как в боте)
+  maxProfile: "https://max.ru/u/f9LHodD0cOJtR9rw8aZECwt0LPRKewepM9ZXBZ0NB1rYNVzGlaH54wjVz9w",
+  exampleFile: "primer-dr.docx",
+  exampleVer: "Версия от 23.11.2026.",
+  verShort: "23.11.2026"
 };
 
-/* =====================================================================
-   КОНТЕНТ — тексты 1:1 из чат-бота «Паскаль» (bot.py)
-   ===================================================================== */
+/* ================= ТЕКСТЫ ================= */
 const TEXTS = {
 welcome: `👋 Привет! Очень рад знакомству и началу совместной работы. Я здесь, чтобы помогать и вдохновлять. Давайте вместе творить будущее!
 
-🧑‍🤝‍🧑 Бззз... Контакт установлен. Разработка регламентов, на самом деле, не такая сложная задача, как кажется, если знать все те особенности, которые необходимы для его грамотного составления. Чем я могу помочь?`,
+🧑‍🤝‍🧑 Бззз... Контакт установлен. Разработка регламентов, на самом деле, не такая сложная задача, как кажется, если знать все те особенности, которые необходимы для его грамотного составления. Чем я могу помочь?
+
+💡 Можно не искать кнопку — просто напишите своими словами: «где про стаж», «кому отправить ДР», «сколько ждать согласования», «блок про закупки». Я пойму.`,
 sendExample: `✨ Конечно! Направляю Вам примерный ДР! ${CONFIG.exampleVer}`,
 approval: `📌 Согласование ДР происходит следующим образом.
 
-✅ Вы осуществляете подготовку ДР (при подготовке Вы можете воспользоваться «Конструктором ДР» в системе 1С, моим функционалом (чат-ботом Паскаль!) или связаться с сотрудниками отдела кадровой экспертизы — подробную инструкцию смотрите, нажав кнопку «Как и куда направить ДР?»).
+✅ Вы осуществляете подготовку ДР (при подготовке Вы можете воспользоваться «Конструктором ДР» в системе 1С, моей помощью или связаться с сотрудниками отдела кадровой экспертизы).
 
-✅ Далее Вы направляете документ сотруднику отдела кадровой экспертизы: Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Людмиле Олеговне Сурниной или Ольге Александровне Малявиной на электронную почту (адреса контактных лиц можно посмотреть, нажав кнопку «Как и куда направить ДР?»).
+✅ Далее Вы направляете документ сотруднику отдела кадровой экспертизы: Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Наталии Михайловне Ханыковой на электронную почту.
 
 ✅ Сотрудники внимательно изучат Ваш документ. Срок рассмотрения зависит от количества регламентов, находящихся в работе отдела. Обычно согласование занимает 7-10 рабочих дней. Если возникнут вопросы, они обязательно свяжутся с Вами для уточнения деталей. По завершении согласования с начальником УГСКР Правительства области сотрудники оповестят Вас о том, что ДР готов!`,
 feedback: `🔍 У вас остались вопросы по составлению ДР?
-🧐 Или хотите предложить улучшения нашему чат-боту?
-💡 Нам важно ваше мнение! Напишите разработчику t.me/DmChebotarev.
-📈 Вместе сделаем чат-бот ещё полезнее и удобнее!`,
-default: `🤷‍♂️ Я еще совсем маленький, когда-нибудь я смогу общаться с Вами также уверенно, как сотрудники отдела кадровой экспертизы УГСКР, но мне еще многому стоит научиться. Напишите им на почту или позвоните, а чтобы узнать, как это сделать, нажмите кнопку: "Как и куда направить ДР"`,
+🧐 Или хотите предложить улучшения нашему помощнику?
+💡 Нам важно ваше мнение! Напишите разработчику в MAX:
+${CONFIG.maxProfile}
+📈 Вместе сделаем помощника ещё полезнее и удобнее!`,
 gratitude: `🥰 Спасибо, мне очень приятно! Обратная связь для меня очень важна, я буду стараться и дальше помогать вам в составлении ДР!`,
 anger: `🙁 Ой, извините, я действительно хотел помочь Вам...
-Может, лучше связаться с сотрудниками отдела кадровой экспертизы? Нажмите кнопку «Как и куда направить ДР?» и получите информацию о том, как это сделать!`,
-suffix: `📌Для моментального получения информации - выберите нужный пункт в меню,либо свяжитесь с нашими сотрудниками, воспользовавшись кнопками
-"Как и куда направить ДР?" или "Обратная связь" 😉`,
+Может, лучше связаться с сотрудниками отдела кадровой экспертизы? Нажмите кнопку «📩 Как и куда направить ДР?» и получите информацию о том, как это сделать!`,
+suffix: `📌 Для моментального получения информации — выберите нужный пункт в меню либо свяжитесь с нашими сотрудниками, воспользовавшись кнопками «Как и куда направить ДР?» или «Обратная связь» 😉`,
 funny: [
 "📌 Ваше сообщение дошло до нас и уже исследуется нашими аналитическими инструментами!",
 "📝 Отправлено на обработку в отдел кадровой экспертизы УГСКР — там умеют раскладывать по полочкам даже самые запутанные вопросы!",
@@ -652,16 +640,15 @@ funny: [
 "📗 Специалисты подошли к вопросу ответственно — скоро предоставим конкретный ответ!",
 "📍 Ваши пожелания приняты к сведению — обрабатываются в срочном порядке!",
 "📊 Технологический отдел провел комплексную диагностику — итоги диагностики представлены, далее ждем решения!",
-"📃 Проблематика выяснена — специалисты формируют решение, соответствующий вашему запросу!",
+"📃 Проблематика выяснена — специалисты формируют решение, соответствующее вашему запросу!",
 "📅 Тема вашего запроса раскрыта полностью — ожидайте конкретного и обоснованного ответа!"
 ]};
-
 const GRATITUDE = ["спасибо","благодарю","молодец","отлично","хорошо","супер","ок"];
 const ANGER = ["плохо","злюсь","недоволен","ужасно","не понял","нет"];
 
-/* ---------- Разделы ДР (тексты 1:1 из бота) ---------- */
+/* ================= РАЗДЕЛЫ ДР ================= */
 const SECTIONS = [
-{id:1, title:"Раздел 1 «Общие положения»", full:"Общие положения", subs:[
+{id:1,title:"Раздел 1 «Общие положения»",full:"Общие положения",subs:[
 ["1.1",`📜 В пункте 1.1. должностного регламента указывается:
 
 - 📆 наименование должности гражданского служащего в соответствии с Законом Липецкой области от 6 апреля 2007 года № 46-ОЗ «О Реестре должностей государственной гражданской службы Липецкой области»;
@@ -681,32 +668,54 @@ const SECTIONS = [
 
 Если служащий никого не заменяет, то этот пункт не указывается!`]
 ]},
-{id:2, title:"Раздел 2 «Квал. требования»", full:"Квалификационные требования для замещения должности государственной гражданской службы", subs:[
+{id:2,title:"Раздел 2 «Квал. требования»",full:"Квалификационные требования для замещения должности государственной гражданской службы",subs:[
 ["2.1",`📌 В подпункте 2.1 должностного регламента в зависимости от области и вида деятельности указывается, по каким специальностям, направлениям подготовки профессионального образования должен иметь диплом гражданский служащий, замещающий данную должность.
 
 Для гражданских служащих Липецкой области требования к специальности, направлению подготовки устанавливаются исходя из должностных обязанностей гражданского служащего с учетом области и вида профессиональной служебной деятельности.`],
 ["2.2",`📌 В подпункте 2.2 должностного регламента в зависимости от группы должностей указывается продолжительность стажа гражданской службы или стажа работы по специальности, направлению подготовки, который должен иметь гражданский служащий, замещающий данную должность.
 
-Требования к стажу гражданской службы или стажу работы по специальности, направлению подготовки устанавливаются в соответствии со статьей 11 Закона Липецкой области № 259-ОЗ.`],
+Требования к стажу устанавливаются в соответствии со статьей 11 Закона Липецкой области № 259-ОЗ.
+
+🆕 В версии от 23.11.2026 требования к стажу работы по специальности:
+— главная группа «помощники (советники)» и «руководители» — не менее 2 лет;
+— высшая группа «помощники (советники)» и «руководители» — не менее 4 лет;
+— старшая и ведущая группы — требования к стажу не предъявляются;
+— главная группа «специалисты» — стаж гражданской службы не менее 1 года или стаж работы по специальности не менее 2 лет.`],
 ["2.3.2.1",`📌 В пункте 2.3.2.1 должностного регламента указывается, какими профессиональными знаниями в сфере законодательства должен обладать гражданский служащий. Нормативные правовые акты указываются в соответствии с их юридической силой.
 
-Перечень нормативных правовых актов (правовых актов), знание которых необходимо для исполнения должностных обязанностей, подбирается разработчиком проекта должностного регламента в зависимости от специфики должностных обязанностей гражданского служащего.`],
+Перечень нормативных правовых актов подбирается разработчиком проекта должностного регламента в зависимости от специфики должностных обязанностей гражданского служащего.
+
+🆕 Новое в версии от 23.11.2026:
+— для руководителей, их заместителей и начальников отделов — Указ Президента РФ от 10 октября 2019 года № 490 «О развитии искусственного интеллекта в Российской Федерации»;
+— для руководителей цифровой трансформации и ИТ-специалистов дополнительно — ГОСТ Р 71484.3-2024 (качество данных для аналитики и машинного обучения) и приказ ФСТЭК России от 11 апреля 2025 года № 117.`],
 ["2.3.2.2",`📌 Пунктом 2.3.2.2 должностного регламента предусмотрено наличие иных профессиональных знаний, которыми должен обладать гражданский служащий.
 
-Рекомендуемые для замещения должностей гражданской службы требования к наличию иных профессиональных знаний в целом по области деятельности и дополнительно по виду деятельности определены в соответствующих формах Справочника квалификационных требований, однако их перечень, по усмотрению разработчика, может быть сокращен.`],
+Рекомендуемые требования определены в соответствующих формах Справочника квалификационных требований, однако их перечень, по усмотрению разработчика, может быть сокращен.
+
+🆕 Новое в версии от 23.11.2026 — знания в сфере искусственного интеллекта:
+— для руководителей: базовые понятия ИИ (генеративные модели, машинное обучение, нейросети), требования информационной безопасности при работе с ИИ, этические аспекты применения ИИ в государственном управлении, направления использования ИИ, методы оценки эффективности внедрения;
+— для руководителей цифровой трансформации и ИТ: принципы работы генеративного ИИ и методология работы с большими языковыми моделями (LLM), основы промпт-инжиниринга, структуры данных органа власти, принципы составления BPMN-схем, критерии отбора ИИ-решений, методы интеграции ИИ в отраслевые информационные системы.`],
 ["2.3.3",`📌 В подпункте 2.3.3 должностного регламента указывается, какими функциональными знаниями должен обладать гражданский служащий, замещающий данную должность.
 
 Для их указания можно воспользоваться Справочником квалификационных требований, исходя из указанной(ых) области и вида, либо же указать их самостоятельно.`],
 ["2.3.4",`📌 В пункте 2.3.4 указываются базовые умения. Их указание у всех гражданских служащих одинаково, однако, если служащий замещает должность категории «руководители», категории «специалисты» главной группы должностей, то добавляются управленческие умения, которые Вы можете увидеть в примерном должностном регламенте.`],
 ["2.3.5",`📌 В подпункте 2.3.5 должностного регламента указывается, какими профессиональными умениями должен обладать гражданский служащий, замещающий данную должность.
 
-Рекомендуемые для замещения должностей гражданской службы требования к наличию профессиональных умений в целом по области деятельности и дополнительно по виду деятельности определены в соответствующих формах Справочника квалификационных требований, однако Вы можете их дополнить самостоятельно.`],
+Рекомендуемые требования определены в формах Справочника квалификационных требований, однако Вы можете их дополнить самостоятельно.
+
+🆕 Новое в версии от 23.11.2026 — умения в сфере ИИ:
+— для руководителей: использование технологий ИИ в служебной деятельности; составление корректных запросов (промптов); проверка корректности и достоверности результатов ИИ; обеспечение безопасности информации; определение целесообразности внедрения ИИ; формулирование задач на разработку; оценка эффективности и анализ рисков;
+— для руководителей цифровой трансформации и ИТ: сложные многоуровневые промпты; разработка и использование ИИ-агентов; ведение реестра данных; контроль качества данных; текущая и целевая BPMN-схемы процесса; обработка больших объемов информации; разработка и внедрение ИИ-решений; регламенты и инструкции по использованию ИИ; обучение сотрудников.`],
 ["2.3.6",`📌 В подпункте 2.3.6 должностного регламента указывается, какими функциональными умениями должен обладать гражданский служащий, замещающий данную должность.
 
 Для их указания можно воспользоваться Справочником квалификационных требований, исходя из указанных(ых) области и вида, либо же указать их самостоятельно.`]
 ]},
-{id:3, title:"Раздел 3 «Долж. обязанности»", full:"Должностные обязанности гражданского служащего", subs:[
-["3.2",`📌 В пункте 3.2. должностного регламента указываются должностные обязанности, характеризующие содержание деятельности гражданского служащего по замещаемой должности. Должностные обязанности разрабатываются в соответствии с задачами и функциями государственного органа, его структурного подразделения, функциональным назначением должности гражданской службы и иными документами, определяющими характер и содержание деятельности по соответствующей должности.`],
+{id:3,title:"Раздел 3 «Долж. обязанности»",full:"Должностные обязанности гражданского служащего",subs:[
+["3.2",`📌 В пункте 3.2. должностного регламента указываются должностные обязанности, характеризующие содержание деятельности гражданского служащего по замещаемой должности. Должностные обязанности разрабатываются в соответствии с задачами и функциями государственного органа, его структурного подразделения, функциональным назначением должности гражданской службы и иными документами, определяющими характер и содержание деятельности по соответствующей должности.
+
+🆕 Новое в версии от 23.11.2026: добавлена обязанность использовать в целях рабочих коммуникаций отечественный многофункциональный сервис обмена информацией в качестве средства мгновенного обмена сообщениями.
+
+💡 Готовые формулировки обязанностей по направлениям деятельности смотрите в разделе «Блоки».`],
 ["3.3",`📌 Пункт 3.3. должен звучать следующим образом:
 
 3.3. Гражданский служащий в соответствии со статьей 9 Федерального закона от 25 декабря 2008 года № 273-ФЗ «О противодействии коррупции» обязан уведомлять Губернатора Липецкой области о фактах обращения к нему каких-либо лиц в целях склонения его к совершению коррупционных правонарушений.`],
@@ -714,11 +723,11 @@ const SECTIONS = [
 
 3.4. При обработке персональных данных гражданский служащий обязан принимать необходимые меры или обеспечивать их принятие для защиты персональных данных от неправомерного или случайного доступа к ним, уничтожения, изменения, блокирования, копирования, предоставления, распространения персональных данных, а также от иных неправомерных действий в отношении персональных данных.`]
 ]},
-{id:4, title:"Раздел 4 «Принятие управ. решений»", full:"Перечень вопросов, по которым гражданский служащий вправе или обязан самостоятельно принимать управленческие и иные решения", subs:[
+{id:4,title:"Раздел 4 «Принятие управ. решений»",full:"Перечень вопросов, по которым гражданский служащий вправе или обязан самостоятельно принимать управленческие и иные решения",subs:[
 ["4.1",`📌 В пункте 4.1. должностного регламента указывается перечень вопросов, по которым гражданский служащий в соответствии с замещаемой должностью гражданской службы вправе самостоятельно принимать управленческие и иные решения исходя из задач и функций, возложенных на государственный орган, его структурное подразделение, а также с учетом своих должностных обязанностей.`],
 ["4.2",`📌 В пункте 4.2. должностного регламента указывается перечень вопросов, по которым гражданский служащий в соответствии с замещаемой должностью гражданской службы обязан самостоятельно принимать управленческие и иные решения исходя из задач и функций, возложенных на государственный орган, его структурное подразделение, а также с учетом своих должностных обязанностей.`]
 ]},
-{id:5, title:"Раздел 5 «Подготовка проектов НПА»", full:"Перечень вопросов, по которым гражданский служащий вправе или обязан участвовать при подготовке проектов нормативных правовых актов и (или) проектов управленческих и иных решений", subs:[
+{id:5,title:"Раздел 5 «Подготовка проектов НПА»",full:"Перечень вопросов, по которым гражданский служащий вправе или обязан участвовать при подготовке проектов нормативных правовых актов и (или) проектов управленческих и иных решений",subs:[
 ["5.1",`📌 Обычно п. 5.1. заполняется так:
 
 5.1. Гражданский служащий в соответствии со своей компетенцией вправе принимать участие при подготовке (обсуждении) проектов правовых актов Липецкой области и (или) проектов управленческих и иных решений по вопросам, отнесённым к компетенции отдела, по поручению ... (перечисляются лица, которым подчиняется служащий (1.6)). Однако можно указать перечень самостоятельно.`],
@@ -726,442 +735,719 @@ const SECTIONS = [
 
 5.2. Гражданский служащий в соответствии со своей компетенцией обязан принимать участие при подготовке (обсуждении) проектов правовых актов Липецкой области и (или) проектов управленческих и иных решений по вопросам, отнесённым к компетенции отдела, по поручению ... (перечисляются лица, которым подчиняется служащий (1.6)). Однако можно указать перечень самостоятельно.`]
 ]},
-{id:6, title:"Раздел 6 «Сроки»", full:"Сроки и процедуры подготовки, рассмотрения проектов управленческих и иных решений, порядок согласования и принятия данных решений",
+{id:6,title:"Раздел 6 «Сроки»",full:"Сроки и процедуры подготовки, рассмотрения проектов управленческих и иных решений, порядок согласования и принятия данных решений",
 desc:`📌 Обычно мы заполняем раздел 6 так: Подготовка, рассмотрение и согласование проектов управленческих и иных решений осуществляется в сроки и в соответствии с требованиями, установленными Уставом Липецкой области, Законом Липецкой области от 22 декабря 2020 года № 485-ОЗ «О нормативных правовых актах Липецкой области», Регламентом Правительства Липецкой области, постановлением Правительства Липецкой области от 28 декабря 2022 года № 359 «Об утверждении Порядка принятия, государственной регистрации и опубликования нормативных правовых актов исполнительных органов Липецкой области и структурных подразделений Правительства Липецкой области, имеющих статус юридического лица» и иными правовыми актами Липецкой области. Однако можно заполнить его самостоятельно.`},
-{id:7, title:"Раздел 7 «Порядок взаимодействия»", full:"Порядок служебного взаимодействия гражданского служащего в связи с исполнением им должностных обязанностей",
+{id:7,title:"Раздел 7 «Порядок взаимодействия»",full:"Порядок служебного взаимодействия гражданского служащего в связи с исполнением им должностных обязанностей",
 desc:`📌 В разделе 7 должностного регламента указаны нормативные правовые акты для взаимодействия гражданского служащего с другими лицами и организациями. Заявления о служебной проверке, иные заявления и предварительные уведомления о намерениях выполнять иную оплачиваемую работу представляются в письменной форме на имя представителя нанимателя, либо лица, осуществляющего соответствующее полномочие представителя нанимателя, согласно постановлению Правительства Липецкой области от 16 августа 2022 года № 91 «О возложении полномочий представителя нанимателя (работодателя)». В данном разделе также устанавливается, с кем взаимодействует гражданский служащий в целях исполнения служебных обязанностей и поручений (сотрудники исполнительного органа или Правительства).`},
-{id:8, title:"Раздел 8 «Госуслуги»", full:"Перечень государственных услуг (видов деятельности), оказываемых по запросам граждан и организаций",
+{id:8,title:"Раздел 8 «Госуслуги»",full:"Перечень государственных услуг (видов деятельности), оказываемых по запросам граждан и организаций",
 desc:`📌 В разделе 8 должностного регламента в соответствии с должностными обязанностями указывается полный перечень предоставляемых гражданским служащим государственных услуг.
 
-В случае если должностными обязанностями по данной должности предоставление (участие в предоставлении) государственных услуг не предусмотрено, в должностном регламенте делается запись, что гражданским служащим государственные услуги не предоставляются (это мы пишем так):
+В случае если должностными обязанностями по данной должности предоставление (участие в предоставлении) государственных услуг не предусмотрено, в должностном регламенте делается запись:
 
-Гражданский служащий в связи с исполнением должностных обязанностей государственные услуги не оказывает.`},
-{id:9, title:"Раздел 9 «Показатели эффективности»", full:"Показатели эффективности и результативности профессиональной служебной деятельности гражданского служащего",
+Гражданский служащий в связи с исполнением должностных обязанностей государственные услуги не оказывает.
+
+💡 Обязанности по оптимизации и качеству услуг смотрите в блоках 10 и 12.`},
+{id:9,title:"Раздел 9 «Показатели эффективности»",full:"Показатели эффективности и результативности профессиональной служебной деятельности гражданского служащего",
 desc:`📌 В разделе 9 должностного регламента устанавливаются показатели эффективности и результативности профессиональной служебной деятельности гражданского служащего, замещающего данную должность.
 
 Примерным регламентом определены общие для всех гражданских служащих показатели эффективности и результативности профессиональной служебной деятельности, учитываемые при ее оценке.
 
-Специальные показатели эффективности и результативности профессиональной служебной деятельности, устанавливаемые в зависимости от должностных обязанностей, определяются разработчиком проекта должностного регламента самостоятельно.`}
+Специальные показатели эффективности и результативности, устанавливаемые в зависимости от должностных обязанностей, определяются разработчиком проекта должностного регламента самостоятельно.`}
 ];
 
-/* ---------- Контакты (1:1 из бота) ---------- */
-const CONTACTS = [
-{name:"Чеботарев Дмитрий Дмитриевич", ini:"ДЧ", email:"chebotarevDD@admlr.lipetsk.ru", phone:"+7(4742) 22-85-76", tel:"+74742228576", role:"Основной контакт по ДР", main:true},
-{name:"Сурнина Людмила Олеговна", ini:"ЛС", email:"SurninaLO@admlr.Lipetsk.ru", phone:"+7(4742) 22-85-73", tel:"+74742228573", role:"При временном отсутствии Д.Д. Чеботарева"},
-{name:"Малявина Ольга Александровна", ini:"ОМ", email:"MalyavinaOA@admlr.Lipetsk.ru", phone:"+7(4742) 22-86-83", tel:"+74742228683", role:"При временном отсутствии Д.Д. Чеботарева"}
-];
-TEXTS.contacts = "📞 Направить должностной регламент можно сотрудникам отдела кадровой экспертизы УГСКР:\n" +
-  CONTACTS.map(c=>`- ☎️ ${c.name}\n   📧 ${c.email}\n   📞 Рабочий номер: ${c.phone}`).join("\n\nИли\n\n");
+/* ================= БЛОКИ ================= */
+const P638="постановление Правительства Российской Федерации от 27 мая 2017 года № 638 «О взаимодействии федеральных органов исполнительной власти, органов государственной власти субъектов Российской Федерации, исполнительно-распорядительных органов федеральных территорий и органов местного самоуправления, физических и юридических лиц при проверке информации об угрозе совершения террористического акта, а также об информировании субъектов противодействия терроризму о выявленной угрозе совершения террористического акта»";
+const AT_BASE=[
+"Федеральный конституционный закон от 6 ноября 2020 года № 4-ФКЗ «О Правительстве Российской Федерации»",
+"Уголовный кодекс Российской Федерации",
+"Кодекс Российской Федерации об административных правонарушениях",
+"Федеральный закон от 6 марта 2006 года № 35-ФЗ «О противодействии терроризму»",
+"Федеральный закон от 23 июня 2016 года № 182-ФЗ «Об основах системы профилактики правонарушений в Российской Федерации»",
+"Концепция противодействия терроризму в Российской Федерации, утвержденная Президентом Российской Федерации 5 октября 2009 года",
+"Указ Президента Российской Федерации от 15 февраля 2006 года № 116 «О мерах по противодействию терроризму»",
+"Указ Президента Российской Федерации от 14 июня 2012 года № 851 «О порядке установления уровней террористической опасности, предусматривающих принятие дополнительных мер по обеспечению безопасности личности, общества и государства»",
+"Указ Президента Российской Федерации от 26 декабря 2015 года № 664 «О мерах по совершенствованию государственного управления в области противодействия терроризму»"];
+const AT_TAIL=["Международная конвенция о борьбе с захватом заложников (Нью-Йорк, 17 декабря 1979 года)","Резолюция Генеральной Ассамблеи ООН от 8 сентября 2006 года № 60/288 «Глобальная контртеррористическая стратегия Организации Объединенных Наций»","Конвенция Шанхайской организации сотрудничества против терроризма (Екатеринбург, 16 июня 2009 года)"];
+const K1="основные направления и приоритеты государственной политики в области противодействия терроризму";
+const K2="понятие общегосударственной системы противодействия терроризму";
+const K3="деятельность Национального антитеррористического комитета по координации и организации деятельности федеральных органов исполнительной власти, органов исполнительной власти субъектов Российской Федерации и органов местного самоуправления по противодействию терроризму";
+const K4="порядок определения возможных террористических угроз и выявления признаков подготовки различных преступлений террористической направленности";
+const K5="состав нормативно-правовой базы по вопросам противодействия терроризму";
+const K6="порядок взаимодействия федеральных органов исполнительной власти, органов государственной власти субъектов Российской Федерации, органов местного самоуправления, физических и юридических лиц при проверке информации об угрозе совершения террористического акта, а также об информировании субъектов противодействия терроризму о выявленной угрозе совершения террористического акта";
+const K7="организация деятельности федеральных органов исполнительной власти, органов государственной власти субъектов Российской Федерации и органов местного самоуправления в области противодействия терроризму";
+const K8="содержание дополнительных мер обеспечения безопасности, реализуемых субъектами противодействия терроризму при установлении уровней террористической опасности";
+const K9="рекомендации по действиям при обнаружении подозрительного предмета, который может оказаться взрывным устройством и возникновении иных угроз террористического характера";
+const K10="правила разработки и проведения комплекса мероприятий, направленных на минимизацию и (или) ликвидацию последствий террористического акта";
+const K11="требования к антитеррористической защищенности объектов (территорий)";
+const K12="порядок установления уровней террористической опасности";
+const K13="порядок оценки возможных последствий террористического акта";
+const K14="меры государственного принуждения, применяемые в целях предупреждения и пресечения террористических проявлений";
+const K15="основные меры, направленные на обеспечение антитеррористической защищенности объекта (территории)";
+const AT_NOTE="В должностной регламент государственного гражданского служащего могут быть включены иные правовые акты, знание которых необходимо для надлежащего исполнения государственным гражданским служащим должностных обязанностей.";
 
-/* ---------- Полезные ссылки (1:1 из бота) ---------- */
-const NPA = [
-{e:"📜", t:"Закон Липецкой области от 6 апреля 2007 №46-ОЗ «О Реестре должностей государственной гражданской службы Липецкой области»", u:"https://docs.cntd.ru/document/872607087"},
-{e:"📖", t:"Федеральный закон от 27 июля 2004 года № 79-ФЗ «О государственной гражданской службе Российской Федерации»", u:"https://docs.cntd.ru/document/901904391"},
-{e:"📘", t:"Закон Липецкой области от 30 декабря 2005 года № 259-ОЗ «О государственной гражданской службе Липецкой области»", u:"https://docs.cntd.ru/document/872603978/titles/2KFIB2C"},
-{e:"🇷🇺", t:"Конституция Российской Федерации", u:"https://docs.cntd.ru/document/9004937"},
-{e:"📑", t:"Федеральный закон от 27 мая 2003 года № 58-ФЗ «О системе государственной службы Российской Федерации»", u:"https://docs.cntd.ru/document/901863282"},
-{e:"⚖️", t:"Федеральный закон от 25 декабря 2008 года № 273-ФЗ «О противодействии коррупции»", u:"https://docs.cntd.ru/document/902135263?section=text&marker=64U0IK"},
-{e:"📨", t:"Федеральный закон от 2 мая 2006 года № 59-ФЗ «О порядке рассмотрения обращений граждан Российской Федерации»", u:"https://docs.cntd.ru/document/901978846"},
-{e:"📃", t:"Указ Президента РФ от 12 августа 2002 года № 885 «Об утверждении общих принципов служебного поведения государственных служащих»", u:"https://docs.cntd.ru/document/901824731"},
-{e:"📊", t:"Постановление Правительства Липецкой области от 24 января 2024 года № 48 «Об утверждении Кодекса этики и служебного поведения»", u:"http://publication.pravo.gov.ru/document/4800202401290010"},
-{e:"🏢", t:"Постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области»", u:"https://docs.cntd.ru/document/407048285"},
-{e:"🏛", t:"Устав Липецкой области", u:"https://docs.cntd.ru/document/872604381"},
-{e:"📰", t:"Закон Липецкой области от 22 декабря 2020 года № 485-ОЗ «О нормативных правовых актах Липецкой области»", u:"https://docs.cntd.ru/document/571055285"},
-{e:"📅", t:"Постановление Правительства Липецкой области от 28 декабря 2022 года № 359", u:"https://docs.cntd.ru/document/406421012"},
-{e:"👨‍💼", t:"Постановление Правительства Липецкой области от 16 августа 2022 года № 91 «О возложении полномочий представителя нанимателя»", u:"https://docs.cntd.ru/document/406197688"}
+const BLOCKS=[
+{id:1,icon:"⚖️",title:"КНД",sub:"Контрольно-надзорная деятельность: досудебное обжалование",groups:[
+ {t:"Координатор",note:"руководитель / заместитель руководителя контрольного органа",target:"п. 3.2",items:[
+ "обеспечивать координацию работы по досудебному обжалованию решений контрольного (надзорного) органа, действий (бездействие) его должностных лиц;",
+ "обеспечивать соблюдение порядка и сроков рассмотрения жалоб контролируемых лиц на решения контрольного (надзорного) органа, действия (бездействие) его должностных лиц;",
+ "обеспечивать в контрольном (надзорном) органе принятие решений по результатам рассмотрения жалоб контролируемых лиц в рамках досудебного обжалования."]},
+ {t:"Руководитель",note:"заместитель руководителя контрольного органа / начальник структурного подразделения",target:"п. 3.2",items:[
+ "обеспечивать в контрольном (надзорном) органе рассмотрение и подписание решений по жалобе;",
+ "обеспечивать в контрольном (надзорном) органе назначение и переназначение исполнителя по жалобе;",
+ "обеспечивать контроль за ходом и сроками рассмотрения жалоб."]},
+ {t:"Помощник руководителя (секретарь)",target:"п. 3.2",items:[
+ "обеспечивать в контрольном (надзорном) органе определение должностного лица, уполномоченного на рассмотрение жалобы;",
+ "обеспечивать в контрольном (надзорном) органе контроль за ходом и сроками рассмотрения жалоб."]},
+ {t:"Инспектор (должностное лицо)",target:"п. 3.2",items:[
+ "обеспечивать в контрольном (надзорном) органе рассмотрение материалов жалобы, принятие решений по ходатайствам, продление сроков рассмотрения жалоб и подготовку проектов решений по жалобам."]},
+ {t:"Администратор",target:"п. 3.2",items:[
+ "обеспечивать в контрольном (надзорном) органе настройку и предоставление доступа к личным кабинетам подсистемы досудебного обжалования;",
+ "обеспечивать в контрольном (надзорном) органе формирование сообщений о программно-технических ошибках функционирования подсистемы досудебного обжалования;",
+ "обеспечивать в контрольном (надзорном) органе информационную и программно-техническую поддержку пользователей подсистемы досудебного обжалования."]}
+]},
+{id:2,icon:"🛡️",title:"Антитеррор",sub:"Три направления: А — идеология, Б — защищенность объектов, В — уровни террористической опасности",groups:[
+ {t:"А-1.1. Противодействие идеологии терроризма — знания законодательства",target:"п. 2.3.2.1",items:[...AT_BASE,"Комплексный план противодействия идеологии терроризма в Российской Федерации на 2024–2028 годы (утв. Президентом Российской Федерации 30 декабря 2023 года № Пр-2610)",P638,...AT_TAIL],note:AT_NOTE},
+ {t:"А-1.2. Иные профессиональные знания",target:"п. 2.3.2.2",items:["приоритетные задачи в сфере противодействия идеологии терроризма в Российской Федерации",K1,K2,K3,K4,K5,K6,K7,K8,K9]},
+ {t:"А-1.2.1. Дополнительно: наука, образование и молодежная политика",target:"п. 2.3.2.2",items:[
+ "порядок разработки (утверждения) и реализации программ профессиональной переподготовки и повышения квалификации специалистов в сфере образования и молодежной политики, непосредственно участвующих в противодействии идеологии терроризма;",
+ "порядок организации просветительской деятельности, направленной на профилактику распространения идеологии терроризма в образовательных организациях и среди молодежи."]},
+ {t:"А-1.2.2. Дополнительно: культурная и национальная политика",target:"п. 2.3.2.2",items:[
+ "формы и методы противодействия идеологии терроризма в сфере культуры, в том числе порядок организации мероприятий;",
+ "механизмы популяризации лиц, проявивших героизм и мужество в борьбе с терроризмом, и увековечивания памяти о них в культуре;",
+ "формы и методы противодействия идеологии терроризма на национальной и (или) религиозной почве."]},
+ {t:"А-1.2.3. Дополнительно: физическая культура и спорт",target:"п. 2.3.2.2",items:[
+ "популяризация физического воспитания в формировании у населения антитеррористического сознания (стойкого неприятия идеологии терроризма);",
+ "порядок проведения мероприятий в сфере физической культуры и спорта с учетом мер, направленных на противодействие идеологии терроризма."]},
+ {t:"А-2.1. Умения: наука, образование и молодежная политика",target:"п. 2.3.5",items:[
+ "разработка подходов к реализации просветительских мероприятий по гражданскому и патриотическому воспитанию молодежи, популяризации здорового образа жизни, формированию культурных и нравственных ценностей среди молодежи, а также неприятия идеологии терроризма;",
+ "разработка рекомендаций по проведению и информационному сопровождению мероприятий, направленных на противодействие идеологии терроризма, в том числе посвященных памятной дате — Дню солидарности в борьбе с терроризмом, а также иных мероприятий."]},
+ {t:"А-2.2. Умения: цифровое развитие, ИТ, связь, СМИ",target:"п. 2.3.5",items:[
+ "умение пользоваться информационной системой Единый реестр доменных имен, указателей страниц сайтов в сети «Интернет» и сетевых адресов, позволяющих идентифицировать сайты, содержащие информацию, распространение которой в Российской Федерации запрещено;",
+ "работа с Единым Федеральным списком организаций, в том числе иностранных и международных организаций, признанных в соответствии с законодательством Российской Федерации террористическим;",
+ "работа с Федеральным списком экстремистских материалов;",
+ "работа с Перечнем объединений и религиозных организаций, иных некоммерческих организаций, в отношении которых судом принято вступившее в законную силу решение о ликвидации или запрете деятельности;",
+ "разработка рекомендаций по проведению и информационному сопровождению мероприятий, направленных на противодействие идеологии терроризма, в том числе посвященных Дню солидарности в борьбе с терроризмом."]},
+ {t:"А-2.3. Умения: культурная и национальная политика",target:"п. 2.3.5",items:[
+ "выработка мер, направленных на противодействие идеологии терроризма, распространения идей и информационных материалов, призывающих к осуществлению террористической деятельности, обосновывающих или оправдывающих осуществление такой деятельности;",
+ "разработка рекомендаций по проведению и информационному сопровождению мероприятий, направленных на противодействие идеологии терроризма."]},
+ {t:"Б-1.1. Защищенность объектов — знания законодательства",target:"п. 2.3.2.1",items:[...AT_BASE,
+ "постановление Правительства Российской Федерации от 25 декабря 2013 года № 1244 «Об антитеррористической защищенности объектов (территорий)»",
+ "постановление Правительства Российской Федерации от 25 марта 2015 года № 272 «Об утверждении требований к антитеррористической защищенности мест массового пребывания людей и объектов (территорий), подлежащих обязательной охране войсками национальной гвардии Российской Федерации, и форм паспортов безопасности таких мест и объектов (территорий)»",
+ P638,...AT_TAIL]},
+ {t:"Б-1.1.1. Дополнительно: транспорт и транспортная инфраструктура",target:"п. 2.3.2.1",items:["Федеральный закон от 9 февраля 2007 года № 16-ФЗ «О транспортной безопасности»"]},
+ {t:"Б-1.1.2. Дополнительно: объекты ТЭК",target:"п. 2.3.2.1",items:["Федеральный закон от 21 июля 2011 года № 256-ФЗ «О безопасности объектов топливно-энергетического комплекса»"],note:AT_NOTE},
+ {t:"Б-1.2. Иные профессиональные знания",target:"п. 2.3.2.2",items:[K1,K2,K3,K10,K11,K12,K4,K13,K8,K14,K7,K5,K6,"порядок разработки требований к антитеррористической защищенности объектов (территорий)","порядок категорирования объекта (территории)","форма паспорта безопасности объекта (территории) и порядок его разработки",K15,K9]},
+ {t:"Б-2. Профессиональные умения",target:"п. 2.3.5",items:[
+ "проведение обследования и категорирования объектов (территорий);",
+ "разработка паспорта безопасности объекта (территорий);",
+ "выявление угрозообразующих факторов в области антитеррористической защищенности объектов (территорий);",
+ "участие в проведении проверок антитеррористической защищенности объектов (территорий) подведомственных организаций;",
+ "оказание методической помощи подведомственным организациям по вопросам антитеррористической защищенности объектов (территорий), ведения паспортов безопасности, а также плана действий организаций при установлении уровней террористической опасности."]},
+ {t:"В-1.1. Уровни террористической опасности — знания законодательства",target:"п. 2.3.2.1",items:[...AT_BASE,P638,...AT_TAIL],note:AT_NOTE},
+ {t:"В-1.2. Иные профессиональные знания",target:"п. 2.3.2.2",items:[K1,K2,K3,K10,K11,K12,K4,K13,K8,K14,K6,K7,K5,K15,K9]},
+ {t:"В-2. Профессиональные умения",target:"п. 2.3.5",items:[
+ "выявление угрозообразующих факторов в области антитеррористической защищенности объектов (территорий);",
+ "участие в проведении проверок антитеррористической защищенности объектов (территорий) подведомственных организаций;",
+ "оказание методической помощи подведомственным организациям по вопросам реализации плана действий организаций при установлении уровней террористической опасности."]}
+]},
+{id:3,icon:"🚫",title:"Антикоррупция",sub:"Профилактика коррупционных и иных правонарушений",groups:[
+ {t:"Нормативные правовые акты",target:"п. 2.3.2.1",items:["распоряжение Правительства Липецкой области от 4 сентября 2025 года № 444-р «Об утверждении Порядка уведомления государственными гражданскими служащими органов исполнительной власти Липецкой области представителя нанимателя о намерении выполнять иную оплачиваемую работу (о выполнении иной оплачиваемой работы)»"]},
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "разрабатывать проекты документов в сфере профилактики коррупционных и иных правонарушений в исполнительном органе области (в том числе локальные нормативные правовые акты и акты ненормативного характера);",
+ "обеспечивать деятельность комиссии по соблюдению требований к служебному поведению государственных гражданских служащих исполнительного органа Липецкой области и урегулированию конфликта интересов, являясь секретарем (заместителем председателя, председателем) — выбрать нужное; принимать участие в пределах компетенции в работе указанной комиссии;",
+ "осуществлять организацию представления гражданскими служащими министерства (замещающими должности, включенные в соответствующий Перечень должностей) сведений о доходах, об имуществе и обязательствах имущественного характера, предусмотренных частью 1 статьи 8 Федерального закона от 25 декабря 2008 года № 273-ФЗ «О противодействии коррупции», а также гражданами, претендующими на замещение в министерстве указанных должностей;",
+ "осуществлять организацию представления гражданскими служащими управления (министерства, инспекции) сведений о расходах, предусмотренных Федеральным законом от 3 декабря 2012 года № 230-ФЗ «О контроле за соответствием расходов лиц, замещающих государственные должности, и иных лиц их доходам»;",
+ "обеспечивать представление гражданами, претендующими на замещение должностей руководителей областных государственных учреждений, и лицами, замещающими данные должности, сведений о доходах, об имуществе и обязательствах имущественного характера; проводить проверки достоверности представленных сведений (при наличии);",
+ "обеспечивать организацию заполнения, рассмотрения, а также хранения Деклараций конфликта интересов в установленном порядке;",
+ "обеспечивать функционирование телефона горячей линии «Антикоррупция» для приема сообщений о фактах коррупции в исполнительном органе области;",
+ "обеспечивать размещение актуальной информации на официальном сайте исполнительного органа области раздела «Противодействие коррупции» в соответствии с установленным порядком;",
+ "осуществлять функции лица, ответственного за ведение и хранение журналов регистрации: уведомлений о получении подарка; о возникновении личной заинтересованности, которая приводит или может привести к конфликту интересов; о фактах обращения в целях склонения к совершению коррупционных правонарушений; об участии на безвозмездной основе в управлении некоммерческой организацией; о намерении выполнять иную оплачиваемую работу;",
+ "осуществлять функции лица, ответственного за регистрацию и рассмотрение уведомлений о намерении выполнять иную оплачиваемую работу: регистрация и выдача под роспись копии уведомления с отметкой о регистрации (при личном представлении) либо направление сведений о дате регистрации и регистрационном номере по указанному адресу (при поступлении по почте);",
+ "рассматривать уведомление и осуществлять подготовку заключения о наличии (отсутствии) конфликта интересов при выполнении иной оплачиваемой работы; в случае выявления признаков конфликта интересов представлять заключение министру;",
+ "принимать меры по профилактике коррупционных и иных правонарушений в исполнительном органе области и обеспечивать принятие мер по предупреждению коррупции в подведомственных учреждениях (при их наличии)."]},
+ {t:"Общий порядок сроков",target:"п. 6.1",items:["Подготовка, рассмотрение и согласование проектов управленческих и иных решений осуществляется в сроки и в соответствии с требованиями, установленными Уставом Липецкой области, Законом Липецкой области от 22 декабря 2020 года № 485-ОЗ «О нормативных правовых актах Липецкой области», Регламентом Правительства Липецкой области, постановлением Правительства Липецкой области от 28 декабря 2022 года № 359 и иными правовыми актами Липецкой области."]},
+ {t:"Сроки рассмотрения уведомлений об иной оплачиваемой работе",target:"п. 6.2",items:[
+ "в день поступления уведомления регистрирует его в журнале регистрации уведомлений, выдает гражданскому служащему на руки под роспись копию уведомления с отметкой о регистрации (в случае личного предоставления), передает уведомление министру для ознакомления;",
+ "в течение двух рабочих дней со дня регистрации уведомления направляет гражданскому служащему информацию о дате регистрации и регистрационном номере уведомления по указанному адресу (в случае направления уведомления по почте);",
+ "в течение семи рабочих дней со дня регистрации уведомления рассматривает его и подготавливает заключение о наличии (отсутствии) конфликта интересов при выполнении иной оплачиваемой работы;",
+ "не позднее рабочего дня, следующего за днем подготовки заключения о наличии конфликта интересов, представляет его министру."]}
+]},
+{id:4,icon:"🎖️",title:"Замполит",sub:"Общественно-политическая работа в исполнительном органе",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "осуществлять функции ответственного за организацию общественно-политической работы в исполнительном органе Липецкой области и исполнять обязанности, предусмотренные распоряжением Правительства Липецкой области от 21 июля 2023 года № 1103/13р-ДСП;",
+ "рассматривать запросы, поступающие из Администрации Президента Российской Федерации, министерства внутренней политики Липецкой области в первоочередном порядке и осуществлять подготовку ответов в установленные в запросах сроки."]}
+]},
+{id:5,icon:"💻",title:"Цифровая трансформация",sub:"Ответственный за цифровую трансформацию исполнительного органа",groups:[
+ {t:"Нормативные правовые акты",target:"п. 2.3.2.1",items:[
+ "Федеральный закон от 27 июля 2006 года № 149-ФЗ «Об информации, информационных технологиях и о защите информации»;",
+ "Федеральный закон от 26 июля 2017 года № 187-ФЗ «О безопасности критической информационной инфраструктуры Российской Федерации»;",
+ "постановление Правительства Российской Федерации от 1 ноября 2012 года № 1119 «Об утверждении требований к защите персональных данных при их обработке в информационных системах персональных данных»;",
+ "Федеральный закон от 27 июля 2006 года № 152-ФЗ «О персональных данных»;",
+ "Указ Президента Российской Федерации от 9 мая 2017 года № 203 «О стратегии развития информационного общества в Российской Федерации на 2017–2030 годы»;",
+ "Указ Президента Российской Федерации от 7 мая 2024 года № 309 «О национальных целях развития Российской Федерации на период до 2030 года и на перспективу до 2036 года»;",
+ "иные нормативные правовые акты и правовые акты, регулирующие вопросы цифровой трансформации."]},
+ {t:"Профессиональные знания",target:"п. 2.3.2.2",items:[
+ "особенности подготовки и согласования технической документации с учетом стандартов и нормативных документов, регулирующих жизненный цикл информационных систем и компонентов информационно-телекоммуникационной инфраструктуры;",
+ "методы и технологии сбора, хранения, структурирования и анализа данных органа исполнительной власти субъекта Российской Федерации для построения новых организационных и управленческих моделей, создания государственных услуг в электронном виде с учетом методов и инструментов обеспечения безопасности данных;",
+ "технологии формирования и развития организационной культуры цифровой трансформации."]},
+ {t:"Функциональные знания",target:"п. 2.3.3",items:[
+ "методов стратегического менеджмента, методов разработки и реализации стратегии цифровой трансформации, интегрированной дорожной карты цифровой трансформации;",
+ "методов управления процессами, проектами, услугами в рамках цифровой трансформации;",
+ "комплекса мер по повышению надежности и обеспечению непрерывности оказания услуг, предоставляемых органом исполнительной власти субъекта Российской Федерации в электронной форме, с учетом методов и инструментов обеспечения безопасности данных."]},
+ {t:"Профессиональные умения",target:"п. 2.3.5",items:["использования инфраструктуры центров обработки данных, в том числе облачных решений по моделям «инфраструктура как сервис», «платформа как сервис», «программное обеспечение (ПО) как сервис»."]},
+ {t:"Функциональные умения",target:"п. 2.3.6",items:["внедрения цифровых технологий и платформенных решений."]},
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "осуществлять функции ответственного за цифровую трансформацию в исполнительном органе Липецкой области;",
+ "принимать участие в подготовке и выполнении документов стратегического планирования в области цифровой трансформации в целях достижения национальной цели «цифровая трансформация», определенной Указом Президента Российской Федерации от 21 июля 2020 года № 474;",
+ "координировать разработку, принимать участие в согласовании и отвечать за исполнение документов стратегического планирования в области цифровой трансформации в установленной сфере деятельности;",
+ "принимать участие в разработке региональной программы цифровой трансформации Липецкой области в рамках имеющихся полномочий;",
+ "осуществлять подготовку предложений по формированию и согласованию показателей эффективности и результативности цифровой трансформации, в том числе структурных подразделений; проводить оценку системных технологических рисков выполнения показателей эффективности;",
+ "осуществлять подготовку предложений о разработке, изменении или отмене (признании утратившими силу) локальных правовых актов, относящихся к сфере цифровой трансформации и использования информационных технологий;",
+ "инициировать оптимизацию процессов деятельности исполнительного органа для обеспечения задач цифровой трансформации;",
+ "координировать комплекс мер по обеспечению доступности государственных данных для предоставления государственных и муниципальных услуг в электронном виде и принятия решений на основе данных;",
+ "координировать разработку и реализацию комплекса мер для поэтапного перехода на отечественное программное обеспечение, оборудование и единую среду разработки;",
+ "координировать разработку и реализацию комплекса мер по повышению надежности и обеспечению непрерывности оказания услуг в электронном виде, в том числе за счет поэтапного перехода на типовые облачные решения и сервисную модель потребления ресурсов;",
+ "оказывать содействие в реализации полномочий оператора государственных информационных систем в установленной сфере деятельности;",
+ "выполнять иные обязанности, исходя из возложенных полномочий и поставленных руководством задач в области цифровой трансформации."]},
+ {t:"Участие в подготовке проектов",target:"п. 5.2",items:["по вопросам цифровой трансформации исполнительного органа государственной власти Липецкой области."]}
+]},
+{id:6,icon:"🤝",title:"Клиентоцентричность",sub:"Внедрение принципов и стандартов клиентоцентричности",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "осуществлять функции ответственного за внедрение принципов и стандартов клиентоцентричности в управлении;",
+ "обеспечивать организацию подготовки проектов правовых актов управления, касающихся внедрения принципов и стандартов клиентоцентричности;",
+ "осуществлять организацию работы управления по исполнению плана мероприятий («дорожной карты») по внедрению принципов и стандартов клиентоцентричности в Липецкой области и обеспечивать подготовку отчетов об исполнении плана «дорожной карты»;",
+ "координировать работу рабочей группы управления по внедрению принципов и стандартов клиентоцентричности в управлении."]}
+]},
+{id:7,icon:"🔐",title:"Информационная безопасность",sub:"Администраторы безопасности: защита информации",groups:[
+ {t:"Нормативные правовые акты",target:"п. 2.3.2.1",items:[
+ "Федеральный закон от 27 июля 2006 года № 149-ФЗ «Об информации, информационных технологиях и о защите информации»;",
+ "Федеральный закон от 26 июля 2017 года № 187-ФЗ «О безопасности критической информационной инфраструктуры Российской Федерации»;",
+ "Указ Президента Российской Федерации от 17 марта 2008 года № 351 «О мерах по обеспечению информационной безопасности Российской Федерации при использовании информационно-телекоммуникационных сетей международного информационного обмена»;",
+ "Указ Президента Российской Федерации от 1 мая 2022 года № 250 «О дополнительных мерах по обеспечению информационной безопасности Российской Федерации»;",
+ "постановление Правительства РФ от 8 февраля 2018 года № 127 «Об утверждении Правил категорирования объектов критической информационной инфраструктуры Российской Федерации…» (в случае наличия объектов КИИ);",
+ "приказ ФАПСИ при Президенте Российской Федерации от 13 июня 2001 года № 152 «Об утверждении Инструкции об организации и обеспечении безопасности хранения, обработки и передачи по каналам связи с использованием средств криптографической защиты информации с ограниченным доступом, не содержащей сведений, составляющими государственную тайну»;",
+ "приказ ФСБ России от 10 июля 2014 года № 378 «Об утверждении состава и содержания организационных и технических мер по обеспечению безопасности персональных данных при их обработке в информационных системах персональных данных с использованием средств криптографической защиты информации…»;",
+ "приказ ФСТЭК России от 11 апреля 2025 года № 117 «Об утверждении Требований о защите информации, содержащейся в государственных информационных системах, иных информационных системах государственных органов, государственных унитарных предприятий, государственных учреждений»;",
+ "приказ ФСТЭК России от 18 февраля 2013 года № 21 «Об утверждении Состава и содержания организационных и технических мер по обеспечению безопасности персональных данных при их обработке в информационных системах персональных данных»."]},
+ {t:"Профессиональные знания",target:"п. 2.3.2.2",items:[
+ "порядок и методы защиты государственной тайны (при наличии соответствующего допуска);",
+ "понятие защита информации, противодействие иностранным техническим разведкам;",
+ "методические документы ФСТЭК России в области защиты информации;",
+ "программно-технические способы и средства обеспечения информационной безопасности;",
+ "порядок разработки системы защиты информации информационной системы, обрабатывающей информацию ограниченного доступа;",
+ "понятие криптографическая защита информации;",
+ "порядок организации и обеспечения безопасности хранения, обработки и передачи по каналам связи с использованием средств криптографической защиты информации с ограниченным доступом, не содержащей сведений, составляющими государственную тайну."]},
+ {t:"Функциональные знания",target:"п. 2.3.3",items:[
+ "технологий и средств обеспечения информационной безопасности;",
+ "возможностей и особенностей применения современных информационно-коммуникационных технологий в государственных органах, включая использование возможностей межведомственного электронного документооборота, информационно-телекоммуникационных сетей."]},
+ {t:"Профессиональные умения",target:"п. 2.3.5",items:[
+ "организации защиты информации от несанкционированного доступа;",
+ "определения потребности в технических средствах защиты;",
+ "организации мероприятий по проведению аттестации объектов информатизации."]},
+ {t:"Функциональные умения",target:"п. 2.3.6",items:[
+ "организации мероприятий по контролю за соблюдением требований информационной безопасности;",
+ "осуществления антивирусной защиты локальной сети и отдельных компьютеров;",
+ "организации работы по созданию и развитию информационного пространства, разработки и осуществления мероприятий по внедрению информационно-коммуникационных технологий."]},
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "принимать участие в создании и развитии системы защиты информации в управлении;",
+ "выполнять работы по технической защите информации;",
+ "выполнять работы по организации контроля доступа сотрудников к ресурсам в сети Интернет;",
+ "осуществлять организацию и контроль работы по применению программных антивирусных средств в управлении;",
+ "принимать участие в разработке, внедрении и эксплуатации системы защиты информации, обрабатываемой техническими средствами, в целях предотвращения утечки информации по техническим каналам;",
+ "осуществлять текущий (после сбоев) и периодический (не реже 3 раз в год) контроль работоспособности средств защиты информации информационных систем управления;",
+ "принимать участие в работах по контролю эффективности проводимых мероприятий и принимаемых мер по защите информации в управлении;",
+ "принимать участие в расследовании причин и условий появления нарушений по вопросам защиты информации, осуществлять разработку предложений по устранению недостатков и предупреждению подобных нарушений, а также контроль над их устранением;",
+ "принимать участие в подготовке предложений по организации и совершенствованию системы защиты информации."]}
+]},
+{id:8,icon:"📊",title:"Антимонопольный комплаенс",sub:"Система внутреннего обеспечения соответствия антимонопольному законодательству",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "осуществлять подготовку уведомлений о проведении публичных консультаций и анкет для участников публичных консультаций;",
+ "осуществлять сбор замечаний и предложений в рамках публичных консультаций;",
+ "осуществлять подготовку справок и докладов по итогам публичных консультаций;",
+ "осуществлять подготовку карты (паспорта) комплаенс-рисков;",
+ "осуществлять подготовку плана мероприятий («дорожная карта») по снижению комплаенс-рисков;",
+ "разрабатывать ключевые показатели эффективности функционирования антимонопольного комплаенса;",
+ "осуществлять подготовку протоколов коллегиального органа по оценке эффективности организации и функционирования в управлении антимонопольного комплаенса;",
+ "осуществлять подготовку докладов об антимонопольном комплаенсе в управлении."],note:"В рамках организации в управлении системы внутреннего обеспечения соответствия требованиям антимонопольного законодательства."}
+]},
+{id:9,icon:"🛒",title:"Осуществление закупок",sub:"Контрактная система: знания и умения",groups:[
+ {t:"Иные профессиональные знания",target:"п. 2.3.2.2",items:[
+ "практика применения законодательства Российской Федерации в сфере осуществления закупок товаров, работ, услуг для обеспечения государственных нужд и закупок товаров, работ, услуг отдельными видами юридических лиц;",
+ "судебная практика по вопросам, связанным с применением законодательства Российской Федерации в сфере осуществления закупок."]},
+ {t:"Функциональные знания",target:"п. 2.3.3",items:[
+ "понятия контрактной системы в сфере закупок и основных принципов осуществления закупок;",
+ "порядка ведения реестра контрактов, заключенных заказчиками;",
+ "порядка ведения реестра недобросовестных поставщиков (подрядчиков, исполнителей);",
+ "порядка планирования и обоснования закупок;",
+ "процедуры обязательного общественного обсуждения закупок;",
+ "порядка определения начальной (максимальной) цены контракта, цены контракта, заключаемого с единственным поставщиком (подрядчиком, исполнителем), начальной суммы цен единиц товара, работы, услуги;",
+ "порядка и особенностей определения поставщиков (подрядчиков, исполнителей) конкурентными способами;",
+ "порядка и особенностей осуществления закупки у единственного поставщика (подрядчика, исполнителя);",
+ "этапов и порядка исполнения, изменения и расторжения контракта;",
+ "процедуры обжалования действий (бездействия) заказчика, уполномоченного органа, уполномоченного учреждения, специализированной организации, комиссии по осуществлению закупок, ее членов, должностного лица контрактной службы, контрактного управляющего, оператора электронной площадки;",
+ "ответственности за нарушение законодательства о контрактной системе в сфере закупок."]},
+ {t:"Профессиональные умения",target:"п. 2.3.5",items:[
+ "осуществления работы в единой информационной системе в сфере закупок: формирования и размещения извещений о закупках;",
+ "ведения и составления отчетности об осуществлении закупок для государственных нужд;",
+ "осуществления представительства и защиты интересов в судебном и административном производстве;",
+ "планирования закупочной деятельности в информационных системах, связанных с закупками."]},
+ {t:"Функциональные умения",target:"п. 2.3.6",items:[
+ "планирования закупок;",
+ "осуществления закупок конкурентными способами определения поставщиков (подрядчиков, исполнителей);",
+ "осуществления закупки у единственного поставщика (подрядчика, исполнителя);",
+ "исполнения государственных контрактов;",
+ "составления, заключения, изменения и расторжения контрактов;",
+ "разработки технических заданий, извещений и документации об осуществлении закупок;",
+ "осуществления ведомственного контроля в сфере закупок и контроля в сфере закупок, осуществляемого заказчиками;",
+ "обоснования закупок;",
+ "проведения обязательного общественного обсуждения закупок;",
+ "определения начальной (максимальной) цены контракта, цены контракта, заключаемого с единственным поставщиком (подрядчиком, исполнителем), начальной суммы цен единиц товара, работы, услуги."]}
+]},
+{id:10,icon:"🏛️",title:"Госуслуги",sub:"Оптимизация и качество услуг (сервисов) на ЕПГУ",groups:[
+ {t:"Заместитель начальника отдела",note:"персонально ответственный за оптимизацию и качество услуги (сервиса)",target:"п. 3.2",items:[
+ "обеспечивать выполнение мероприятий по переводу в электронную форму предоставления или оптимизации (рефакторинга) услуги (сервиса), размещения в ФГИС «Единый портал государственных и муниципальных услуг (функций)» (далее — ЕПГУ);",
+ "обеспечивать разработку и реализацию мероприятий, повышающих качество предоставления услуги (сервиса) и направленных на повышение доли граждан, воспользовавшихся услугой на ЕПГУ;",
+ "обеспечивать реализацию мероприятий для достижения соответствия Правилам разработки и размещения в ЕПГУ интерактивных форм, утвержденным постановлением Правительства Российской Федерации от 3 сентября 2022 года № 1555, а также Техническим требованиям к разработке и размещению интерактивных форм с использованием визуального конструктора услуг;",
+ "обеспечивать участие в мероприятиях по ежегодному прохождению подтверждения знаний и навыков по работе в визуальном конструкторе услуг;",
+ "обеспечивать взаимодействие с Аналитическим центром при Правительстве Российской Федерации и органами исполнительной власти в целях разработки и реализации целевых состояний услуг и жизненных ситуаций;",
+ "обеспечивать реализацию мероприятий для достижения соответствия услуг (сервисов) Стандарту оказания государственных услуг в соответствии с постановлением Правительства Российской Федерации от 31 июля 2003 года № 451;",
+ "обеспечивать проведение мероприятий, предусмотренных жизненным циклом услуги (сервиса), в соответствии с Правилами, Стандартом мониторинга качества оказания сервисов и иными документами в подсистеме ЕПГУ «Среда поддержки клиентоцентричного государства»;",
+ "обеспечивать проведение мониторинга качества предоставления услуги (сервиса) в соответствии с постановлением Правительства Российской Федерации от 25 мая 2022 года № 951;",
+ "обеспечивать оперативное реагирование на заявки/инциденты, регистрируемые в Федеральном ситуационном центре электронного правительства и (или) в Среде поддержки клиентоцентричного государства, в сроки, установленные приказом Минцифры России от 16 августа 2017 года № 422;",
+ "обеспечивать выработку и принятие системных мер по решению заявок/инцидентов и предотвращению аномалий метрик и показателей в зоне ответственности;",
+ "своевременно вносить предложения в ведомственный план по реализации новых и оптимизации (рефакторинга) существующих услуг (сервисов), включая перевод на оказание в проактивном режиме;",
+ "обеспечивать выполнение Ведомственного плана для повышения качества оказания государственных услуг (сервисов) на ЕПГУ;",
+ "обеспечивать внесение сведений в ФГИС «Федеральный реестр государственных и муниципальных услуг (функций)» и поддерживать такие сведения в актуальном состоянии;",
+ "обеспечивать контроль своевременного размещения актуальных нормативных правовых актов, регулирующих порядок предоставления услуг, на официальных сайтах ведомства в сети «Интернет»."]},
+ {t:"Заместитель министра / начальника управления / руководителя инспекции",note:"ответственный заместитель руководителя ведомства",target:"п. 3.2",items:[
+ "обеспечивать подготовку, согласование и утверждение ведомственного плана по реализации новых и оптимизации (рефакторинга) существующих услуг (сервисов), включая перевод услуг на оказание в проактивном режиме или при непосредственном обращении заявителя, и по повышению качества оказания услуг на ЕПГУ;",
+ "координировать выполнение Ведомственного плана и мероприятий по обеспечению качества оказания услуг (сервисов)."]}
+]},
+{id:11,icon:"🎯",title:"Мобилизационные работники",sub:"Мобилизационная подготовка и мобилизация",groups:[
+ {t:"Нормативные правовые акты",target:"п. 2.3.2.1",items:[
+ "Федеральный конституционный закон от 30 мая 2001 года № 3-ФКЗ «О чрезвычайном положении»;",
+ "Федеральный конституционный закон от 30 января 2002 года № 1-ФКЗ «О военном положении»;",
+ "Закон Российской Федерации от 21 июля 1993 года № 5485-1 «О государственной тайне»;",
+ "Федеральный закон от 29 декабря 1994 года № 79-ФЗ «О государственном материальном резерве»;",
+ "Федеральный закон от 31 мая 1996 года № 61-ФЗ «Об обороне»;",
+ "Федеральный закон от 26 февраля 1997 года № 31-ФЗ «О мобилизационной подготовке и мобилизации в Российской Федерации»;",
+ "Федеральный закон от 27 июля 2006 года № 152-ФЗ «О персональных данных»;",
+ "Федеральный закон от 29 декабря 2012 года № 275-ФЗ «О государственном оборонном заказе»;",
+ "Указ Президента Российской Федерации от 14 ноября 1997 года № 1227 «О полномочиях федеральных органов исполнительной власти в области мобилизационной подготовки и мобилизации»;",
+ "Указ Президента Российской Федерации от 11 февраля 2006 года № 90 «О перечне сведений, отнесенных к государственной тайне»;",
+ "Указ Президента Российской Федерации от 6 мая 2011 года № 590 «Вопросы Совета Безопасности Российской Федерации»;",
+ "Указ Президента Российской Федерации от 10 сентября 2014 года № 627 «О Военно-промышленной комиссии Российской Федерации»;",
+ "Указ Президента Российской Федерации от 31 декабря 2017 года № 651 «Вопросы Главного управления специальных программ Президента Российской Федерации»;",
+ "Указ Президента Российской Федерации от 2 июля 2021 года № 400 «О Стратегии национальной безопасности Российской Федерации»;",
+ "Военная доктрина Российской Федерации (утверждена Президентом Российской Федерации 25 декабря 2014 года № Пр-2976);",
+ "Инструкция для мобилизационного работника исполнительного органа Липецкой области;",
+ "иные нормативные правовые акты (правовые акты), регулирующие сферу мобилизационной подготовки."]},
+ {t:"Иные профессиональные знания",target:"п. 2.3.2.2",items:[
+ "основные направления и приоритеты государственной политики в сфере мобилизационной подготовки и мобилизации;",
+ "понятие, структура и содержание мобилизационных планов и документов по их реализации;",
+ "современное состояние и перспективы развития мобилизационного планирования;",
+ "структура, содержание и порядок планирования и развития системы обеспечения мобилизационной подготовки и мобилизации;",
+ "порядок осуществления контроля и оценки состояния мобилизационной подготовки организаций."]},
+ {t:"Функциональные знания",target:"п. 2.3.3",items:[
+ "методики осуществления проверки и оценки состояния мобилизационной подготовки организаций;",
+ "основных мероприятий мобилизационной подготовки;",
+ "организации пропускного режима, инженерно-технических средств охраны режимных территорий и режимных помещений;",
+ "основ секретного делопроизводства и порядка работы со сведениями, составляющими государственную тайну."]},
+ {t:"Функциональные умения",target:"п. 2.3.6",items:[
+ "подготовки и проведения учебных и учебно-практических мероприятий по мобилизационной подготовке;",
+ "подготовки проектов правовых актов в сфере мобилизационной подготовки;",
+ "разработки планов мероприятий по мобилизационной подготовке исполнительного органа;",
+ "работы с базами данных обеспечения мобилизационной подготовки;",
+ "работы со сведениями, составляющими государственную тайну, ведения секретного делопроизводства."]},
+ {t:"Должностные обязанности",target:"п. 3.2",items:[
+ "принимать участие в подготовке и проведении учебных и учебно-практических мероприятий по мобилизационной подготовке;",
+ "разрабатывать и уточнять мобилизационные планы;",
+ "выполнять комплекс мероприятий по заблаговременной подготовке отрасли экономики (сферы деятельности) исполнительного органа к мобилизационному развёртыванию и обеспечению нужд государства и населения области в военное время;",
+ "осуществлять взаимодействие с федеральными органами исполнительной власти, управлением мобилизационной работы Правительства Липецкой области, а также территориальными органами федеральных органов исполнительной власти по вопросам разработки, уточнения, переработки комплекта документов, входящих в состав мобилизационных планов;",
+ "контролировать осуществление мероприятий по мобилизационной подготовке отрасли экономики (сферы деятельности) исполнительного органа;",
+ "в случае несостоятельности, банкротства организаций, которым установлены мобилизационные задания или задачи, вносить предложения по передаче этих заданий (задач) другим организациям, находящимся в ведении исполнительного органа Липецкой области или деятельность которых связана с его деятельностью;",
+ "оказывать методическую помощь мобилизационным работникам организаций в разработке мобилизационных планов организаций;",
+ "осуществлять объективное, всестороннее и своевременное рассмотрение обращений граждан и юридических лиц, структурных подразделений Правительства Липецкой области, исполнительных органов Липецкой области, органов местного самоуправления в порядке и сроки, установленные действующим законодательством, подготовку проектов ответов в пределах своей компетенции;",
+ "принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности исполнительного органа;",
+ "участвовать в планировании, организации и проведении мобилизационных учений и тренировок по переводу исполнительных органов и организаций на работу в условиях военного времени;",
+ "осуществлять работу со сведениями, составляющими государственную тайну."]}
+]},
+{id:12,icon:"📲",title:"Госуслуги по 217-р",sub:"Распоряжение 217-р: муниципальные и государственные услуги",groups:[
+ {t:"Лица, взаимодействующие с ОМС",target:"п. 3.2",items:[
+ "осуществлять взаимодействие с органами местного самоуправления Липецкой области по вопросам предоставления муниципальных услуг;",
+ "проводить мониторинг качества предоставления муниципальных услуг с использованием систем автоматизированного мониторинга;",
+ "взаимодействовать с министерством цифрового развития и искусственного интеллекта Липецкой области по вопросам перевода муниципальных услуг в электронный вид;",
+ "проводить мониторинг административных регламентов предоставления муниципальных услуг на соответствие типовым административным регламентам предоставления муниципальных услуг."]},
+ {t:"Лица по госуслугам органа",target:"п. 3.2",items:[
+ "проводить мониторинг качества предоставления государственных услуг с использованием систем автоматизированного мониторинга;",
+ "взаимодействовать с министерством цифрового развития и искусственного интеллекта Липецкой области по вопросам перевода государственных услуг в электронный вид."]}
+]}
 ];
-const SITES = [
-{e:"🏢", t:"Сайт Губернатора Липецкой области", u:"https://artamonovigor.ru/"},
-{e:"🏛", t:"Сайт Правительства Липецкой области", u:"https://липецкаяобласть.рф/"},
-{e:"🔍", t:"Сайт УГСКР", u:"https://gosservice48.ru/"},
-{e:"📖", t:"Портал государственной гражданской службы", u:"https://gossluzhba.gov.ru/"},
-{e:"📃", t:"Официальный сайт Минтруда России", u:"https://mintrud.gov.ru/"},
-{e:"📖", t:"Официальный интернет-портал правовой информации", u:"http://pravo.gov.ru/"},
-{e:"🇷🇺", t:"Официальный сайт Президента Российской Федерации", u:"http://www.kremlin.ru/"},
-{e:"🇷🇺", t:"Официальный сайт Правительства Российской Федерации", u:"http://government.ru/"},
-{e:"🇷🇺", t:"Официальный сайт Совета Федерации Федерального Собрания Российской Федерации", u:"http://www.council.gov.ru/"},
-{e:"🇷🇺", t:"Официальный сайт Государственной Думы Федерального Собрания Российской Федерации", u:"http://duma.gov.ru/"},
-{e:"🇷🇺", t:"Официальный сайт Минюста России", u:"https://minjust.gov.ru/"},
-{e:"🔍", t:"КонсультантПлюс", u:"https://www.consultant.ru/"},
-{e:"🔍", t:"Гарант", u:"https://www.garant.ru/"},
-{e:"🔍", t:"Кодекс", u:"http://www.kodeks.ru/"}
-];
-const linksText = (head, arr) => head + "\n\n" + arr.map((x,i)=>`${i+1}. ${x.e} ${x.t}\n🔗 ${x.u}`).join("\n\n");
-TEXTS.npa = linksText("📚 *Нормативно-правовые акты для составления ДР:*", NPA);
-TEXTS.sites = linksText("🌐 *Полезные ресурсы и инструменты:*", SITES);
 
-/* ---------- FAQ (строго по содержанию бота и примерного ДР) ---------- */
-const FAQ = [
+/* ================= КОНТАКТЫ / ССЫЛКИ / FAQ / WHATSNEW ================= */
+const CONTACTS=[
+{name:"Чеботарев Дмитрий Дмитриевич",ini:"ДЧ",email:"chebotarevDD@admlr.lipetsk.ru",phone:"+7 (4742) 22-85-76",tel:"+74742228576",role:"Основной контакт по ДР",main:true},
+{name:"Ханыкова Наталия Михайловна",ini:"НХ",email:"hanykovaNM@admlr.lipetsk.ru",phone:"+7 (4742) 22-86-83",tel:"+74742228683",role:"При временном отсутствии Д.Д. Чеботарева"}
+];
+TEXTS.contacts="📞 Направить должностной регламент можно сотрудникам отдела кадровой экспертизы УГСКР:\n"+
+CONTACTS.map(c=>`- ☎️ ${c.name}\n   📧 ${c.email}\n   📞 Рабочий номер: ${c.phone}`).join("\n\nИли\n\n");
+
+const NPA=[
+{e:"📜",t:"Закон Липецкой области от 6 апреля 2007 № 46-ОЗ «О Реестре должностей государственной гражданской службы Липецкой области»",u:"https://docs.cntd.ru/document/872607087"},
+{e:"📖",t:"Федеральный закон от 27 июля 2004 года № 79-ФЗ «О государственной гражданской службе Российской Федерации»",u:"https://docs.cntd.ru/document/901904391"},
+{e:"📘",t:"Закон Липецкой области от 30 декабря 2005 года № 259-ОЗ «О государственной гражданской службе Липецкой области»",u:"https://docs.cntd.ru/document/872603978/titles/2KFIB2C"},
+{e:"🇷🇺",t:"Конституция Российской Федерации",u:"https://docs.cntd.ru/document/9004937"},
+{e:"📑",t:"Федеральный закон от 27 мая 2003 года № 58-ФЗ «О системе государственной службы Российской Федерации»",u:"https://docs.cntd.ru/document/901863282"},
+{e:"⚖️",t:"Федеральный закон от 25 декабря 2008 года № 273-ФЗ «О противодействии коррупции»",u:"https://docs.cntd.ru/document/902135263?section=text&marker=64U0IK"},
+{e:"📨",t:"Федеральный закон от 2 мая 2006 года № 59-ФЗ «О порядке рассмотрения обращений граждан Российской Федерации»",u:"https://docs.cntd.ru/document/901978846"},
+{e:"📃",t:"Указ Президента РФ от 12 августа 2002 года № 885 «Об утверждении общих принципов служебного поведения государственных служащих»",u:"https://docs.cntd.ru/document/901824731"},
+{e:"📊",t:"Постановление Правительства Липецкой области от 24 января 2024 года № 48 «Об утверждении Кодекса этики и служебного поведения»",u:"http://publication.pravo.gov.ru/document/4800202401290010"},
+{e:"🏢",t:"Постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области»",u:"https://docs.cntd.ru/document/407048285"},
+{e:"🏛",t:"Устав Липецкой области",u:"https://docs.cntd.ru/document/872604381"},
+{e:"📰",t:"Закон Липецкой области от 22 декабря 2020 года № 485-ОЗ «О нормативных правовых актах Липецкой области»",u:"https://docs.cntd.ru/document/571055285"},
+{e:"📅",t:"Постановление Правительства Липецкой области от 28 декабря 2022 года № 359",u:"https://docs.cntd.ru/document/406421012"},
+{e:"👨‍💼",t:"Постановление Правительства Липецкой области от 16 августа 2022 года № 91 «О возложении полномочий представителя нанимателя»",u:"https://docs.cntd.ru/document/406197688"}
+];
+const SITES=[
+{e:"🏢",t:"Сайт Губернатора Липецкой области",u:"https://artamonovigor.ru/"},
+{e:"🏛",t:"Сайт Правительства Липецкой области",u:"https://липецкаяобласть.рф/"},
+{e:"🔍",t:"Сайт УГСКР",u:"https://gosservice48.ru/"},
+{e:"📖",t:"Портал государственной гражданской службы",u:"https://gossluzhba.gov.ru/"},
+{e:"📃",t:"Официальный сайт Минтруда России",u:"https://mintrud.gov.ru/"},
+{e:"📖",t:"Официальный интернет-портал правовой информации",u:"http://pravo.gov.ru/"},
+{e:"🇷🇺",t:"Официальный сайт Президента Российской Федерации",u:"http://www.kremlin.ru/"},
+{e:"🇷🇺",t:"Официальный сайт Правительства Российской Федерации",u:"http://government.ru/"},
+{e:"🇷🇺",t:"Официальный сайт Совета Федерации",u:"http://www.council.gov.ru/"},
+{e:"🇷🇺",t:"Официальный сайт Государственной Думы",u:"http://duma.gov.ru/"},
+{e:"🇷🇺",t:"Официальный сайт Минюста России",u:"https://minjust.gov.ru/"},
+{e:"🔍",t:"КонсультантПлюс",u:"https://www.consultant.ru/"},
+{e:"🔍",t:"Гарант",u:"https://www.garant.ru/"},
+{e:"🔍",t:"Кодекс",u:"http://www.kodeks.ru/"}
+];
+const linksText=(h,a)=>h+"\n\n"+a.map((x,i)=>`${i+1}. ${x.e} ${x.t}\n🔗 ${x.u}`).join("\n\n");
+TEXTS.npa=linksText("📚 *Нормативно-правовые акты для составления ДР:*",NPA);
+TEXTS.sites=linksText("🌐 *Полезные ресурсы и инструменты:*",SITES);
+
+const FAQ=[
 ["⏱ Сколько длится согласование ДР?","Обычно согласование занимает 7–10 рабочих дней. Срок рассмотрения зависит от количества регламентов, находящихся в работе отдела. По завершении согласования с начальником УГСКР Правительства области сотрудники оповестят Вас о том, что ДР готов!"],
-["📩 Кому направлять готовый проект ДР?","Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Людмиле Олеговне Сурниной или Ольге Александровне Малявиной — на электронную почту (адреса и телефоны в разделе «Контакты»)."],
-["🛠 Чем можно пользоваться при подготовке ДР?","«Конструктором ДР» в системе 1С, функционалом чат-бота Паскаль (Telegram или чат на этом сайте), а также консультациями сотрудников отдела кадровой экспертизы УГСКР."],
+["📩 Кому направлять готовый проект ДР?","Дмитрию Дмитриевичу Чеботареву или, при его временном отсутствии, Наталии Михайловне Ханыковой — на электронную почту (адреса и телефоны в разделе «Контакты»)."],
+["🧩 Что такое «Блоки» и зачем они нужны?","Это готовые формулировки знаний, умений и обязанностей по направлениям деятельности: КНД, антитеррор, антикоррупция, замполит, цифровая трансформация, клиентоцентричность, информационная безопасность, антимонопольный комплаенс, закупки, госуслуги, мобилизационная работа. Выбираете своё направление и переносите положения в указанные пункты ДР."],
+["🛠 Чем можно пользоваться при подготовке ДР?","«Конструктором ДР» в системе 1С, помощью Паскаля на этом сайте, а также консультациями сотрудников отдела кадровой экспертизы УГСКР."],
 ["🔁 Что делать с пунктом 1.7, если я никого не замещаю?","Если служащий никого не заменяет, то этот пункт не указывается!"],
 ["🏛 Что писать в разделе 8, если госуслуги не предусмотрены?","Делается запись: «Гражданский служащий в связи с исполнением должностных обязанностей государственные услуги не оказывает»."],
-["👔 Кому указывать управленческие умения в п. 2.3.4?","Служащим, замещающим должности категории «руководители» и категории «специалисты» главной группы должностей — им добавляются управленческие умения из примерного должностного регламента."]
+["🤖 Нужно ли указывать знания и умения в сфере ИИ?","В версии от 23.11.2026 требования по искусственному интеллекту предусмотрены для руководителей, их заместителей и начальников отделов, а также для руководителей цифровой трансформации и ИТ-специалистов — в пунктах 2.3.2.1, 2.3.2.2 и 2.3.5."],
+["👔 Кому указывать управленческие умения в п. 2.3.4?","Служащим, замещающим должности категории «руководители» и категории «специалисты» главной группы должностей."]
+];
+const WHATSNEW=[
+["🤖","<b>Искусственный интеллект.</b> Знания и умения по ИИ для руководителей и ИТ-специалистов: промпты, LLM, ИИ-агенты, BPMN, качество данных."],
+["📉","<b>Стаж.</b> Для главных групп — не менее 2 лет по специальности, для высших — не менее 4 лет."],
+["💬","<b>Рабочие коммуникации.</b> Обязанность использовать отечественный многофункциональный сервис обмена информацией."],
+["🔐","<b>Защита информации.</b> Приказ ФСТЭК России от 11.04.2025 № 117 вместо приказа № 17."],
+["🎯","<b>Новый блок 11.</b> Мобилизационные работники: знания, умения и обязанности."],
+["📲","<b>Новый блок 12.</b> Госуслуги по распоряжению 217-р: взаимодействие с ОМС и министерством цифрового развития и ИИ."]
 ];
 
-/* =====================================================================
-   УТИЛИТЫ
-   ===================================================================== */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-
-function fmt(text){
-  let h = esc(text);
-  h = h.replace(/(https?:\/\/[^\s<]+|t\.me\/[A-Za-z0-9_]+)/g, m=>{
-    const trail = (m.match(/[.,;:!?»)]+$/)||[""])[0];
-    const url = trail ? m.slice(0,-trail.length) : m;
-    const href = url.startsWith("t.me/") ? "https://"+url : url;
-    return `<a href="${href}" target="_blank" rel="noopener">${url}</a>${trail}`;
+/* ================= УТИЛИТЫ ================= */
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function fmt(t){
+  let h=esc(t);
+  h=h.replace(/(https?:\/\/[^\s<]+)/g,m=>{
+    const tr=(m.match(/[.,;:!?»)]+$/)||[""])[0];
+    const u=tr?m.slice(0,-tr.length):m;
+    return `<a href="${u}" target="_blank" rel="noopener">${u}</a>${tr}`;
   });
-  h = h.replace(/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g, '<a href="mailto:$1">$1</a>');
-  h = h.replace(/\*([^*\n]+)\*/g, "<b>$1</b>");
+  h=h.replace(/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g,'<a href="mailto:$1">$1</a>');
+  h=h.replace(/\*([^*\n]+)\*/g,"<b>$1</b>");
   return h.replace(/\n/g,"<br>");
 }
-function toast(msg){
-  const t = document.createElement("div");
-  t.className = "toast"; t.textContent = msg;
-  $("#toasts").appendChild(t);
-  setTimeout(()=>t.remove(), 3000);
-}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;$("#toasts").appendChild(t);setTimeout(()=>t.remove(),3000);}
 function copyText(t){
-  const done = ()=>toast("📋 Скопировано в буфер обмена");
-  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).then(done).catch(()=>fallback()); }
-  else fallback();
-  function fallback(){
-    const ta = document.createElement("textarea");
-    ta.value = t; ta.style.position="fixed"; ta.style.opacity="0";
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand("copy"); done(); }catch(e){ toast("Не удалось скопировать 😔"); }
-    ta.remove();
-  }
+  const ok=()=>toast("📋 Скопировано в буфер обмена");
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok).catch(fb);}else fb();
+  function fb(){const a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok();}catch(e){toast("Не удалось скопировать 😔");}a.remove();}
 }
-function confetti(){
-  const em = ["🎉","✨","🔥","⭐","🎊","💜"];
-  for(let i=0;i<26;i++){
-    const s = document.createElement("span");
-    s.className="conf"; s.textContent = em[i%em.length];
-    s.style.left = Math.random()*100+"vw";
-    s.style.animationDuration = (1.8+Math.random()*1.6)+"s";
-    s.style.fontSize = (16+Math.random()*18)+"px";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(), 3600);
-  }
-}
+function confetti(){const em=["🎉","✨","🔥","⭐","🎊","💜"];for(let i=0;i<26;i++){const s=document.createElement("span");s.className="conf";s.textContent=em[i%em.length];s.style.left=Math.random()*100+"vw";s.style.animationDuration=(1.8+Math.random()*1.6)+"s";s.style.fontSize=(16+Math.random()*18)+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),3600);}}
 
-/* =====================================================================
-   ССЫЛКИ НА ФАЙЛ / TELEGRAM
-   ===================================================================== */
-const fileHref = encodeURI(CONFIG.exampleFile);
-["#dlHero","#dlCard","#dlBanner"].forEach(id=>{ const el=$(id); if(el) el.href=fileHref; });
-$("#dlVer").textContent = CONFIG.exampleVer;
-$("#tgBtn").href = "https://t.me/" + CONFIG.botUsername;
+const fileHref=encodeURI(CONFIG.exampleFile);
+["#dlHero","#dlCard","#dlBanner"].forEach(id=>{const e=$(id);if(e)e.href=fileHref;});
+["#maxCard","#maxBtn","#maxFoot"].forEach(id=>{const e=$(id);if(e)e.href=CONFIG.maxProfile;});
+$("#verPill").textContent="версия "+CONFIG.verShort;
+$("#dlHero").textContent="📤 Примерный ДР · "+CONFIG.verShort;
 
-/* =====================================================================
-   КОНСТРУКТОР ДР
-   ===================================================================== */
-let currentSection = 1;
-let doneSet = new Set();
-try{ doneSet = new Set(JSON.parse(localStorage.getItem("pascal_dr_done")||"[]")); }catch(e){}
-
-function saveDone(){ try{ localStorage.setItem("pascal_dr_done", JSON.stringify([...doneSet])); }catch(e){} }
-
+/* ================= ИНСТРУКЦИЯ ПО ПУНКТАМ ================= */
+let curSec=1, doneSet=new Set();
+try{doneSet=new Set(JSON.parse(localStorage.getItem("pascal_dr_done")||"[]"));}catch(e){}
+const saveDone=()=>{try{localStorage.setItem("pascal_dr_done",JSON.stringify([...doneSet]));}catch(e){}};
 function renderConNav(){
-  $("#conNav").innerHTML = SECTIONS.map(s=>`
-    <button data-sec="${s.id}" class="${s.id===currentSection?"active":""}">
-      <span class="con-num">${s.id}</span>
-      <span>${s.title.replace(/^Раздел \d+ /,"")}</span>
-      <span class="con-check ${doneSet.has(s.id)?"done":""}" data-check="${s.id}" title="Отметить раздел как готовый">✓</span>
-    </button>`).join("");
+  $("#conNav").innerHTML=SECTIONS.map(s=>`<button data-sec="${s.id}" class="${s.id===curSec?"active":""}"><span class="con-num">${s.id}</span><span>${s.title.replace(/^Раздел \d+ /,"")}</span><span class="con-check ${doneSet.has(s.id)?"done":""}" data-check="${s.id}" title="Отметить раздел как готовый">✓</span></button>`).join("");
 }
 function updateProgress(){
-  const n = doneSet.size;
-  $("#pLabel").textContent = `Готово ${n} из 9`;
-  $("#pFill").style.width = (n/9*100)+"%";
-  if(n===9){ confetti(); toast("🎉 ДР собран! Пора на согласование — загляните в раздел «Согласование»"); }
+  const n=doneSet.size;
+  $("#pLabel").textContent=`Готово ${n} из 9`;
+  $("#pFill").style.width=(n/9*100)+"%";
+  if(n===9){confetti();toast("🎉 ДР собран! Пора на согласование — загляните в раздел «Согласование»");}
 }
-function renderSection(id, openKey){
-  currentSection = id;
-  const s = SECTIONS.find(x=>x.id===id);
-  renderConNav();
-  let body = "";
+function renderSection(id,openKey){
+  curSec=id;const s=SECTIONS.find(x=>x.id===id);renderConNav();
+  let body;
   if(s.subs){
-    body = s.subs.map(([k,t],i)=>`
-      <div class="acc ${openKey===k?"open":""}" data-acc="${k}">
-        <button class="acc-head"><span class="k">п. ${k}</span><span>Подсказка Паскаля</span><span class="chev">▾</span></button>
-        <div class="acc-body"><div class="acc-inner">
-          <div class="acc-text">${fmt(t)}</div>
-          <div class="acc-foot"><button class="copy-btn" data-copysec="${id}" data-copykey="${k}">📋 Скопировать формулировку</button></div>
-        </div></div>
-      </div>`).join("");
-  } else {
-    body = `<div class="desc-card">${fmt(s.desc)}<br><button class="copy-btn" data-copysec="${id}" data-copykey="__desc">📋 Скопировать формулировку</button></div>`;
+    body=`<div class="tools"><button class="tool" data-expand="con">▾ Развернуть все пункты</button><button class="tool" data-collapse="con">▴ Свернуть всё</button></div>`+
+    s.subs.map(([k,t])=>`<div class="acc ${openKey===k?"open":""}" data-acc="${k}"><button class="acc-head"><span class="k">п. ${k}</span><span class="ttl">Подсказка Паскаля</span><span class="chev">▾</span></button><div class="acc-body"><div class="acc-inner"><div class="acc-text">${fmt(t)}</div><div class="acc-foot"><button class="copy-btn" data-cs="${id}" data-ck="${k}">📋 Скопировать формулировку</button></div></div></div></div>`).join("");
+  }else{
+    body=`<div class="desc-card">${fmt(s.desc)}<br><button class="copy-btn" data-cs="${id}" data-ck="__desc">📋 Скопировать формулировку</button></div>`;
   }
-  $("#conContent").innerHTML = `
-    <div class="c-head"><span class="c-num">${s.id}</span><div><h3>${s.title}</h3></div></div>
-    <div class="c-full">${s.full}</div>${body}`;
-  if(openKey){
-    const el = $(`#conContent .acc[data-acc="${openKey}"]`);
-    if(el) setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"center"}),150);
-  }
+  $("#conContent").innerHTML=`<div class="c-head"><span class="c-num">${s.id}</span><div><h3>${s.title}</h3></div></div><div class="c-full">${s.full}</div>${body}`;
+  if(openKey){const el=$(`#conContent .acc[data-acc="${openKey}"]`);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"center"}),160);}
 }
-$("#conNav").addEventListener("click", e=>{
-  const chk = e.target.closest("[data-check]");
-  if(chk){
-    e.stopPropagation();
-    const id = +chk.dataset.check;
-    doneSet.has(id) ? doneSet.delete(id) : doneSet.add(id);
-    saveDone(); renderConNav(); updateProgress();
-    return;
-  }
-  const btn = e.target.closest("[data-sec]");
-  if(btn) renderSection(+btn.dataset.sec);
+$("#conNav").addEventListener("click",e=>{
+  const c=e.target.closest("[data-check]");
+  if(c){e.stopPropagation();const id=+c.dataset.check;doneSet.has(id)?doneSet.delete(id):doneSet.add(id);saveDone();renderConNav();updateProgress();return;}
+  const b=e.target.closest("[data-sec]");if(b)renderSection(+b.dataset.sec);
 });
-$("#conContent").addEventListener("click", e=>{
-  const cp = e.target.closest("[data-copysec]");
-  if(cp){
-    const s = SECTIONS.find(x=>x.id===+cp.dataset.copysec);
-    const t = cp.dataset.copykey==="__desc" ? s.desc : s.subs.find(([k])=>k===cp.dataset.copykey)[1];
-    copyText(t); return;
-  }
-  const head = e.target.closest(".acc-head");
-  if(head) head.parentElement.classList.toggle("open");
+$("#conContent").addEventListener("click",e=>{
+  const cp=e.target.closest("[data-cs]");
+  if(cp){const s=SECTIONS.find(x=>x.id===+cp.dataset.cs);copyText(cp.dataset.ck==="__desc"?s.desc:s.subs.find(([k])=>k===cp.dataset.ck)[1]);return;}
+  if(e.target.closest("[data-expand]")){$$("#conContent .acc").forEach(a=>a.classList.add("open"));return;}
+  if(e.target.closest("[data-collapse]")){$$("#conContent .acc").forEach(a=>a.classList.remove("open"));return;}
+  const h=e.target.closest(".acc-head");if(h)h.parentElement.classList.toggle("open");
 });
-$("#pReset").addEventListener("click", e=>{ e.preventDefault(); doneSet.clear(); saveDone(); renderConNav(); updateProgress(); toast("Прогресс сброшен"); });
+$("#pReset").addEventListener("click",e=>{e.preventDefault();doneSet.clear();saveDone();renderConNav();updateProgress();toast("Прогресс сброшен");});
 
-/* поиск по пунктам */
-const SEARCH_INDEX = [];
-SECTIONS.forEach(s=>{
-  if(s.subs) s.subs.forEach(([k,t])=>SEARCH_INDEX.push({sec:s.id,key:k,text:t}));
-  else SEARCH_INDEX.push({sec:s.id,key:null,text:s.desc});
-});
-const resBox = $("#searchRes");
-$("#conSearch").addEventListener("input", e=>{
-  const q = e.target.value.trim().toLowerCase();
-  if(q.length<2){ resBox.style.display="none"; return; }
-  const hits = SEARCH_INDEX.filter(r => (r.key&&r.key.includes(q)) || r.text.toLowerCase().includes(q)).slice(0,12);
-  if(!hits.length){ resBox.innerHTML = `<button disabled>Ничего не найдено 🤷‍♂️ Попробуйте «стаж», «подчин», «услуг»…</button>`; }
-  else resBox.innerHTML = hits.map(r=>{
-    const pos = r.text.toLowerCase().indexOf(q);
-    const snip = pos>=0 ? "…"+esc(r.text.slice(Math.max(0,pos-35), pos+70)).replace(/\n/g," ")+"…" : esc(r.text.slice(0,90))+"…";
-    return `<button data-gosec="${r.sec}" data-gokey="${r.key||""}"><b>Раздел ${r.sec}${r.key?" · п. "+r.key:""}</b><small>${snip}</small></button>`;
-  }).join("");
-  resBox.style.display="block";
-});
-resBox.addEventListener("mousedown", e=>{
-  const b = e.target.closest("[data-gosec]");
-  if(!b) return;
-  e.preventDefault();
-  renderSection(+b.dataset.gosec, b.dataset.gokey||undefined);
-  resBox.style.display="none"; $("#conSearch").value="";
-  $("#constructor").scrollIntoView({behavior:"smooth"});
-});
-document.addEventListener("click", e=>{ if(!e.target.closest(".search-box")) resBox.style.display="none"; });
+const SIDX=[];SECTIONS.forEach(s=>{if(s.subs)s.subs.forEach(([k,t])=>SIDX.push({sec:s.id,key:k,text:t}));else SIDX.push({sec:s.id,key:null,text:s.desc});});
+function bindSearch(inputId,resId,index,onPick){
+  const box=$(resId);
+  $(inputId).addEventListener("input",e=>{
+    const q=e.target.value.trim().toLowerCase();
+    if(q.length<2){box.style.display="none";return;}
+    const hits=index.filter(r=>(r.key&&r.key.toLowerCase().includes(q))||r.text.toLowerCase().includes(q)||(r.label&&r.label.toLowerCase().includes(q))).slice(0,12);
+    box.innerHTML=hits.length?hits.map((r,i)=>{
+      const p=r.text.toLowerCase().indexOf(q);
+      const sn=p>=0?"…"+esc(r.text.slice(Math.max(0,p-35),p+70)).replace(/\n/g," ")+"…":esc(r.text.slice(0,90))+"…";
+      return `<button data-i="${index.indexOf(r)}"><b>${r.label||("Раздел "+r.sec+(r.key?" · п. "+r.key:""))}</b><small>${sn}</small></button>`;
+    }).join(""):`<button disabled>Ничего не найдено 🤷‍♂️ Попробуйте другое слово</button>`;
+    box.style.display="block";
+  });
+  box.addEventListener("mousedown",e=>{
+    const b=e.target.closest("[data-i]");if(!b)return;e.preventDefault();
+    onPick(index[+b.dataset.i]);box.style.display="none";
+  });
+  document.addEventListener("click",e=>{if(!e.target.closest(".search-box"))box.style.display="none";});
+}
+bindSearch("#conSearch","#conRes",SIDX,r=>{renderSection(r.sec,r.key||undefined);$("#constructor").scrollIntoView({behavior:"smooth"});});
 
-renderSection(1); updateProgress();
-
-/* =====================================================================
-   КОНТАКТЫ / ССЫЛКИ / FAQ
-   ===================================================================== */
-$("#cGrid").innerHTML = CONTACTS.map(c=>`
-  <div class="contact reveal">
-    <div class="c-ava">${c.ini}</div>
-    <h3>${c.name}</h3>
-    <div class="c-role ${c.main?"":"alt"}">${c.main?"⭐ ":""}${c.role}</div>
-    <div class="c-row">📧 <a href="mailto:${c.email}">${c.email}</a><button class="c-copy" data-copy="${c.email}" title="Скопировать почту">📋</button></div>
-    <div class="c-row">📞 <a href="tel:${c.tel}">${c.phone}</a><button class="c-copy" data-copy="${c.phone}" title="Скопировать телефон">📋</button></div>
-  </div>`).join("");
-document.addEventListener("click", e=>{
-  const b = e.target.closest("[data-copy]");
-  if(b) copyText(b.dataset.copy);
+/* ================= БЛОКИ ================= */
+let curBlk=1;
+function renderBlkNav(){
+  $("#blkNav").innerHTML=BLOCKS.map(b=>`<button data-blk="${b.id}" class="${b.id===curBlk?"active":""}"><span class="con-num">${b.id}</span><span>${b.icon} ${b.title}</span></button>`).join("");
+}
+function blockText(b){return b.title+"\n"+b.sub+"\n\n"+b.groups.map(g=>(g.target?g.target+" — ":"")+g.t+(g.note?" ("+g.note+")":"")+"\n"+g.items.map(i=>"- "+i).join("\n")+(g.note&&g.target?"":"")).join("\n\n");}
+function renderBlock(id,openIdx){
+  curBlk=id;const b=BLOCKS.find(x=>x.id===id);renderBlkNav();
+  const groups=b.groups.map((g,i)=>`
+   <div class="acc ${openIdx===i?"open":""}" data-gi="${i}">
+     <button class="acc-head"><span class="k">${i+1}</span><span class="ttl">${esc(g.t)}${g.note?`<small>${esc(g.note)}</small>`:""}</span>${g.target?`<span class="target">${g.target}</span>`:""}<span class="chev">▾</span></button>
+     <div class="acc-body"><div class="acc-inner">
+       <ul class="lst">${g.items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+       ${g.note&&g.target?`<div class="note">${esc(g.note)}</div>`:""}
+       <div class="acc-foot"><button class="copy-btn" data-bg="${id}" data-bi="${i}">📋 Скопировать формулировки</button></div>
+     </div></div>
+   </div>`).join("");
+  $("#blkContent").innerHTML=`
+   <div class="c-head"><span class="c-num">${b.icon}</span><div><h3>Блок ${b.id}. ${b.title}</h3></div></div>
+   <div class="c-full">${b.sub}</div>
+   <div class="tools"><button class="tool" data-expand="blk">▾ Развернуть всё</button><button class="tool" data-collapse="blk">▴ Свернуть всё</button><button class="tool" data-copyblk="${b.id}">📋 Скопировать блок целиком</button></div>
+   ${groups}`;
+  if(openIdx!==undefined){const el=$(`#blkContent .acc[data-gi="${openIdx}"]`);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"center"}),160);}
+}
+$("#blkNav").addEventListener("click",e=>{const b=e.target.closest("[data-blk]");if(b)renderBlock(+b.dataset.blk);});
+$("#blkContent").addEventListener("click",e=>{
+  const cg=e.target.closest("[data-bg]");
+  if(cg){const b=BLOCKS.find(x=>x.id===+cg.dataset.bg),g=b.groups[+cg.dataset.bi];copyText((g.target?g.target+" — ":"")+g.t+"\n"+g.items.map(i=>"- "+i).join("\n"));return;}
+  const cb=e.target.closest("[data-copyblk]");
+  if(cb){copyText(blockText(BLOCKS.find(x=>x.id===+cb.dataset.copyblk)));return;}
+  if(e.target.closest("[data-expand]")){$$("#blkContent .acc").forEach(a=>a.classList.add("open"));return;}
+  if(e.target.closest("[data-collapse]")){$$("#blkContent .acc").forEach(a=>a.classList.remove("open"));return;}
+  const h=e.target.closest(".acc-head");if(h)h.parentElement.classList.toggle("open");
 });
+const BIDX=[];BLOCKS.forEach(b=>b.groups.forEach((g,i)=>BIDX.push({blk:b.id,gi:i,label:`Блок ${b.id} · ${b.title} → ${g.t}`,text:g.items.join(" ")+" "+g.t})));
+bindSearch("#blkSearch","#blkRes",BIDX,r=>{renderBlock(r.blk,r.gi);$("#blocks").scrollIntoView({behavior:"smooth"});});
 
+/* ================= ПРОЧЕЕ ================= */
+$("#wnGrid").innerHTML=WHATSNEW.map(([i,t])=>`<div class="wn"><i>${i}</i><span>${t}</span></div>`).join("");
+$("#cGrid").innerHTML=CONTACTS.map(c=>`<div class="contact reveal"><div class="c-ava">${c.ini}</div><h3>${c.name}</h3><div class="c-role ${c.main?"":"alt"}">${c.main?"⭐ ":""}${c.role}</div><div class="c-row">📧 <a href="mailto:${c.email}">${c.email}</a><button class="c-copy" data-copy="${c.email}">📋</button></div><div class="c-row">📞 <a href="tel:${c.tel}">${c.phone}</a><button class="c-copy" data-copy="${c.phone}">📋</button></div></div>`).join("");
+document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(b)copyText(b.dataset.copy);});
 function renderLinks(tab){
-  const arr = tab==="npa" ? NPA : SITES;
-  $("#lGrid").innerHTML = arr.map((x,i)=>`
-    <a class="l-card" href="${x.u}" target="_blank" rel="noopener">
-      <span class="l-n">${x.e}</span>
-      <span><b>${i+1}. ${x.t}</b><small>${x.u.replace(/^https?:\/\//,"")}</small></span>
-      <span class="ext">↗</span>
-    </a>`).join("");
+  const a=tab==="npa"?NPA:SITES;
+  $("#lGrid").innerHTML=a.map((x,i)=>`<a class="l-card" href="${x.u}" target="_blank" rel="noopener"><span class="l-n">${x.e}</span><span><b>${i+1}. ${x.t}</b><small>${x.u.replace(/^https?:\/\//,"")}</small></span><span class="ext">↗</span></a>`).join("");
 }
-$$(".tab").forEach(t=>t.addEventListener("click", ()=>{
-  $$(".tab").forEach(x=>x.classList.remove("active"));
-  t.classList.add("active"); renderLinks(t.dataset.tab);
-}));
-renderLinks("npa");
+$$(".tab").forEach(t=>t.addEventListener("click",()=>{$$(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");renderLinks(t.dataset.tab);}));
+$("#faqBox").innerHTML=FAQ.map(([q,a])=>`<div class="acc reveal"><button class="acc-head"><span class="ttl">${q}</span><span class="chev">▾</span></button><div class="acc-body"><div class="acc-inner"><div class="acc-text">${fmt(a)}</div></div></div></div>`).join("");
+$("#faqBox").addEventListener("click",e=>{const h=e.target.closest(".acc-head");if(h)h.parentElement.classList.toggle("open");});
+renderSection(1);updateProgress();renderBlock(1);renderLinks("npa");
 
-$("#faqBox").innerHTML = FAQ.map(([q,a])=>`
-  <div class="acc reveal">
-    <button class="acc-head"><span>${q}</span><span class="chev">▾</span></button>
-    <div class="acc-body"><div class="acc-inner"><div class="acc-text">${fmt(a)}</div></div></div>
-  </div>`).join("");
-$("#faqBox").addEventListener("click", e=>{
-  const h = e.target.closest(".acc-head");
-  if(h) h.parentElement.classList.toggle("open");
-});
-
-/* =====================================================================
-   ЧАТ «ПАСКАЛЬ» — логика 1:1 как в bot.py
-   ===================================================================== */
-const MAIN = ["📤 Направь примерный ДР","📩 Как и куда направить ДР?","✍️ Как составить ДР?","🔄 Как происходит согласование ДР?","📊 Обратная связь","🔗 Полезные ссылки"];
-const COMPOSE = SECTIONS.map(s=>s.title).concat("Вернуться назад");
-const LINKS_MENU = ["НПА","Сайты","Вернуться назад"];
-const secChips = s => (s.subs ? s.subs.map(([k])=>k) : []).concat("Вернуться назад");
-
-const chat = { state:"main", greeted:false, open:false, unread:0, lastFunny:-1 };
-const panel=$("#chatPanel"), msgs=$("#chMsgs"), chips=$("#chChips"), fab=$("#chatFab"), badge=$("#chatBadge");
-
-function nowTime(){ const d=new Date(); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
-function scrollMsgs(){ requestAnimationFrame(()=>{ msgs.scrollTop = msgs.scrollHeight; }); }
-function addUser(text){
-  const m=document.createElement("div"); m.className="msg user";
-  m.innerHTML = esc(text)+`<span class="time">${nowTime()}</span>`;
-  msgs.appendChild(m); scrollMsgs();
-}
-function setChips(list){
-  chips.innerHTML = list.map(l=>`<button>${esc(l)}</button>`).join("");
-}
-function botSay(text, chipList, attachHtml){
-  const tp=document.createElement("div"); tp.className="msg bot typing"; tp.innerHTML="<i></i><i></i><i></i>";
-  msgs.appendChild(tp); scrollMsgs();
-  const delay = 550 + Math.random()*550 + Math.min(text.length/6, 500);
+/* ================= ЧАТ ================= */
+const MAIN=["📤 Направь примерный ДР","📩 Как и куда направить ДР?","✍️ Как составить ДР?","🧩 Блоки по направлениям","🔄 Как происходит согласование ДР?","📊 Обратная связь","🔗 Полезные ссылки"];
+const COMPOSE=SECTIONS.map(s=>s.title).concat("Вернуться назад");
+const BLKMENU=BLOCKS.map(b=>`${b.icon} ${b.title}`).concat("Вернуться назад");
+const LINKS_MENU=["НПА","Сайты","Вернуться назад"];
+const secChips=s=>(s.subs?s.subs.map(([k])=>k):[]).concat("Вернуться назад");
+const chat={state:"main",greeted:false,open:false,unread:0,lastFunny:-1,lastBlock:1};
+const panel=$("#chatPanel"),msgs=$("#chMsgs"),chips=$("#chChips"),fab=$("#chatFab"),badge=$("#chatBadge");
+const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
+const scrollMsgs=()=>requestAnimationFrame(()=>{msgs.scrollTop=msgs.scrollHeight;});
+function addUser(t){const m=document.createElement("div");m.className="msg user";m.innerHTML=esc(t)+`<span class="time">${nowTime()}</span>`;msgs.appendChild(m);scrollMsgs();}
+function setChips(l){chips.innerHTML=l.map(x=>`<button>${esc(x)}</button>`).join("");}
+function botSay(text,cl,attach,hint){
+  const tp=document.createElement("div");tp.className="msg bot typing";tp.innerHTML="<i></i><i></i><i></i>";msgs.appendChild(tp);scrollMsgs();
   setTimeout(()=>{
     tp.remove();
-    const m=document.createElement("div"); m.className="msg bot";
-    m.innerHTML = fmt(text) + (attachHtml||"") + `<span class="time">${nowTime()}</span>`;
-    msgs.appendChild(m);
-    if(chipList) setChips(chipList);
-    scrollMsgs();
-    if(!chat.open){ chat.unread++; badge.textContent=chat.unread; badge.style.display="grid"; }
-  }, delay);
+    const m=document.createElement("div");m.className="msg bot";
+    m.innerHTML=(hint?`<span class="hint">${esc(hint)}</span>`:"")+fmt(text)+(attach||"")+`<span class="time">${nowTime()}</span>`;
+    msgs.appendChild(m);if(cl)setChips(cl);scrollMsgs();
+    if(!chat.open){chat.unread++;badge.textContent=chat.unread;badge.style.display="grid";}
+  },520+Math.random()*480+Math.min(text.length/6,450));
 }
-const attachCard = `
-  <div class="attach"><span class="a-ico">📄</span>
-    <span><b>${esc(CONFIG.exampleFile)}</b><a href="${fileHref}" download>⬇️ Скачать документ</a></span>
-  </div>`;
+const attachCard=`<div class="attach"><span class="a-ico">📄</span><span><b>${esc(CONFIG.exampleFile)}</b><a href="${fileHref}" download>⬇️ Скачать · ${CONFIG.verShort}</a></span></div>`;
 
-/* маршрутизация команд — зеркалирует хендлеры aiogram */
 function route(label){
-  if(label===MAIN[0]){ chat.state="main"; botSay(TEXTS.sendExample, MAIN, attachCard); return true; }
-  if(label===MAIN[1]){ chat.state="main"; botSay(TEXTS.contacts, MAIN); return true; }
-  if(label===MAIN[2]){ chat.state="compose"; botSay("Выберите раздел для просмотра подробностей:", COMPOSE); return true; }
-  if(label===MAIN[3]){ chat.state="main"; botSay(TEXTS.approval, MAIN); return true; }
-  if(label===MAIN[4]){ chat.state="main"; botSay(TEXTS.feedback, MAIN); return true; }
-  if(label===MAIN[5]){ chat.state="links"; botSay("Выберите категорию:", LINKS_MENU); return true; }
-  if(label==="НПА"){ chat.state="links"; botSay(TEXTS.npa, LINKS_MENU); return true; }
-  if(label==="Сайты"){ chat.state="links"; botSay(TEXTS.sites, LINKS_MENU); return true; }
+  if(label===MAIN[0]){chat.state="main";botSay(TEXTS.sendExample,MAIN,attachCard);return true;}
+  if(label===MAIN[1]){chat.state="main";botSay(TEXTS.contacts,MAIN);return true;}
+  if(label===MAIN[2]){chat.state="compose";botSay("Выберите раздел для просмотра подробностей:",COMPOSE);return true;}
+  if(label===MAIN[3]){chat.state="blocks";botSay("🧩 Блоки — готовые формулировки по направлениям деятельности. Выберите свой блок:",BLKMENU);return true;}
+  if(label===MAIN[4]){chat.state="main";botSay(TEXTS.approval,MAIN);return true;}
+  if(label===MAIN[5]){chat.state="main";botSay(TEXTS.feedback,MAIN);return true;}
+  if(label===MAIN[6]){chat.state="links";botSay("Выберите категорию:",LINKS_MENU);return true;}
+  if(label==="НПА"){chat.state="links";botSay(TEXTS.npa,LINKS_MENU);return true;}
+  if(label==="Сайты"){chat.state="links";botSay(TEXTS.sites,LINKS_MENU);return true;}
+  if(label==="📖 Открыть блок на сайте"){openBlockOnSite(chat.lastBlock);botSay("Открыл нужный блок на сайте — формулировки можно скопировать одной кнопкой 📋",BLKMENU);return true;}
   if(label==="Вернуться назад"){
-    if(chat.state.startsWith("sec:")){ chat.state="compose"; botSay("Возвращение в предыдущее меню...", COMPOSE); }
-    else { chat.state="main"; botSay("Возврат в главное меню:", MAIN); }
+    if(chat.state.startsWith("sec:")){chat.state="compose";botSay("Возвращение в предыдущее меню...",COMPOSE);}
+    else{chat.state="main";botSay("Возврат в главное меню:",MAIN);}
     return true;
   }
-  const sec = SECTIONS.find(s=>s.title===label);
-  if(sec){
-    chat.state="sec:"+sec.id;
-    if(sec.subs) botSay(`Ваш выбор: ${sec.title}\n\nВыберите пункт раздела:`, secChips(sec));
-    else botSay(sec.desc, ["Вернуться назад"]);
-    return true;
-  }
-  for(const s of SECTIONS){
-    if(s.subs){
-      const hit = s.subs.find(([k])=>k===label);
-      if(hit){ chat.state="sec:"+s.id; botSay(hit[1], secChips(s)); return true; }
-    }
-  }
+  const sec=SECTIONS.find(s=>s.title===label);
+  if(sec){chat.state="sec:"+sec.id;if(sec.subs)botSay(`Ваш выбор: ${sec.title}\n\nВыберите пункт раздела:`,secChips(sec));else botSay(sec.desc,["Вернуться назад"]);return true;}
+  for(const s of SECTIONS){if(s.subs){const h=s.subs.find(([k])=>k===label);if(h){chat.state="sec:"+s.id;botSay(h[1],secChips(s));return true;}}}
+  const blk=BLOCKS.find(b=>`${b.icon} ${b.title}`===label);
+  if(blk){showBlock(blk);return true;}
   return false;
 }
-/* свободный текст — как handle_default_messages в боте */
+function showBlock(b,hint){
+  chat.state="blocks";chat.lastBlock=b.id;
+  const list=b.groups.map(g=>`• ${g.t}${g.target?` → ${g.target}`:""}`).join("\n");
+  botSay(`${b.icon} Блок ${b.id}. ${b.title}\n${b.sub}\n\nЧто внутри:\n${list}\n\n📖 Полные формулировки — в разделе «Блоки» на сайте, там же кнопка «Скопировать блок целиком».`,["📖 Открыть блок на сайте","Вернуться назад"],null,hint);
+}
+function openBlockOnSite(id){renderBlock(id);$("#blocks").scrollIntoView({behavior:"smooth"});toast("Открыт блок "+id+" — формулировки на сайте");}
+function openSectionOnSite(id,key){renderSection(id,key);$("#constructor").scrollIntoView({behavior:"smooth"});}
+
+/* --- понимание свободных вопросов --- */
+const INTENTS=[
+ {a:"contacts",hint:"Похоже, вас интересует, куда направить ДР",k:["куда направить","кому направить","кому отправить","куда отправить","контакт","почт","телефон","позвонить","мейл","емейл","email","чеботар","ханыков","отправить др","направить др"]},
+ {a:"approval",hint:"Похоже, вас интересует согласование",k:["согласов","сколько ждать","сколько дней","как долго","срок рассмотрения","этап","маршрут","когда готов"]},
+ {a:"example",hint:"Похоже, вам нужен примерный ДР",k:["пример","шаблон","образец","скачать","файл","документ ворд","docx","word","ворд","бланк","рыба"]},
+ {a:"links",hint:"Похоже, нужны полезные ссылки",k:["ссылк","нпа","норматив","портал","консультант","гарант","кодекс","справочник","минтруд","ресурс"]},
+ {a:"feedback",hint:"Похоже, вы хотите связаться с разработчиком",k:["обратная связь","разработчик","макс","max","предлож","улучш","ошибк","идея","пожелан"]},
+ {a:"blocks",hint:"Похоже, вас интересуют блоки по направлениям",k:["блок","кнд","надзор","жалоб","антитеррор","террор","антикоррупц","коррупц","замполит","цифров","клиентоцентр","информационн безопас","защит информации","комплаенс","закупк","контракт","госуслуг","епгу","мобилизац","217-р"]}
+];
+const POINT_HINTS=[
+ {k:["стаж"],sec:2,key:"2.2"},{k:["образован","специальност","диплом"],sec:2,key:"2.1"},
+ {k:["подчин","руководител"],sec:1,key:"1.6"},{k:["замеща","замещ","отсутств"],sec:1,key:"1.7"},
+ {k:["назначен","освобожден"],sec:1,key:"1.5"},{k:["категор","групп","реестр"],sec:1,key:"1.2"},
+ {k:["область деятельн"],sec:1,key:"1.3"},{k:["вид деятельн"],sec:1,key:"1.4"},
+ {k:["обязанност"],sec:3,key:"3.2"},{k:["персональн"],sec:3,key:"3.4"},
+ {k:["склонен","уведомлять губернатор"],sec:3,key:"3.3"},
+ {k:["управленческ решен","вправе самостоятельн"],sec:4,key:"4.1"},
+ {k:["проекты нпа","проектов правов"],sec:5,key:"5.1"},
+ {k:["срок","процедур"],sec:6,key:null},{k:["взаимодейств"],sec:7,key:null},
+ {k:["госуслуг"],sec:8,key:null},{k:["показател","эффективн"],sec:9,key:null},
+ {k:["умени"],sec:2,key:"2.3.5"},{k:["знани"],sec:2,key:"2.3.2.1"},{k:["ии","искусственн интеллект","промпт"],sec:2,key:"2.3.2.2"}
+];
+function understand(raw){
+  const t=raw.toLowerCase().replace(/ё/g,"е");
+  const pm=t.match(/\b\d+(?:\.\d+){1,3}\b/);
+  if(pm){for(const s of SECTIONS){if(s.subs){const h=s.subs.find(([k])=>k===pm[0]);if(h){chat.state="sec:"+s.id;botSay(h[1],secChips(s),null,"Нашёл пункт "+pm[0]);return true;}}}}
+  const sm=t.match(/раздел\s*(\d)/);
+  if(sm){const s=SECTIONS.find(x=>x.id===+sm[1]);if(s){chat.state="sec:"+s.id;if(s.subs)botSay(`Ваш выбор: ${s.title}\n\nВыберите пункт раздела:`,secChips(s),null,"Понял: раздел "+sm[1]);else botSay(s.desc,["Вернуться назад"],null,"Понял: раздел "+sm[1]);return true;}}
+  const blk=BLOCKS.find(b=>t.includes(b.title.toLowerCase()));
+  if(blk){showBlock(blk,"Понял: блок «"+blk.title+"»");return true;}
+  for(const it of INTENTS){if(it.k.some(k=>t.includes(k))){
+    if(it.a==="blocks"){chat.state="blocks";botSay("🧩 Блоки — готовые формулировки по направлениям деятельности. Выберите свой блок:",BLKMENU,null,it.hint);}
+    else if(it.a==="contacts"){chat.state="main";botSay(TEXTS.contacts,MAIN,null,it.hint);}
+    else if(it.a==="approval"){chat.state="main";botSay(TEXTS.approval,MAIN,null,it.hint);}
+    else if(it.a==="example"){chat.state="main";botSay(TEXTS.sendExample,MAIN,attachCard,it.hint);}
+    else if(it.a==="feedback"){chat.state="main";botSay(TEXTS.feedback,MAIN,null,it.hint);}
+    else if(it.a==="links"){chat.state="links";botSay("Выберите категорию:",LINKS_MENU,null,it.hint);}
+    return true;}}
+  for(const p of POINT_HINTS){if(p.k.some(k=>t.includes(k))){
+    const s=SECTIONS.find(x=>x.id===p.sec);
+    if(p.key&&s.subs){const h=s.subs.find(([k])=>k===p.key);if(h){chat.state="sec:"+s.id;botSay(h[1],secChips(s),null,"Похоже, это пункт "+p.key);return true;}}
+    if(!p.key&&s.desc){chat.state="sec:"+s.id;botSay(s.desc,["Вернуться назад"],null,"Похоже, это раздел "+p.sec);return true;}
+  }}
+  return false;
+}
 function defaultReply(raw){
-  const low = raw.toLowerCase();
-  const hit = words => words.some(w => w.length<=3 || w.includes(" ")
-      ? (w.includes(" ") ? low.includes(w) : low.split(/[^\p{L}\p{N}]+/u).includes(w))
-      : low.includes(w));
-  if(hit(GRATITUDE)){ botSay(TEXTS.gratitude); return; }
-  if(hit(ANGER)){ botSay(TEXTS.anger); return; }
-  let i; do{ i = Math.floor(Math.random()*TEXTS.funny.length); }while(i===chat.lastFunny && TEXTS.funny.length>1);
-  chat.lastFunny = i;
-  botSay(TEXTS.funny[i] + "\n\n" + TEXTS.suffix);
+  const low=raw.toLowerCase();
+  const hit=w=>w.some(x=>x.length<=3||x.includes(" ")?(x.includes(" ")?low.includes(x):low.split(/[^\p{L}\p{N}]+/u).includes(x)):low.includes(x));
+  if(hit(GRATITUDE)){botSay(TEXTS.gratitude);return;}
+  if(hit(ANGER)){botSay(TEXTS.anger);return;}
+  let i;do{i=Math.floor(Math.random()*TEXTS.funny.length);}while(i===chat.lastFunny&&TEXTS.funny.length>1);
+  chat.lastFunny=i;botSay(TEXTS.funny[i]+"\n\n"+TEXTS.suffix);
 }
-function greet(){
-  chat.greeted = true; chat.state="main";
-  botSay(TEXTS.welcome, MAIN);
-}
+function greet(){chat.greeted=true;chat.state="main";botSay(TEXTS.welcome,MAIN);}
 function openChat(action){
-  panel.classList.add("open"); chat.open=true;
-  chat.unread=0; badge.style.display="none";
-  fab.textContent="✕"; fab.appendChild(badge);
-  if(!chat.greeted) greet();
-  if(action) setTimeout(()=>{ addUser(action); route(action); }, chat.greeted?900:1800);
-  setTimeout(()=>$("#chInput").focus(), 350);
+  panel.classList.add("open");chat.open=true;chat.unread=0;badge.style.display="none";
+  fab.textContent="✕";fab.appendChild(badge);
+  if(!chat.greeted)greet();
+  if(action)setTimeout(()=>{addUser(action);route(action);},chat.greeted?900:1800);
+  setTimeout(()=>$("#chInput").focus(),350);
 }
-function closeChat(){
-  panel.classList.remove("open"); chat.open=false;
-  fab.textContent="🤖"; fab.appendChild(badge);
-}
-fab.addEventListener("click", ()=> chat.open ? closeChat() : openChat());
-$("#chClose").addEventListener("click", closeChat);
-$("#chReset").addEventListener("click", ()=>{ msgs.innerHTML=""; chat.state="main"; greet(); });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape" && chat.open) closeChat(); });
-$$("[data-open-chat]").forEach(b=>b.addEventListener("click", ()=>openChat()));
-$$("[data-chat-action]").forEach(b=>b.addEventListener("click", ()=>openChat(b.dataset.chatAction)));
-chips.addEventListener("click", e=>{
-  const b=e.target.closest("button"); if(!b) return;
-  const label=b.textContent; addUser(label); route(label);
-});
+function closeChat(){panel.classList.remove("open");chat.open=false;fab.textContent="🗂️";fab.appendChild(badge);}
+fab.addEventListener("click",()=>chat.open?closeChat():openChat());
+$("#chClose").addEventListener("click",closeChat);
+$("#chReset").addEventListener("click",()=>{msgs.innerHTML="";chat.state="main";greet();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&chat.open)closeChat();});
+$$("[data-open-chat]").forEach(b=>b.addEventListener("click",()=>openChat()));
+$$("[data-chat-action]").forEach(b=>b.addEventListener("click",()=>openChat(b.dataset.chatAction)));
+chips.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const l=b.textContent;addUser(l);route(l);});
 function sendText(){
-  const inp=$("#chInput"); const t=inp.value.trim(); if(!t) return;
-  inp.value=""; addUser(t);
+  const inp=$("#chInput"),t=inp.value.trim();if(!t)return;inp.value="";addUser(t);
   const low=t.toLowerCase();
-  if(low==="/start" || low==="меню"){ chat.state="main"; botSay(TEXTS.welcome, MAIN); return; }
-  if(!route(t)) defaultReply(t);
+  if(low==="/start"||low==="меню"||low==="привет"){chat.state="main";botSay(TEXTS.welcome,MAIN);return;}
+  if(route(t))return;
+  if(understand(t))return;
+  defaultReply(t);
 }
-$("#chSend").addEventListener("click", sendText);
-$("#chInput").addEventListener("keydown", e=>{ if(e.key==="Enter") sendText(); });
+$("#chSend").addEventListener("click",sendText);
+$("#chInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendText();});
 
-/* =====================================================================
-   UI: тема, навигация, анимации
-   ===================================================================== */
+/* ================= UI ================= */
 const themeBtn=$("#themeBtn");
-function setTheme(t){
-  document.documentElement.dataset.theme=t;
-  themeBtn.textContent = t==="dark" ? "🌙" : "☀️";
-  try{ localStorage.setItem("pascal_theme", t); }catch(e){}
-}
-try{ setTheme(localStorage.getItem("pascal_theme")||"dark"); }catch(e){ setTheme("dark"); }
-themeBtn.addEventListener("click", ()=> setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
-
-$("#burger").addEventListener("click", ()=>$("#navLinks").classList.toggle("open"));
-$$("#navLinks a").forEach(a=>a.addEventListener("click", ()=>$("#navLinks").classList.remove("open")));
-
-window.addEventListener("scroll", ()=>{
-  const y=window.scrollY, h=document.documentElement.scrollHeight-innerHeight;
+function setTheme(t){document.documentElement.dataset.theme=t;themeBtn.textContent=t==="dark"?"🌙":"☀️";try{localStorage.setItem("pascal_theme",t);}catch(e){}}
+try{setTheme(localStorage.getItem("pascal_theme")||"dark");}catch(e){setTheme("dark");}
+themeBtn.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+$("#burger").addEventListener("click",()=>$("#navLinks").classList.toggle("open"));
+$$("#navLinks a").forEach(a=>a.addEventListener("click",()=>$("#navLinks").classList.remove("open")));
+const spy=$$("#navLinks a");
+window.addEventListener("scroll",()=>{
+  const y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
   $("#scrollbar").style.width=(h>0?y/h*100:0)+"%";
-  $("#nav").classList.toggle("scrolled", y>10);
-  $("#toTop").classList.toggle("show", y>600);
+  $("#nav").classList.toggle("scrolled",y>10);
+  $("#toTop").classList.toggle("show",y>600);
+  let cur="";
+  ["features","constructor","blocks","approval","contacts","links","faq"].forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=140)cur=id;});
+  spy.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+cur));
 },{passive:true});
-$("#toTop").addEventListener("click", ()=>window.scrollTo({top:0,behavior:"smooth"}));
-
-/* reveal + counters */
-const io=new IntersectionObserver(es=>es.forEach(en=>{
-  if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
-}),{threshold:.12});
-$$(".reveal").forEach(el=>io.observe(el));
-const cio=new IntersectionObserver(es=>es.forEach(en=>{
-  if(!en.isIntersecting) return;
-  const el=en.target, target=+el.dataset.count, t0=performance.now();
-  (function step(t){
-    const p=Math.min((t-t0)/1200,1);
-    el.textContent=Math.round(target*(1-Math.pow(1-p,3)));
-    if(p<1) requestAnimationFrame(step);
-  })(t0);
+$("#toTop").addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.1});
+$$(".reveal").forEach(e=>io.observe(e));
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;const el=e.target,tg=+el.dataset.count,t0=performance.now();
+  (function st(t){const p=Math.min((t-t0)/1200,1);el.textContent=Math.round(tg*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st);})(t0);
   cio.unobserve(el);
 }),{threshold:.6});
-$$("[data-count]").forEach(el=>cio.observe(el));
-
-/* ticker: дублируем содержимое для бесшовной петли */
-$("#ticker").innerHTML += $("#ticker").innerHTML;
+$$("[data-count]").forEach(e=>cio.observe(e));
+$("#ticker").innerHTML+=$("#ticker").innerHTML;
 </script>
 </body>
 </html>
