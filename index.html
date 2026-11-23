@@ -1775,5 +1775,119 @@ renderSection(curSec);renderBlock(curBlk);
   if(box) new MutationObserver(hideBasketFaq).observe(box, {childList:true});
 })();
 </script>
+<script>
+/* ================= АНОНИМНАЯ АНАЛИТИКА v3 (+ статистика заходов) ================= */
+(function(){
+"use strict";
+var KEY="pascal_analytics_v3", SESS_KEY="pascal_session_ts";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{searches:[],blocks:[],chatMiss:[],visits:0,sessions:0,firstVisit:null};}catch(e){return {searches:[],blocks:[],chatMiss:[],visits:0,sessions:0,firstVisit:null};}}
+function save(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
+
+/* Счётчик заходов */
+function trackVisit(){
+ var d=load();
+ d.visits++;
+ if(!d.firstVisit) d.firstVisit=new Date().toLocaleDateString("ru-RU");
+ /* Новая сессия, если прошло >30 мин с последнего визита */
+ var last=+sessionStorage.getItem(SESS_KEY)||0;
+ var now=Date.now();
+ if(now-last>30*60*1000){d.sessions++;sessionStorage.setItem(SESS_KEY,now);}
+ else if(!sessionStorage.getItem(SESS_KEY)){d.sessions++;sessionStorage.setItem(SESS_KEY,now);}
+ save(d);
+}
+trackVisit();
+
+/* Остальные сборщики (поиск, блоки, промахи чата) */
+function addSearch(q){if(!q||q.length<2)return;var d=load();d.searches.push({q:q.toLowerCase().trim(),t:Date.now()});if(d.searches.length>500)d.searches=d.searches.slice(-500);save(d);}
+function addBlock(id,title){var d=load();d.blocks.push({id:id,t:title,ts:Date.now()});if(d.blocks.length>500)d.blocks=d.blocks.slice(-500);save(d);}
+function addMiss(q){if(!q)return;var d=load();d.chatMiss.push({q:q,t:Date.now()});if(d.chatMiss.length>200)d.chatMiss=d.chatMiss.slice(-200);save(d);}
+
+var _bind=function(){
+ var inp=document.getElementById("conSearch");
+ if(inp&&!inp.dataset.anB){inp.dataset.anB="1";inp.addEventListener("input",function(e){addSearch(e.target.value);});}
+ var binp=document.getElementById("blkSearch");
+ if(binp&&!binp.dataset.anB){binp.dataset.anB="1";binp.addEventListener("input",function(e){addSearch("[блок] "+e.target.value);});}
+};
+setInterval(_bind,800);_bind();
+document.addEventListener("click",function(e){
+ var b=e.target.closest("[data-blk]");
+ if(b&&typeof BLOCKS!=="undefined"){var bl=BLOCKS.find(function(x){return x.id===+b.dataset.blk;});if(bl)addBlock(bl.id,bl.title);}
+});
+if(typeof defaultReply==="function"){
+ var _dr=defaultReply;
+ defaultReply=function(raw){addMiss(raw);_dr(raw);};
+}
+
+/* Панель аналитики */
+function openDash(){
+ var d=load(),ov=document.getElementById("anDash");if(ov)ov.remove();
+ ov=document.createElement("div");ov.id="anDash";
+ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+ function tbl(rows){
+  if(!rows.length)return'<p style="color:var(--muted);font-size:13px">Пока нет данных</p>';
+  return'<table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--stroke2);color:var(--acc2)">Значение</th><th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--stroke2);color:var(--acc2)">Кол-во</th></tr></thead><tbody>'
+  +rows.map(function(r){return'<tr><td style="padding:5px 8px;border-bottom:1px solid var(--stroke)">'+esc(r[0])+'</td><td style="padding:5px 8px;border-bottom:1px solid var(--stroke);font-weight:700;color:var(--text)">'+r[1]+'</td></tr>';}).join("")+'</tbody></table>';
+ }
+ var sm={};d.searches.forEach(function(s){sm[s.q]=(sm[s.q]||0)+1;});
+ var topS=Object.keys(sm).map(function(k){return[k,sm[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
+ var bm={};d.blocks.forEach(function(b){bm[b.t]=(bm[b.t]||0)+1;});
+ var topB=Object.keys(bm).map(function(t){return[t,bm[t]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+ var mm={};d.chatMiss.forEach(function(m){mm[m.q]=(mm[m.q]||0)+1;});
+ var topM=Object.keys(mm).map(function(q){return[q,mm[q]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
+
+ ov.innerHTML='<div class="an-wrap"><div class="an-head"><h3>📊 Аналитика Паскаля (анонимно)</h3><button id="anClose">✕</button></div>'
+ +'<div class="an-stats">'
+ +'<div class="an-st"><b>'+d.visits+'</b><span>всего заходов</span></div>'
+ +'<div class="an-st"><b>'+d.sessions+'</b><span>уникальных сессий</span></div>'
+ +'<div class="an-st"><b>'+(d.firstVisit||"—")+'</b><span>первый визит</span></div>'
+ +'<div class="an-st"><b>'+d.searches.length+'</b><span>поисковых запросов</span></div>'
+ +'<div class="an-st"><b>'+d.blocks.length+'</b><span>открытий блоков</span></div>'
+ +'<div class="an-st"><b>'+d.chatMiss.length+'</b><span>промахов чата</span></div>'
+ +'</div>'
+ +'<div class="an-grid">'
+ +'<div class="an-card"><h4>🔎 Топ поисковых запросов</h4>'+tbl(topS)+'</div>'
+ +'<div class="an-card"><h4>🧩 Популярные блоки</h4>'+tbl(topB)+'</div>'
+ +'<div class="an-card"><h4>❓ Чат не понял (нужно дополнить)</h4>'+tbl(topM)+'</div>'
+ +'</div>'
+ +'<div class="an-foot"><button class="btn btn-g" id="anCsv">⬇️ Скачать CSV</button><button class="tool" id="anClear">🗑 Очистить</button><span style="font-size:11px;color:var(--muted);margin-left:auto">Данные хранятся только в этом браузере · НИЧЕГО не отправляется</span></div></div>';
+ document.body.appendChild(ov);
+ document.getElementById("anClose").onclick=function(){ov.remove();};
+ document.getElementById("anClear").onclick=function(){if(confirm("Удалить всю локальную аналитику?")){localStorage.removeItem(KEY);sessionStorage.removeItem(SESS_KEY);ov.remove();toast("Аналитика очищена");}};
+ document.getElementById("anCsv").onclick=function(){
+  var csv="\uFEFFТип;Значение;Количество\n";
+  csv+="Заходы;Всего;"+d.visits+"\n";
+  csv+="Заходы;Уникальных сессий;"+d.sessions+"\n";
+  csv+="Заходы;Первый визит;"+(d.firstVisit||"-")+"\n";
+  topS.forEach(function(r){csv+="Поиск;"+r[0].replace(/;/g,",")+";"+r[1]+"\n";});
+  topB.forEach(function(r){csv+="Блок;"+r[0].replace(/;/g,",")+";"+r[1]+"\n";});
+  topM.forEach(function(r){csv+="Промах чата;"+r[0].replace(/;/g,",")+";"+r[1]+"\n";});
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="pascal-analytics-"+new Date().toISOString().slice(0,10)+".csv";a.click();
+ };
+}
+
+/* Стили */
+var st=document.createElement("style");st.textContent=
+"#anDash{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}"
++".an-wrap{background:var(--bg2);border:1px solid var(--stroke2);border-radius:22px;padding:28px 32px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}"
++".an-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}.an-head h3{font-size:19px;flex:1}.an-head button{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}"
++".an-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}"
++".an-st{background:var(--card);border:1px solid var(--stroke);border-radius:14px;padding:14px 18px;flex:1;min-width:110px;text-align:center}"
++".an-st b{display:block;font-family:'Unbounded';font-size:22px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}"
++".an-st span{font-size:11px;color:var(--muted);font-weight:700}"
++".an-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}"
++".an-card{background:var(--card);border:1px solid var(--stroke);border-radius:14px;padding:16px}"
++".an-card h4{font-size:14px;margin-bottom:8px;color:var(--acc2)}"
++".an-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:1px dashed var(--stroke);padding-top:14px}"
++"@media(max-width:800px){.an-grid{grid-template-columns:1fr}.an-stats{gap:8px}.an-st{min-width:90px;padding:10px 12px}.an-st b{font-size:18px}}";
+document.head.appendChild(st);
+
+/* Вызов: Ctrl+Shift+A или ссылка в футере */
+document.addEventListener("keydown",function(e){if(e.ctrlKey&&e.shiftKey&&e.key==="A"){e.preventDefault();openDash();}});
+var fLink=document.createElement("a");fLink.href="#";fLink.textContent="📊 Аналитика (для отдела)";fLink.style.cssText="font-size:12px;color:var(--muted);opacity:.7";
+fLink.addEventListener("click",function(e){e.preventDefault();openDash();});
+var fNav=document.querySelector("footer .f-grid2 div:last-child ul");
+if(fNav)fNav.appendChild(Object.assign(document.createElement("li"),{innerHTML:""})).appendChild(fLink);
+})();
+</script>
 </body>
 </html>
