@@ -1449,5 +1449,316 @@ const cio=new IntersectionObserver(es=>es.forEach(e=>{
 $$("[data-count]").forEach(e=>cio.observe(e));
 $("#ticker").innerHTML+=$("#ticker").innerHTML;
 </script>
+<script>
+/* ================= ОБНОВЛЕНИЕ ПАСКАЛЯ v24.11 — только дополнения ================= */
+(function(){
+"use strict";
+if(typeof BLOCKS==="undefined"||typeof SECTIONS==="undefined")return;
+
+/* ---------- СТИЛИ ---------- */
+const st=document.createElement("style");st.textContent=`
+.hintbox{border:1px solid var(--stroke2);border-radius:14px;background:var(--card2);margin:0 17px 14px;overflow:hidden}
+.hintbox>summary{cursor:pointer;padding:11px 15px;font-weight:800;font-size:13.2px;color:var(--acc2);list-style:none;display:flex;gap:9px}
+.hintbox>summary::-webkit-details-marker{display:none}
+.hintbox>summary::after{content:"▾";margin-left:auto;color:var(--muted)}
+.hintbox .hb-in{padding:0 15px 14px}
+.pickrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.pickrow label{font-size:12.3px;font-weight:800;color:var(--muted)}
+.sel{flex:1;min-width:230px;padding:10px 13px;border-radius:11px;border:1px solid var(--stroke2);background:var(--bg2);color:var(--text);font-family:inherit;font-size:13.2px;font-weight:600;outline:none}
+.varcard{border:1px dashed var(--stroke2);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:var(--bg2)}
+.varcard.on{border-style:solid;border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,255,.12)}
+.varcard .vh{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.vtag{font-size:11px;font-weight:800;color:var(--acc2);border:1px solid var(--stroke2);border-radius:999px;padding:3px 10px;background:var(--card)}
+.vtag.gold{color:var(--gold);border-color:rgba(255,176,32,.45);background:rgba(255,176,32,.1)}
+.varcard p{font-size:13.6px;line-height:1.6}
+.varcard .copy-btn{margin-top:9px}
+.reqbox{border:1px solid rgba(52,211,153,.45);background:rgba(52,211,153,.07);border-radius:14px;padding:14px 16px;margin:0 17px 14px}
+.reqbox h5{font-size:13px;font-weight:800;color:var(--ok);margin-bottom:9px}
+.reqbox ul{list-style:none}
+.reqbox li{position:relative;padding-left:18px;font-size:13.5px;margin-bottom:7px;line-height:1.55}
+.reqbox li::before{content:"—";position:absolute;left:0;color:var(--ok);font-weight:800}
+.mustpill{font-size:10.5px;font-weight:800;color:#04220f;background:var(--ok);border-radius:999px;padding:3px 9px;flex:none}
+.optpill{font-size:10.5px;font-weight:800;color:var(--gold);border:1px solid rgba(255,176,32,.45);background:rgba(255,176,32,.1);border-radius:999px;padding:3px 9px;flex:none}
+.blk-badge{margin-left:auto;font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px;background:rgba(52,211,153,.16);color:var(--ok);border:1px solid rgba(52,211,153,.4);flex:none}
+.side-nav button.active .blk-badge{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.4)}
+.grp-role{font-size:11px;font-weight:800;color:#fff;background:var(--grad);border-radius:999px;padding:3px 10px;flex:none}
+.subhead{font-size:12.5px;font-weight:800;color:var(--acc2);margin:12px 0 7px}
+.phrase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ph-card{background:var(--card);border:1px solid var(--stroke);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:11px;transition:.25s}
+.ph-card:hover{border-color:var(--acc);transform:translateY(-4px);box-shadow:var(--glow)}
+.ph-head{display:flex;align-items:center;gap:11px}
+.ph-ico{width:44px;height:44px;flex:none;border-radius:13px;background:var(--card2);border:1px solid var(--stroke2);display:grid;place-items:center;font-size:21px}
+.ph-card h3{font-size:15.5px;line-height:1.3}
+.ph-meta{display:flex;gap:7px;flex-wrap:wrap}
+.ph-text{font-size:13.6px;line-height:1.62;color:var(--muted);flex:1}
+.ph-text b{color:var(--text)}
+.ph-foot{display:flex;gap:8px;flex-wrap:wrap}
+.fillbox{border:1px solid var(--stroke2);border-radius:14px;background:var(--card2);padding:14px 16px;margin:0 17px 14px}
+.fillbox h5{font-size:13px;font-weight:800;margin-bottom:10px;color:var(--acc2)}
+.fillbox input{width:100%;padding:10px 13px;border-radius:11px;border:1px solid var(--stroke2);background:var(--bg2);color:var(--text);font-family:inherit;font-size:13.2px;outline:none}
+.fillhint{font-size:11.8px;color:var(--muted);margin-top:8px}
+.add-btn{font-size:12.3px;font-weight:800;color:var(--ok);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.4);border-radius:999px;padding:7px 15px;transition:.2s}
+.add-btn:hover{background:var(--ok);color:#04220f}
+#basketFab{position:fixed;left:22px;bottom:80px;height:48px;padding:0 18px;border-radius:999px;background:var(--grad);border:none;color:#fff;font-weight:800;font-size:13.5px;z-index:340;box-shadow:var(--glow);display:flex;align-items:center;gap:9px;transition:.25s}
+#basketFab:hover{transform:translateY(-3px)}
+#basketCount{min-width:22px;height:22px;border-radius:99px;background:rgba(255,255,255,.25);display:grid;place-items:center;font-size:12px;padding:0 6px}
+#basketPanel{position:fixed;left:22px;bottom:140px;width:400px;max-width:calc(100vw - 28px);height:min(560px,calc(100vh - 200px));background:var(--bg2);border:1px solid var(--stroke2);border-radius:20px;box-shadow:var(--shadow);z-index:345;display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(18px) scale(.96);transition:.28s}
+#basketPanel.open{opacity:1;pointer-events:auto;transform:none}
+.bk-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:var(--grad);color:#fff;font-weight:800;font-size:14px}
+.bk-head button{margin-left:auto;background:rgba(255,255,255,.18);border:none;color:#fff;width:30px;height:30px;border-radius:9px}
+#bkList{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px}
+.bk-item{border:1px solid var(--stroke);border-radius:12px;padding:10px 12px;background:var(--card);font-size:12.6px;line-height:1.5}
+.bk-item b{display:block;color:var(--acc2);font-size:11.5px;margin-bottom:4px}
+.bk-item .bk-x{float:right;background:none;border:none;color:var(--muted);font-size:14px}
+.bk-empty{color:var(--muted);font-size:13px;text-align:center;padding:26px 10px}
+.bk-foot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 13px;border-top:1px solid var(--stroke);background:var(--card)}
+@media(max-width:1020px){.phrase-grid{grid-template-columns:1fr}}
+@media(max-width:760px){#basketPanel{left:10px;right:10px;width:auto;bottom:150px}#basketFab{left:10px;bottom:78px}}`;
+document.head.appendChild(st);
+
+/* ---------- ДАННЫЕ: ДОЛЖНОСТИ (п. 1.2 и 2.2) ---------- */
+const T12=(post,tail)=>`В соответствии с Реестром должностей государственной гражданской службы Липецкой области должность ${post} относится к ${tail} группе должностей государственной гражданской службы Липецкой области категории `;
+const NO_REQ="Требования к стажу государственной гражданской службы (далее – гражданская служба) или стажу работы по специальности, направлению подготовки не предъявляются.";
+const ST=(a,b)=>`Гражданский служащий должен иметь стаж государственной гражданской службы (далее – гражданская служба)${a} не менее двух лет или стаж работы по специальности, направлению подготовки не менее ${b} лет.`;
+const POSITIONS=[
+{n:1,post:"старшего специалиста, старшего специалиста 3, 2, 1 разряда",group:"старшая",cat:"обеспечивающие специалисты",t22:NO_REQ},
+{n:2,post:"специалиста-эксперта, ведущего специалиста-эксперта, главного специалиста-эксперта, секретаря судебного заседания",group:"старшая",cat:"специалисты",t22:NO_REQ},
+{n:3,post:"государственного инженера-инспектора, главного государственного инженера-инспектора, консультанта, ведущего консультанта, главного консультанта",group:"ведущая",cat:"специалисты",t22:NO_REQ},
+{n:4,post:"заместителя начальника отдела",group:"главная",cat:"специалисты",t22:"Гражданский служащий должен иметь стаж государственной гражданской службы (далее – гражданская служба) не менее одного года или стаж работы по специальности, направлению подготовки не менее двух лет."},
+{n:5,post:"помощника (советника) заместителя/первого заместителя Губернатора Липецкой области",group:"главная",cat:"помощники (советники)",t22:ST(" на ведущих должностях государственной службы","двух")},
+{n:6,post:"помощника (советника) Губернатора Липецкой области",group:"высшая",cat:"помощники (советники)",t22:ST(" на главных или ведущих должностях государственной службы","четырех")},
+{n:7,post:"начальника отдела",group:"главная",cat:"руководители",t22:ST(" на ведущих должностях государственной службы","двух")},
+{n:8,post:"министра, начальника управления, руководителя инспекции, первого заместителя министра, первого заместителя начальника управления, первого заместителя руководителя инспекции, заместителя министра, заместителя министра – начальника управления, заместителя начальника управления, заместителя руководителя инспекции, заместителя начальника управления в министерстве",group:"высшая",cat:"руководители",t22:ST(" на главных или ведущих должностях государственной службы","четырех")}
+];
+POSITIONS.forEach(p=>p.t12=T12(p.post,p.group)+`«${p.cat}».`);
+
+const MUST_NPA=["постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области» (далее – Регламент Правительства Липецкой области);","Положение об исполнительном органе области."];
+const MUST_MAX="использовать в целях рабочих коммуникаций отечественный многофункциональный сервис обмена информацией в качестве средства мгновенного обмена сообщениями.";
+
+/* ---------- БЛОК ИИ ---------- */
+const AI_UKAZ="Указ Президента Российской Федерации от 10 октября 2019 года № 490 «О развитии искусственного интеллекта в Российской Федерации»;";
+const AI_GOST="«ГОСТ Р 71484.3-2024 (ИСО/МЭК 5259-3:2024). Национальный стандарт Российской Федерации. Искусственный интеллект. Качество данных для аналитики и машинного обучения. Часть 3. Требования и рекомендации по управлению качеством данных» (утв. и введен в действие Приказом Росстандарта от 28.10.2024 N 1538-ст);";
+const AI_FSTEC="приказ ФСТЭК России от 11 апреля 2025 года № 117 «Об утверждении Требований о защите информации, содержащейся в государственных информационных системах, иных информационных системах государственных органов, государственных унитарных предприятий, государственных учреждений».";
+const R_LEAD="ДЛЯ РУКОВОДИТЕЛЕЙ И ИХ ЗАМЕСТИТЕЛЕЙ, НАЧАЛЬНИКОВ ОТДЕЛОВ",R_IT="ДЛЯ РУКОВОДИТЕЛЕЙ ЦИФРОВОЙ ТРАНСФОРМАЦИИ, ИТ-СПЕЦИАЛИСТОВ";
+const AI_LEAD_KNOW=["понятия, принципы работы и применения технологий искусственного интеллекта (далее – ИИ), включая:","базовые понятия и определения в сфере ИИ (о генеративных моделях, машинном обучении и нейросетях);","требования информационной безопасности при работе с ИИ;","этические аспекты применения ИИ в государственном управлении;","направления и перспективы использования технологий ИИ в государственном управлении;","методы оценки эффективности внедрения ИИ-решений в деятельность органа, структурного подразделения;","основы организации служебной деятельности с применением инструментов автоматизации и ИИ;"];
+const AI_IT_KNOW=["принципы работы генеративного искусственного интеллекта (далее – ИИ) и методологии работы с большими языковыми моделями (LLM);","основы промпт-инжиниринга (составление корректных запросов для получения результатов от ИИ);","структуры данных, накапливаемых в органе власти;","принципы составления BPMN-схем;","критерии отбора ИИ-решений для органов власти;","методы интеграции ИИ-решений в существующие отраслевые информационные системы."];
+const AI_LEAD_SKILL=["использования технологий ИИ в служебной деятельности;","составления корректных запросов (промптов) для получения результатов от ИИ;","осуществления проверок корректности и достоверности результатов, полученных с использованием ИИ;","обеспечения безопасности информации при работе с ИИ;","определения целесообразности внедрения ИИ в процессы и информационные системы органа, подразделения;","формулирования задач на разработку или внедрение ИИ-решений;","проведения оценки эффективности ИИ-решений;","проведения анализа возможных рисков и качества результатов, получаемых от применения ИИ-решений;"];
+const AI_IT_SKILL=["составления сложных, многоуровневых запросов (промптов) для получения точных и релевантных результатов от ИИ;","разработки и использования ИИ-агентов;","ведения реестра данных органа власти, понимания текущей и целевой структуры данных;","организации наполнения данных и контроля их качества;","составления текущей и целевой BPMN-схемы процесса;","обработки и структурирования больших объемов информации с помощью ИИ-инструментов;","разработки и внедрения ИИ-решений для автоматизации рабочих процессов, анализа текстов, обработки данных;","проведения анализа эффективности внедренных ИИ-решений и подготовки предложений по их доработке;","разработки регламентов и инструкций по использованию ИИ для других сотрудников;","проведения обучения и консультирования сотрудников по применению ИИ-технологий."];
+
+/* ---------- ПЕРСОНАЛЬНЫЕ ДАННЫЕ ---------- */
+const PH1="___________________________ (указывается наименование исполнительного органа государственной власти Липецкой области или структурного подразделения Правительства Липецкой области)";
+const PH2="________________________________ (указывается наименование исполнительного органа государственной власти Липецкой области или структурного подразделения Правительства Липецкой области)";
+const PH3="________________________________ (указывается наименование исполнительного органа государственной власти Липецкой области или Правительство Липецкой области)";
+const PH4="_____________________________ (указывается наименование исполнительного органа Липецкой области или структурного подразделения Правительства Липецкой области)";
+const PH5="________________________________ (указывается наименование исполнительного органа Липецкой области или структурного подразделения Правительства Липецкой области)";
+const PD_ITEMS=["осуществлять функции ответственного за организацию обработки персональных данных, в том числе <13>:",
+`осуществлять внутренний контроль за соблюдением в ${PH1} законодательства Российской Федерации о персональных данных, в том числе требований к защите персональных данных;`,
+`доводить до сведения гражданских служащих и работников ${PH2}, допущенных к обработке персональных данных, положения законодательства Российской Федерации о персональных данных, правовых актов ${PH3} по вопросам обработки персональных данных, требований к защите персональных данных;`,
+"осуществлять организацию приема и обработки обращений и запросов субъектов персональных данных или их представителей и осуществлять контроль за приемом и обработкой таких обращений и запросов;",
+"принимать меры по прекращению обработки персональных данных, как в целом, так и для отдельных лиц, в случае выявления нарушений установленного режима обработки или обеспечения безопасности персональных данных;",
+"принимать участие в проведении проверок по фактам разглашения персональных данных, нарушения требований обеспечения информационной безопасности, несанкционированного доступа, утраты, порчи персональных данных и технических компонентов информационной системы, содержащей персональные данные;",
+"разрабатывать правовые акты и иные документы по вопросам обработки персональных данных;",
+`осуществлять контроль за процессами обработки персональных данных гражданскими служащими и работниками ${PH4}, допущенными к обработке персональных данных;`,
+`осуществлять контроль соблюдения сотрудниками и иными лицами порядка доступа в помещения ${PH5}, в которых осуществляется обработка персональных данных.`];
+
+/* ---------- НОВЫЕ БЛОКИ 1–6, СТАРЫЕ → 7–18 ---------- */
+const NEW_BLOCKS=[
+{id:1,icon:"🤖",title:"Искусственный интеллект",badge:"обязательный",sub:"Обязателен для всех руководителей, их заместителей и начальников отделов. Расширенная часть — для руководителей цифровой трансформации и ИТ-специалистов",groups:[
+ {t:"Знания законодательства — руководители",role:R_LEAD,target:"п. 2.3.2.1",items:[AI_UKAZ],note:"Блок обязателен для всех руководителей, их заместителей и начальников отделов."},
+ {t:"Знания законодательства — цифровая трансформация и ИТ",role:R_IT,target:"п. 2.3.2.1",items:[AI_UKAZ,AI_GOST,AI_FSTEC]},
+ {t:"Иные профессиональные знания — руководители",role:R_LEAD,target:"п. 2.3.2.2",items:AI_LEAD_KNOW},
+ {t:"Иные профессиональные знания — цифровая трансформация и ИТ",role:R_IT,target:"п. 2.3.2.2",items:AI_IT_KNOW},
+ {t:"Профессиональные умения — руководители",role:R_LEAD,target:"п. 2.3.5",items:AI_LEAD_SKILL},
+ {t:"Профессиональные умения — цифровая трансформация и ИТ",role:R_IT,target:"п. 2.3.5",items:AI_IT_SKILL}]},
+{id:2,icon:"🔒",title:"Гостайна",badge:"при допуске",sub:"Включается в ДР в случае наличия у гражданского служащего допуска к государственной тайне",groups:[
+ {t:"Знания законодательства",target:"п. 2.3.2.1",items:["Закон Российской Федерации от 21 июля 1993 года № 5485-1 «О государственной тайне»."]},
+ {t:"Функциональные знания",target:"п. 2.3.3",items:["основ секретного делопроизводства и порядка работы со сведениями, составляющими государственную тайну."]},
+ {t:"Функциональные умения",target:"п. 2.3.6",items:["работы со сведениями, составляющими государственную тайну, ведения секретного делопроизводства."]},
+ {t:"Должностные обязанности",target:"п. 3.2",items:["осуществлять работу со сведениями, составляющими государственную тайну."]}]},
+{id:3,icon:"👔",title:"Руководство",badge:"руководителям",sub:"Добавляется гражданским служащим, замещающим должности категории «руководители»",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:["осуществлять организацию и контролировать работу исполнительного органа/отдела, распределять обязанности между гражданскими служащими исполнительного органа/отдела, давать поручения, контролировать их исполнение, анализировать эффективность работы гражданских служащих исполнительного органа/отдела."],note:"Выберите «исполнительного органа» или «отдела» — оставьте нужное."}]},
+{id:4,icon:"✉️",title:"Работа с обращениями",sub:"Для служащих, в обязанности которых входит рассмотрение обращений граждан и организаций",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:["осуществлять либо обеспечивать объективное, всестороннее и своевременное рассмотрение обращений граждан и юридических лиц, структурных подразделений Правительства Липецкой области, исполнительных органов Липецкой области, органов местного самоуправления муниципальных образований Липецкой области в порядке и сроки, установленные действующим законодательством, подготовку проектов ответов на их обращения в пределах своей компетенции."]}]},
+{id:5,icon:"📜",title:"Работа с НПА",sub:"Для служащих, участвующих в разработке нормативных правовых актов",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:["принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности отдела."],note:"При необходимости замените «отдела» на своё подразделение / исполнительный орган."}]},
+{id:6,icon:"🗂️",title:"Персональные данные",badge:"ответственному",sub:"Для лица, ответственного за организацию обработки персональных данных",groups:[
+ {t:"Должностные обязанности",target:"п. 3.2",items:PD_ITEMS,fill:true,note:"Заполните поле выше — наименование органа подставится во все пропуски автоматически. Сноска <13> — как в примерном ДР."}]}
+];
+BLOCKS.forEach(b=>b.id+=6);
+BLOCKS.unshift(...NEW_BLOCKS);
+BLKMENU.length=0;BLOCKS.forEach(b=>BLKMENU.push(`${b.icon} ${b.title}`));BLKMENU.push("Вернуться назад");
+BIDX.length=0;BLOCKS.forEach(b=>b.groups.forEach((g,i)=>BIDX.push({blk:b.id,gi:i,label:`Блок ${b.id} · ${b.title} → ${g.t}`,text:g.items.join(" ")+" "+g.t+" "+(g.role||"")+" "+b.sub})));
+
+/* ---------- ДОПОЛНЕНИЯ К ПОДСКАЗКАМ ПУНКТОВ (старый текст сохраняется) ---------- */
+function sub(secId,key){const s=SECTIONS.find(x=>x.id===secId);return s&&s.subs?s.subs.find(([k])=>k===key):null;}
+sub(1,"1.2")[1]+="\n\n🧩 Готовые формулировки — выберите свою должность в списке ниже («Подобрать формулировку по должности») и скопируйте нужную строку. Варианты: 1) старший специалист (3,2,1 разряда) — старшая, «обеспечивающие специалисты»; 2) специалист-эксперт / ведущий / главный специалист-эксперт, секретарь судебного заседания — старшая, «специалисты»; 3) государственный инженер-инспектор / главный, консультант / ведущий / главный — ведущая, «специалисты»; 4) заместитель начальника отдела — главная, «специалисты»; 5) помощник (советник) заместителя/первого заместителя Губернатора — главная, «помощники (советники)»; 6) помощник (советник) Губернатора — высшая, «помощники (советники)»; 7) начальник отдела — главная, «руководители»; 8) министр, начальник управления, руководитель инспекции и их заместители — высшая, «руководители».";
+sub(2,"2.2")[1]+="\n\n🧩 Формулировки по группам (выберите должность в списке ниже):\n1) старшая «обеспечивающие специалисты», «специалисты» и ведущая «специалисты» — требования к стажу не предъявляются;\n2) главная «специалисты» — гражданская служба не менее 1 года или специальность не менее 2 лет;\n3) главная «помощники (советники)» — на ведущих должностях не менее 2 лет или специальность не менее 2 лет;\n4) высшая «помощники (советники)» — на главных или ведущих не менее 2 лет или специальность не менее 4 лет;\n5) главная «руководители» — на ведущих не менее 2 лет или специальность не менее 2 лет;\n6) высшая «руководители» — на главных или ведущих не менее 2 лет или специальность не менее 4 лет.\n\n💡 Типовая запись: «2.2. Гражданский служащий должен иметь стаж государственной гражданской службы (далее – гражданская служба) не менее ____ лет или стаж работы по специальности, направлению подготовки не менее ____ лет <11>».";
+sub(2,"2.3.2.1")[1]+="\n\n✅ Обязательно для всех в п. 2.3.2.1:\n— постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области» (далее – Регламент Правительства Липецкой области);\n— Положение об исполнительном органе области.\n\n🤖 Блок 1 «Искусственный интеллект» обязателен для всех руководителей (см. также расширенную часть для ЦТ/ИТ).\n🔒 Блок 2 «Гостайна» — при наличии допуска: Закон РФ от 21.07.1993 № 5485-1 «О государственной тайне».";
+sub(2,"2.3.2.2")[1]+="\n\n🤖 Полные формулировки по ИИ — в блоке 1 (две части: руководители / ЦТ и ИТ). Скопируйте свою часть целиком.";
+sub(2,"2.3.3")[1]+="\n\n🔒 При наличии допуска к гостайне (блок 2) добавьте: основ секретного делопроизводства и порядка работы со сведениями, составляющими государственную тайну.";
+sub(2,"2.3.5")[1]+="\n\n🤖 Полные формулировки умений по ИИ — в блоке 1 (две части: руководители / ЦТ и ИТ).";
+sub(2,"2.3.6")[1]+="\n\n🔒 При наличии допуска к гостайне (блок 2) добавьте: работы со сведениями, составляющими государственную тайну, ведения секретного делопроизводства.";
+sub(3,"3.2")[1]+="\n\n✅ Обязательно для всех: фраза об отечественном многофункциональном сервисе обмена информацией (зелёный бокс ниже и раздел «Фразы в п. 3.2»).\n📎 По ситуации: руководство (блок 3), работа с обращениями (блок 4), работа с НПА (блок 5).\n🔒 Блок 2 «Гостайна» (при допуске): «осуществлять работу со сведениями, составляющими государственную тайну».\n🗂️ Блок 6 «Персональные данные» — ответственному за обработку ПДн, с автоподстановкой наименования органа.";
+const s8=SECTIONS.find(x=>x.id===8);if(s8)s8.desc=s8.desc.replace("в блоках 10 и 12","в блоках 16 и 18");
+SIDX.length=0;SECTIONS.forEach(s=>{if(s.subs)s.subs.forEach(([k,t])=>SIDX.push({sec:s.id,key:k,text:t}));else SIDX.push({sec:s.id,key:null,text:s.desc});});
+
+/* ---------- ДОП. ЭЛЕМЕНТЫ ВНУТРИ ПУНКТОВ ---------- */
+const E=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+let pdOrgName="";try{pdOrgName=localStorage.getItem("pascal_pd_org")||"";}catch(e){}
+const fillItems=items=>{const v=pdOrgName.trim();return v?items.map(x=>x.replace(/_{3,}\s*\(указывается[^)]*\)/g,v)):items;};
+function posPicker(field){return `<details class="hintbox" open><summary>🧩 Подобрать формулировку по должности</summary><div class="hb-in">
+<div class="pickrow"><label>Ваша должность:</label><select class="sel" data-pos="${field}"><option value="">— выберите должность —</option>${POSITIONS.map(p=>`<option value="${p.n}">${p.n}) ${E(p.post)} · ${p.group} · «${p.cat}»</option>`).join("")}</select></div>
+<div data-posout="${field}"></div><div class="subhead">Все варианты:</div>
+${POSITIONS.map(p=>`<div class="varcard" data-poscard="${field}-${p.n}"><div class="vh"><span class="vtag">${p.n}) ${p.group} группа</span><span class="vtag gold">«${p.cat}»</span></div><p>${E(field==="t12"?p.t12:p.t22)}</p><button class="copy-btn" data-poscopy="${field}" data-posn="${p.n}">📋 Скопировать</button> <button class="add-btn" data-posadd="${field}" data-posn="${p.n}">➕ В корзину</button></div>`).join("")}</div></details>`;}
+function mustBox(k){
+ if(k==="2.3.2.1")return `<div class="reqbox"><h5>✅ Обязательно для всех в п. 2.3.2.1</h5><ul>${MUST_NPA.map(x=>`<li>${E(x)}</li>`).join("")}</ul><button class="copy-btn" data-copymust="npa">📋 Скопировать обязательное</button> <button class="add-btn" data-addmust="npa">➕ В корзину</button></div>`;
+ if(k==="3.2")return `<div class="reqbox"><h5>✅ Обязательно для всех в п. 3.2</h5><ul><li>${E(MUST_MAX)}</li></ul><button class="copy-btn" data-copymust="max">📋 Скопировать фразу</button> <button class="add-btn" data-addmust="max">➕ В корзину</button></div>`;
+ return "";}
+function decorateCon(){
+ document.querySelectorAll("#conContent .acc").forEach(acc=>{
+  const k=acc.dataset.acc,inner=acc.querySelector(".acc-inner"),foot=acc.querySelector(".acc-foot");
+  if(!inner||acc.dataset.upgraded)return;acc.dataset.upgraded="1";
+  let h="";if(k==="1.2")h+=posPicker("t12");if(k==="2.2")h+=posPicker("t22");h+=mustBox(k);
+  if(h)foot.insertAdjacentHTML("beforebegin",h);
+  if(k==="1.2"||k==="2.2")acc.querySelector(".ttl").insertAdjacentHTML("beforeend","<small>🧩 есть готовые формулировки по должностям</small>");
+  if(k==="2.3.2.1"||k==="3.2"){acc.querySelector(".ttl").insertAdjacentHTML("beforeend","<small>✅ есть обязательные формулировки</small>");acc.querySelector(".acc-head").insertAdjacentHTML("beforeend","");acc.querySelector(".chev").insertAdjacentHTML("beforebegin",'<span class="mustpill">обязательно</span>');}
+  const cp=foot.querySelector("[data-cs]");
+  if(cp)cp.insertAdjacentHTML("afterend",` <button class="add-btn" data-addcs="${cp.dataset.cs}" data-addck="${cp.dataset.ck}">➕ В корзину</button>`);
+ });
+ const dc=document.querySelector("#conContent .desc-card [data-cs]");
+ if(dc&&!dc.parentElement.dataset.upgraded){dc.parentElement.dataset.upgraded="1";dc.insertAdjacentHTML("afterend",` <button class="add-btn" data-addcs="${dc.dataset.cs}" data-addck="__desc">➕ В корзину</button>`);}
+}
+new MutationObserver(decorateCon).observe(document.getElementById("conContent"),{childList:true});decorateCon();
+
+document.getElementById("conContent").addEventListener("change",e=>{
+ const sel=e.target.closest("[data-pos]");if(!sel)return;
+ const f=sel.dataset.pos,n=+sel.value,out=document.querySelector(`[data-posout="${f}"]`);
+ document.querySelectorAll(`[data-poscard^="${f}-"]`).forEach(c=>c.classList.remove("on"));
+ if(!n){out.innerHTML="";return;}
+ const p=POSITIONS.find(x=>x.n===n),txt=f==="t12"?p.t12:p.t22,c=document.querySelector(`[data-poscard="${f}-${n}"]`);if(c)c.classList.add("on");
+ out.innerHTML=`<div class="varcard on"><div class="vh"><span class="vtag">✔ ваша должность</span><span class="vtag gold">${p.group} группа · «${p.cat}»</span></div><p>${E(txt)}</p><button class="copy-btn" data-poscopy="${f}" data-posn="${n}">📋 Скопировать</button> <button class="add-btn" data-posadd="${f}" data-posn="${n}">➕ В корзину</button></div>`;
+});
+document.getElementById("conContent").addEventListener("click",e=>{
+ const pc=e.target.closest("[data-poscopy]");if(pc){const p=POSITIONS.find(x=>x.n===+pc.dataset.posn);copyText(pc.dataset.poscopy==="t12"?p.t12:p.t22);e.stopPropagation();return;}
+ const pa=e.target.closest("[data-posadd]");if(pa){const p=POSITIONS.find(x=>x.n===+pa.dataset.posn);basketAdd("п. "+(pa.dataset.posadd==="t12"?"1.2":"2.2")+" · "+p.post,pa.dataset.posadd==="t12"?p.t12:p.t22);return;}
+ const cm=e.target.closest("[data-copymust]");if(cm){copyText(cm.dataset.copymust==="npa"?MUST_NPA.map(x=>"- "+x).join("\n"):"- "+MUST_MAX);return;}
+ const am=e.target.closest("[data-addmust]");if(am){am.dataset.addmust==="npa"?basketAdd("п. 2.3.2.1 · обязательные НПА",MUST_NPA.map(x=>"- "+x).join("\n")):basketAdd("п. 3.2 · обязательная фраза","- "+MUST_MAX);return;}
+ const ac=e.target.closest("[data-addcs]");if(ac){const sec=SECTIONS.find(x=>x.id===+ac.dataset.addcs);const txt=ac.dataset.addck==="__desc"?sec.desc:sec.subs.find(([k])=>k===ac.dataset.addck)[1];basketAdd((ac.dataset.addck==="__desc"?"Раздел "+sec.id:"п. "+ac.dataset.addck)+" · подсказка",txt);return;}
+},true);
+
+/* ---------- БЛОКИ: бейджи, роли, ПДн-автоподстановка, корзина ---------- */
+function decorateBlk(){
+ document.querySelectorAll("#blkNav [data-blk]").forEach(btn=>{
+  const b=BLOCKS.find(x=>x.id===+btn.dataset.blk);
+  if(b&&b.badge&&!btn.querySelector(".blk-badge"))btn.insertAdjacentHTML("beforeend",`<span class="blk-badge">${b.badge}</span>`);});
+ const b=BLOCKS.find(x=>x.id===curBlk);if(!b)return;
+ document.querySelectorAll("#blkContent .acc").forEach(acc=>{
+  const g=b.groups[+acc.dataset.gi];if(!g||acc.dataset.upgraded)return;acc.dataset.upgraded="1";
+  if(g.role)acc.querySelector(".chev").insertAdjacentHTML("beforebegin",`<span class="grp-role">${g.role.includes("ИТ")?"ЦТ / ИТ":"руководители"}</span>`);
+  if(g.fill){acc.querySelector(".lst").insertAdjacentHTML("beforebegin",`<div class="fillbox"><h5>✍️ Автоподстановка наименования органа</h5><input type="text" id="pdOrgInput" placeholder="Например: министерство экономического развития Липецкой области" value="${E(pdOrgName)}"><div class="fillhint">Введите наименование один раз — оно подставится во все пропуски и в копируемый текст. Сохраняется в браузере.</div></div>`);
+   acc.querySelector(".lst").dataset.pdlist="1";acc.querySelector(".lst").innerHTML=fillItems(g.items).map(x=>`<li>${E(x)}</li>`).join("");}
+  const cg=acc.querySelector("[data-bg]");
+  if(cg)cg.insertAdjacentHTML("afterend",` <button class="add-btn" data-addbg="${b.id}" data-addbi="${acc.dataset.gi}">➕ В корзину</button>`);
+ });
+ const h=document.querySelector("#blkContent .c-head h3");
+ if(h&&b.badge&&!h.querySelector(".mustpill"))h.insertAdjacentHTML("beforeend",` <span class="mustpill" style="vertical-align:middle">${b.badge}</span>`);
+}
+new MutationObserver(decorateBlk).observe(document.getElementById("blkContent"),{childList:true});
+new MutationObserver(decorateBlk).observe(document.getElementById("blkNav"),{childList:true});decorateBlk();
+const grpText=(b,g)=>(g.target?g.target+" — ":"")+(g.role?g.role+"\n":"")+g.t+"\n"+(g.fill?fillItems(g.items):g.items).map(i=>"- "+i).join("\n");
+document.getElementById("blkContent").addEventListener("input",e=>{
+ if(e.target.id!=="pdOrgInput")return;pdOrgName=e.target.value;try{localStorage.setItem("pascal_pd_org",pdOrgName);}catch(err){}
+ const b=BLOCKS.find(x=>x.id===curBlk);b.groups.forEach(g=>{if(g.fill){const ul=document.querySelector('#blkContent [data-pdlist]');if(ul)ul.innerHTML=fillItems(g.items).map(x=>`<li>${E(x)}</li>`).join("");}});
+});
+document.getElementById("blkContent").addEventListener("click",e=>{
+ const ab=e.target.closest("[data-addbg]");
+ if(ab){const b=BLOCKS.find(x=>x.id===+ab.dataset.addbg),g=b.groups[+ab.dataset.addbi];basketAdd("Блок "+b.id+" · "+g.t+(g.target?" → "+g.target:""),grpText(b,g));e.stopPropagation();return;}
+ const cg=e.target.closest("[data-bg]");
+ if(cg){const b=BLOCKS.find(x=>x.id===+cg.dataset.bg),g=b.groups[+cg.dataset.bi];copyText(grpText(b,g));e.stopPropagation();return;}
+ const cb=e.target.closest("[data-copyblk]");
+ if(cb){const b=BLOCKS.find(x=>x.id===+cb.dataset.copyblk);copyText("Блок "+b.id+". "+b.title+"\n"+b.sub+"\n\n"+b.groups.map(g=>grpText(b,g)).join("\n\n"));e.stopPropagation();return;}
+},true);
+
+/* ---------- РАЗДЕЛ «ФРАЗЫ В П. 3.2» ---------- */
+const PHRASES=[
+{icon:"💬",title:"Рабочие коммуникации — обязательно всем",must:true,when:"Для всех гражданских служащих без исключения",text:MUST_MAX},
+{icon:"👔",title:"Руководство",when:"Добавляется руководителям (категория «руководители»)",block:3,text:"осуществлять организацию и контролировать работу исполнительного органа/отдела, распределять обязанности между гражданскими служащими исполнительного органа/отдела, давать поручения, контролировать их исполнение, анализировать эффективность работы гражданских служащих исполнительного органа/отдела."},
+{icon:"✉️",title:"Работа с обращениями",when:"Если в обязанности входит рассмотрение обращений",block:4,text:"осуществлять либо обеспечивать объективное, всестороннее и своевременное рассмотрение обращений граждан и юридических лиц, структурных подразделений Правительства Липецкой области, исполнительных органов Липецкой области, органов местного самоуправления муниципальных образований Липецкой области в порядке и сроки, установленные действующим законодательством, подготовку проектов ответов на их обращения в пределах своей компетенции."},
+{icon:"📜",title:"Работа с НПА",when:"Если служащий участвует в разработке нормативных правовых актов",block:5,text:"принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности отдела."}];
+const phSec=document.createElement("section");phSec.id="phrases";
+phSec.innerHTML=`<div class="wrap"><div class="eyebrow">📎 Фразы в пункт 3.2</div>
+<h2 class="sec-h">Обязанности «по случаю» — <span class="grad-t">одной кнопкой</span></h2>
+<p class="sec-p">Это не блоки, а отдельные формулировки для пункта 3.2: первая обязательна для всех, остальные добавляются при определённых условиях. Нажмите «Скопировать» — и вставляйте в свой ДР.</p>
+<div class="phrase-grid">${PHRASES.map((p,i)=>`<div class="ph-card"><div class="ph-head"><span class="ph-ico">${p.icon}</span><h3>${p.title}</h3></div>
+<div class="ph-meta"><span class="target">п. 3.2</span>${p.must?'<span class="mustpill">обязательно всем</span>':'<span class="optpill">по ситуации</span>'}${p.block?`<span class="vtag">блок ${p.block}</span>`:""}</div>
+<div class="ph-text"><b>${E(p.when)}.</b><br>— ${E(p.text)}</div>
+<div class="ph-foot"><button class="copy-btn" data-phcopy="${i}">📋 Скопировать фразу</button><button class="add-btn" data-phadd="${i}">➕ В корзину</button>${p.block?`<button class="tool" data-phblk="${p.block}">🧩 Открыть блок ${p.block}</button>`:""}</div></div>`).join("")}</div></div>`;
+document.getElementById("approval").before(phSec);
+phSec.addEventListener("click",e=>{
+ const c=e.target.closest("[data-phcopy]");if(c){copyText("- "+PHRASES[+c.dataset.phcopy].text);return;}
+ const a=e.target.closest("[data-phadd]");if(a){const p=PHRASES[+a.dataset.phadd];basketAdd("п. 3.2 · "+p.title,"- "+p.text);return;}
+ const b=e.target.closest("[data-phblk]");if(b){renderBlock(+b.dataset.phblk);document.getElementById("blocks").scrollIntoView({behavior:"smooth"});}
+});
+const navA=document.createElement("a");navA.href="#phrases";navA.textContent="Фразы в п. 3.2";
+document.querySelector('#navLinks a[href="#blocks"]').after(navA);
+navA.addEventListener("click",()=>document.getElementById("navLinks").classList.remove("open"));
+
+/* ---------- КОРЗИНА ДР ---------- */
+let basket=[];try{basket=JSON.parse(localStorage.getItem("pascal_basket")||"[]");}catch(e){}
+const saveB=()=>{try{localStorage.setItem("pascal_basket",JSON.stringify(basket));}catch(e){}};
+document.body.insertAdjacentHTML("beforeend",`<button id="basketFab" title="Корзина ДР">🧺 Корзина ДР <span id="basketCount">0</span></button>
+<div id="basketPanel" role="dialog" aria-label="Корзина ДР"><div class="bk-head">🧺 Корзина ДР <button id="bkClose">✕</button></div><div id="bkList"></div>
+<div class="bk-foot"><button class="copy-btn" id="bkCopy">📋 Скопировать всё</button><button class="tool" id="bkTxt">⬇️ Скачать .txt</button><button class="tool" id="bkClear">🗑 Очистить</button></div></div>`);
+function basketAdd(label,text){if(basket.some(x=>x.text===text)){toast("Уже в корзине 🧺");return;}basket.push({label,text});saveB();renderBasket();toast("🧺 Добавлено в корзину ДР · всего: "+basket.length);}
+function renderBasket(){document.getElementById("basketCount").textContent=basket.length;
+ document.getElementById("bkList").innerHTML=basket.length?basket.map((x,i)=>`<div class="bk-item"><button class="bk-x" data-bkdel="${i}">✕</button><b>${E(x.label)}</b>${E(x.text.length>180?x.text.slice(0,180)+"…":x.text)}</div>`).join(""):`<div class="bk-empty">Пока пусто 🧺<br><br>Нажимайте «➕ В корзину» на подсказках, блоках и фразах — всё соберётся здесь.</div>`;}
+const basketText=()=>"МОЙ ДОЛЖНОСТНОЙ РЕГЛАМЕНТ — собранные формулировки (Паскаль, УГСКР Липецкой области)\n\n"+basket.map(x=>"### "+x.label+"\n"+x.text).join("\n\n");
+document.getElementById("basketFab").addEventListener("click",()=>document.getElementById("basketPanel").classList.toggle("open"));
+document.getElementById("bkClose").addEventListener("click",()=>document.getElementById("basketPanel").classList.remove("open"));
+document.getElementById("bkList").addEventListener("click",e=>{const d=e.target.closest("[data-bkdel]");if(d){basket.splice(+d.dataset.bkdel,1);saveB();renderBasket();}});
+document.getElementById("bkCopy").addEventListener("click",()=>basket.length?copyText(basketText()):toast("Корзина пуста 🧺"));
+document.getElementById("bkClear").addEventListener("click",()=>{basket=[];saveB();renderBasket();toast("Корзина очищена");});
+document.getElementById("bkTxt").addEventListener("click",()=>{if(!basket.length){toast("Корзина пуста 🧺");return;}
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+basketText()],{type:"text/plain;charset=utf-8"}));a.download="moy-dr-formulirovki.txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast("⬇️ Файл сохранён");});
+renderBasket();
+
+/* ---------- FAQ, ССЫЛКИ, СЧЁТЧИКИ, ЧАТ ---------- */
+FAQ.push(["🤖 Блок ИИ обязателен для всех?","Блок 1 обязателен для всех руководителей, их заместителей и начальников отделов. Он разделён на две части: для руководителей и для руководителей цифровой трансформации, ИТ-специалистов (расширенный перечень: ГОСТ Р 71484.3-2024, приказ ФСТЭК № 117, LLM, промпт-инжиниринг, BPMN, ИИ-агенты)."],
+["🔒 Когда включать блок «Гостайна»?","Только при наличии допуска к государственной тайне: Закон РФ № 5485-1 — в п. 2.3.2.1, секретное делопроизводство — в п. 2.3.3 и 2.3.6, обязанность — в п. 3.2."],
+["✅ Какие формулировки обязательны для всех?","В п. 2.3.2.1 — постановление Правительства Липецкой области от 10.01.2024 № 5 (Регламент Правительства) и Положение об исполнительном органе области. В п. 3.2 — использование отечественного многофункционального сервиса обмена информацией."],
+["🧺 Что такое «Корзина ДР»?","Копилка формулировок: нажимайте «➕ В корзину» на подсказках, блоках и фразах, затем скопируйте всё разом или скачайте .txt."]);
+document.getElementById("faqBox").innerHTML=FAQ.map(([q,a])=>`<div class="acc"><button class="acc-head"><span class="ttl">${q}</span><span class="chev">▾</span></button><div class="acc-body"><div class="acc-inner"><div class="acc-text">${fmt(a)}</div></div></div></div>`).join("");
+NPA.push({e:"🤖",t:"Указ Президента РФ от 10.10.2019 № 490 «О развитии искусственного интеллекта в Российской Федерации»",u:"https://www.consultant.ru/document/cons_doc_LAW_335184/"},
+{e:"📐",t:"ГОСТ Р 71484.3-2024 «Искусственный интеллект. Качество данных для аналитики и машинного обучения. Часть 3»",u:"https://docs.cntd.ru/document/1310068302"},
+{e:"🛡",t:"Приказ ФСТЭК России от 11.04.2025 № 117 «Об утверждении Требований о защите информации…»",u:"https://www.consultant.ru/document/cons_doc_LAW_507869/"},
+{e:"🔒",t:"Закон РФ от 21.07.1993 № 5485-1 «О государственной тайне»",u:"https://www.consultant.ru/document/cons_doc_LAW_2481/"});
+TEXTS.npa=linksText("📚 *Нормативно-правовые акты для составления ДР:*",NPA);
+const npaTab=document.querySelector('.tab[data-tab="npa"]');if(npaTab)npaTab.textContent="📚 НПА · "+NPA.length;
+if(npaTab.classList.contains("active"))renderLinks("npa");
+document.querySelectorAll("[data-count]").forEach(el=>{if(el.dataset.count==="12"){el.dataset.count="18";el.textContent="18";}});
+const tick=document.getElementById("ticker");if(tick)tick.innerHTML=tick.innerHTML.replaceAll("12 блоков","18 блоков");
+INTENTS.unshift(
+{a:"ai",hint:"Похоже, вас интересует блок ИИ",k:["искусственн","промпт","llm","нейросет","bpmn","ии-агент","машинн обучен"]},
+{a:"secret",hint:"Похоже, вас интересует гостайна",k:["гостайн","государственн тайн","секретн","допуск","5485"]},
+{a:"pd",hint:"Похоже, вас интересует блок персональных данных",k:["ответственн за организац обработки","персональн данн","152-фз"]},
+{a:"max",hint:"Обязательная фраза о рабочих коммуникациях",k:["многофункциональн сервис","обмен информаци","мессенджер","рабочие коммуникац"]},
+{a:"basket",hint:"Похоже, вас интересует корзина ДР",k:["корзин","копилк"]},
+{a:"phrases",hint:"Похоже, вас интересуют фразы в пункт 3.2",k:["фраз","работ с нпа"]});
+const _understand=understand;
+understand=function(raw){
+ const t=raw.toLowerCase().replace(/ё/g,"е");
+ for(const it of INTENTS.slice(0,6)){if(it.k.some(k=>t.includes(k))){
+  if(it.a==="ai"){showBlock(BLOCKS.find(b=>b.id===1),it.hint);return true;}
+  if(it.a==="secret"){showBlock(BLOCKS.find(b=>b.id===2),it.hint);return true;}
+  if(it.a==="pd"){showBlock(BLOCKS.find(b=>b.id===6),it.hint);return true;}
+  if(it.a==="max"){chat.state="main";botSay("✅ Обязательная формулировка для всех — добавьте в п. 3.2:\n\n- "+MUST_MAX+"\n\n📎 Раздел «Фразы в п. 3.2» — там кнопка «Скопировать».",MAIN,null,it.hint);return true;}
+  if(it.a==="basket"){chat.state="main";botSay("🧺 Корзина ДР — копилка формулировок. Нажимайте «➕ В корзину», затем откройте корзину слева внизу: скопировать всё разом или скачать .txt.",MAIN,null,it.hint);return true;}
+  if(it.a==="phrases"){chat.state="main";botSay("📎 Фразы «по случаю» для п. 3.2:\n\n"+PHRASES.map(p=>(p.must?"✅ ":"• ")+p.title+" — "+p.when).join("\n")+"\n\nПолные тексты — в разделе «Фразы в п. 3.2».",MAIN,null,it.hint);phSec.scrollIntoView({behavior:"smooth"});return true;}
+ }}
+ return _understand(raw);
+};
+renderSection(curSec);renderBlock(curBlk);
+})();
+</script>
 </body>
 </html>
