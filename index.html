@@ -3337,5 +3337,234 @@ window.addEventListener("beforeunload",function(){if(root.classList.contains("dr
 window.DRX={open:openDR,close:closeDR};
 })();
 </script>
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+ ДВА ИСПРАВЛЕНИЯ ДЛЯ САЙТА (не для конструктора).
+ Вставить целиком перед закрывающим </body> в index.html.
+ Если раньше вставляли мои патчи с панелью «Исполнительный орган» — удалите тот
+ блок; этот патч в любом случае сам вычищает его остатки при каждом проходе.
+ Ничего не добавляет на страницу: ни полей, ни кнопок, ни панелей. Фон, пёсик,
+ цвета, вёрстка и тексты не меняются.
+
+ 1) ПУНКТ 1.2 «Общие положения» и любые формулировки на сайте:
+    «к главная группе» → «к главной группе», «ведущая группе» → «ведущей группе»,
+    «старшая» → «старшей», «высшая» → «высшей», «младшая» → «младшей».
+    Чинится и в тексте на экране, и в полях/textarea, и при копировании
+    формулировки в буфер обмена (в т.ч. кнопкой «копировать»).
+
+ 2) ПЕРЕСКОКИ ПРИ ВЫБОРЕ БЛОКА: на 0,7 с после клика по чекбоксу,
+    переключателю, селекту, подписи или заголовку-аккордеону блокируются
+    программные scrollIntoView / scrollTo / scrollBy, автоскролл при focus()
+    и переходы по якорям внутри кликабельных карточек; если страница всё же
+    дёрнулась по hash — позиция возвращается. Обычное меню и якорные ссылки
+    работают как раньше.
+═══════════════════════════════════════════════════════════════════════════════
+-->
+<script>
+(function () {
+"use strict";
+if (window.__DR_FIX_12__) return;
+window.__DR_FIX_12__ = true;
+
+/* ── вычистить остатки прежних патчей (панели/поля/стили) ── */
+function purge() {
+  ["drx-orgbar", "drx-patch-style", "drx-pdn-style"].forEach(function (id) {
+    var e = document.getElementById(id); if (e) e.parentNode && e.parentNode.removeChild(e);
+  });
+  var junk = document.querySelectorAll(".drx-pdn");
+  for (var i = 0; i < junk.length; i++) junk[i].parentNode && junk[i].parentNode.removeChild(junk[i]);
+}
+
+/* ═══════════ 1. ПАДЕЖ ГРУППЫ ДОЛЖНОСТЕЙ ═══════════ */
+var GEN = {
+  "высшая": "высшей", "главная": "главной", "ведущая": "ведущей",
+  "старшая": "старшей", "младшая": "младшей"
+};
+function keepCase(word, sample) {
+  return (sample && sample.charAt(0) === sample.charAt(0).toUpperCase() &&
+          sample.charAt(0) !== sample.charAt(0).toLowerCase())
+    ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+}
+function fixGroups(s) {
+  if (!s) return s;
+  /* «к главная группа/группы/группе» → «к главной группе» */
+  s = s.replace(/(^|[^А-Яа-яЁёA-Za-z0-9])(к|ко)(\s+)(высшая|главная|ведущая|старшая|младшая)(\s+)групп[аые](?![А-Яа-яЁё])/gi,
+    function (m, pre, k, sp, w) { return pre + k + sp + keepCase(GEN[w.toLowerCase()], w) + " группе"; });
+  /* «к главной группы/группа» → «к главной группе» */
+  s = s.replace(/(^|[^А-Яа-яЁёA-Za-z0-9])(к|ко)(\s+)(высшей|главной|ведущей|старшей|младшей)(\s+)групп[аы](?![А-Яа-яЁё])/gi,
+    function (m, pre, k, sp, w) { return pre + k + sp + w + " группе"; });
+  /* «ведущая группе / ведущая группы» → «ведущей группе / ведущей группы» */
+  s = s.replace(/(^|[^А-Яа-яЁёA-Za-z0-9])(высшая|главная|ведущая|старшая|младшая)(\s+)(групп[еы])(?![А-Яа-яЁё])/gi,
+    function (m, pre, w, sp, tail) { return pre + keepCase(GEN[w.toLowerCase()], w) + sp + tail; });
+  return s;
+}
+
+/* ═══════════ ПРИМЕНЕНИЕ К ТЕКСТУ СТРАНИЦЫ ═══════════ */
+var ORIG = new WeakMap();
+function isSkipped(el) {
+  if (!el || !el.nodeName) return true;
+  var n = el.nodeName;
+  if (n === "SCRIPT" || n === "STYLE" || n === "NOSCRIPT" || n === "TITLE") return true;
+  if (el.id === "drx-orgbar" || (el.closest && el.closest("#drx-orgbar,.drx-pdn"))) return true;
+  var ae = document.activeElement;
+  if (ae && ae.isContentEditable && ae.contains && ae.contains(el)) return true;
+  return false;
+}
+function sourceFor(obj, current) {
+  var prev = ORIG.get(obj);
+  if (prev === undefined) { ORIG.set(obj, current); return current; }
+  /* если текст изменил сам сайт (подбор формулировки) — берём новый оригинал */
+  if (current !== obj.__drLast && current !== prev) { ORIG.set(obj, current); return current; }
+  return prev;
+}
+function applyText() {
+  purge();
+  if (!document.body) return;
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n;
+  while ((n = w.nextNode())) {
+    if (isSkipped(n.parentNode)) continue;
+    var cur = n.nodeValue;
+    if (!cur || cur.indexOf("групп") < 0) continue;
+    var src = sourceFor(n, cur), out = fixGroups(src);
+    if (out !== cur) { n.nodeValue = out; n.__drLast = out; } else { n.__drLast = cur; }
+  }
+  var fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input:not([type])');
+  for (var i = 0; i < fields.length; i++) {
+    var el = fields[i];
+    if (el === document.activeElement || isSkipped(el)) continue;
+    var v = el.value;
+    if (!v || v.indexOf("групп") < 0) continue;
+    var s0 = sourceFor(el, v), o = fixGroups(s0);
+    if (o !== v) { el.value = o; el.__drLast = o; } else { el.__drLast = v; }
+  }
+}
+var schedule = (function () {
+  var t; return function () { clearTimeout(t); t = setTimeout(applyText, 80); };
+})();
+
+/* ═══════════ КОПИРОВАНИЕ: та же правка в буфере обмена ═══════════ */
+if (navigator.clipboard && navigator.clipboard.writeText) {
+  var _wt = navigator.clipboard.writeText.bind(navigator.clipboard);
+  navigator.clipboard.writeText = function (t) { return _wt(fixGroups(String(t == null ? "" : t))); };
+}
+if (navigator.clipboard && navigator.clipboard.write) {
+  var _w = navigator.clipboard.write.bind(navigator.clipboard);
+  navigator.clipboard.write = function (items) {
+    try {
+      var out = [];
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i], types = it.types || [], map = {};
+        for (var j = 0; j < types.length; j++) {
+          (function (type) {
+            map[type] = it.getType(type).then(function (blob) {
+              if (type !== "text/plain" && type !== "text/html") return blob;
+              return blob.text().then(function (txt) {
+                return new Blob([fixGroups(txt)], { type: type });
+              });
+            });
+          })(types[j]);
+        }
+        out.push(new ClipboardItem(map));
+      }
+      return _w(out);
+    } catch (e) { return _w(items); }
+  };
+}
+document.addEventListener("copy", function (e) {
+  try {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !e.clipboardData) return;
+    var txt = sel.toString(), fixed = fixGroups(txt);
+    if (fixed !== txt) { e.clipboardData.setData("text/plain", fixed); e.preventDefault(); }
+  } catch (_) {}
+}, true);
+
+/* ═══════════ 2. ЗАПРЕТ ПЕРЕСКОКОВ ПРИ ВЫБОРЕ БЛОКА ═══════════ */
+var CTRL = 'input,select,textarea,label,summary,[role="switch"],[role="checkbox"],[role="radio"],[role="option"],.switch,.toggle,.checkbox,.custom-checkbox';
+var lockUntil = 0, lockY = 0, lockX = 0;
+function lock() {
+  lockUntil = Date.now() + 700;
+  lockX = window.pageXOffset; lockY = window.pageYOffset;
+}
+function locked() { return Date.now() < lockUntil; }
+
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (!t || !t.closest) return;
+  if (t.closest(CTRL)) lock();
+  var a = t.closest('a[href^="#"]');
+  if (a && a.querySelector('input,select,textarea,button,[role="switch"],[role="checkbox"],[role="radio"]')) {
+    e.preventDefault();
+    lock();
+  }
+}, true);
+document.addEventListener("change", function (e) {
+  if (e.target && e.target.closest && e.target.closest(CTRL)) lock();
+}, true);
+document.addEventListener("keydown", function (e) {
+  if ((e.key === " " || e.key === "Spacebar" || e.key === "Enter") &&
+      e.target && e.target.closest && e.target.closest(CTRL)) lock();
+}, true);
+document.addEventListener("pointerdown", function (e) {
+  if (e.target && e.target.closest && e.target.closest(CTRL)) lock();
+}, true);
+
+var _siv = Element.prototype.scrollIntoView;
+Element.prototype.scrollIntoView = function () {
+  if (locked()) return;
+  return _siv.apply(this, arguments);
+};
+if (Element.prototype.scrollIntoViewIfNeeded) {
+  var _sivn = Element.prototype.scrollIntoViewIfNeeded;
+  Element.prototype.scrollIntoViewIfNeeded = function () {
+    if (locked()) return;
+    return _sivn.apply(this, arguments);
+  };
+}
+var _sto = window.scrollTo, _sby = window.scrollBy, _sc = window.scroll;
+window.scrollTo = function () { if (locked()) return; return _sto.apply(window, arguments); };
+window.scroll   = function () { if (locked()) return; return _sto.apply(window, arguments); };
+window.scrollBy = function () { if (locked()) return; return _sby.apply(window, arguments); };
+
+var _focus = HTMLElement.prototype.focus;
+HTMLElement.prototype.focus = function (opts) {
+  if (locked()) {
+    opts = Object.assign({}, opts || {}, { preventScroll: true });
+  }
+  return _focus.call(this, opts);
+};
+
+window.addEventListener("hashchange", function () {
+  if (!locked()) return;
+  var x = lockX, y = lockY;
+  setTimeout(function () { _sto.call(window, x, y); }, 0);
+  setTimeout(function () { _sto.call(window, x, y); }, 60);
+});
+
+/* ═══════════ СТАРТ ═══════════ */
+function boot() {
+  applyText();
+  setTimeout(applyText, 350);
+  setTimeout(applyText, 1200);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+else boot();
+
+try {
+  new MutationObserver(function (records) {
+    for (var i = 0; i < records.length; i++) {
+      var t = records[i].target;
+      var el = t && (t.nodeType === 1 ? t : t.parentNode);
+      if (el && el.closest && el.closest("#drx-orgbar,.drx-pdn")) return;
+    }
+    schedule();
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+} catch (e) {}
+
+document.addEventListener("blur", function (e) {
+  if (e.target && e.target.matches && e.target.matches("textarea,input")) schedule();
+}, true);
+})();
+</script>
 </body>
 </html>
