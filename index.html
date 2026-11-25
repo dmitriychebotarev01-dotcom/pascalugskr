@@ -3566,5 +3566,342 @@ document.addEventListener("blur", function (e) {
 }, true);
 })();
 </script>
+<!-- ══════════════════════════════════════════════════════════════════════════════
+     КОНСТРУКТОР → ШАБЛОН ИЗ РЕПОЗИТОРИЯ · v14
+     Читает primer-dr.docx с сайта, подставляет значения полей конструктора вместо
+     [должность], [отдел], [исполнительный орган], [руководителем] и т.д.,
+     заменяет списки (НПА, знания, умения, обязанности, решения, показатели)
+     на введённые пользователем и отдаёт файл «ДР-мой регламент.docx».
+     Внешний вид страницы НЕ меняется: ни одного нового видимого элемента.
+     ══════════════════════════════════════════════════════════════════════════════ -->
+<script id="dr-template-fill">
+(function(){
+'use strict';
+if(window.__DRT14__)return; window.__DRT14__=true;
+var FILE_NAME='ДР-мой регламент.docx', TEMPLATE_URL='primer-dr.docx';
+
+/* ── 0. утилиты ── */
+function NW(s){return String(s==null?'':s).replace(/\s+/g,' ').trim()}
+function LN(v){return String(v==null?'':v).split(/\r?\n/).map(function(s){return s.replace(/^\s+|\s+$/g,'')}).filter(function(s){return s.length})}
+function tidy(s,last){return /[.;:!?]$/.test(s)?s:(s+(last?'.':';'))}
+function dec(s){return String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,'&')}
+function XE(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]})}
+function toast(msg,kind){
+  var w=document.getElementById('dr-tf-toasts');
+  if(!w){w=document.createElement('div');w.id='dr-tf-toasts';
+    w.style.cssText='position:fixed;top:76px;right:16px;z-index:99999;display:flex;flex-direction:column;gap:8px;max-width:min(360px,90vw);font-family:inherit';
+    document.body.appendChild(w)}
+  var t=document.createElement('div');
+  t.style.cssText='background:#fffdf6;color:#1b2920;border:1.5px solid #c9b995;border-left:5px solid '+(kind==='err'?'#d23a3a':kind==='warn'?'#d9880a':'#199a5e')+';border-radius:13px;padding:11px 14px;font-size:.82rem;font-weight:600;box-shadow:0 18px 42px -18px rgba(0,0,0,.5)';
+  t.textContent=msg;w.appendChild(t);
+  setTimeout(function(){t.style.transition='.3s';t.style.opacity='0';setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},320)},4200);
+}
+
+/* ── 1. CRC32 + ZIP (store) ── */
+var CRCT=(function(){var t=new Uint32Array(256),n,k,c;for(n=0;n<256;n++){c=n;for(k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0}return t})();
+function crc32(u){var c=0xFFFFFFFF,i;for(i=0;i<u.length;i++)c=CRCT[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function zipStore(files){
+  var enc=new TextEncoder(),parts=[],cent=[],off=0,d=new Date();
+  var tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>>1),dt=(((d.getFullYear()-1980)&127)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  files.forEach(function(f){var nm=enc.encode(f.n),da=f.d,cr=crc32(da);
+    var lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);
+    lh.setUint16(10,tm,true);lh.setUint16(12,dt,true);lh.setUint32(14,cr,true);lh.setUint32(18,da.length,true);lh.setUint32(22,da.length,true);lh.setUint16(26,nm.length,true);lh.setUint16(28,0,true);
+    parts.push(new Uint8Array(lh.buffer),nm,da);
+    var ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);
+    ch.setUint16(10,0,true);ch.setUint16(12,tm,true);ch.setUint16(14,dt,true);ch.setUint32(16,cr,true);
+    ch.setUint32(20,da.length,true);ch.setUint32(24,da.length,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);
+    cent.push(new Uint8Array(ch.buffer),nm);off+=30+nm.length+da.length});
+  var cs=0;cent.forEach(function(c){cs+=c.length});
+  var eo=new DataView(new ArrayBuffer(22));
+  eo.setUint32(0,0x06054b50,true);eo.setUint16(8,files.length,true);eo.setUint16(10,files.length,true);eo.setUint32(12,cs,true);eo.setUint32(16,off,true);
+  return new Blob(parts.concat(cent,[new Uint8Array(eo.buffer)]),{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+
+/* ── 2. чтение чужого docx (zip) и распаковка ── */
+function parseZip(buf){
+  var u=new Uint8Array(buf),dv=new DataView(buf),out=[];
+  var eo=-1,i;
+  for(i=u.length-22;i>=0&&i>u.length-70000;i--){if(dv.getUint32(i,true)===0x06054b50){eo=i;break}}
+  if(eo<0)return out;
+  var n=dv.getUint16(eo+10,true),off=dv.getUint32(eo+16,true);
+  for(i=0;i<n;i++){
+    if(dv.getUint32(off,true)!==0x02014b50)break;
+    var method=dv.getUint16(off+10,true),csize=dv.getUint32(off+20,true);
+    var nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true);
+    var lo=dv.getUint32(off+42,true);
+    var name=new TextDecoder().decode(u.subarray(off+46,off+46+nl));
+    var lnl=dv.getUint16(lo+26,true),lel=dv.getUint16(lo+28,true);
+    var ds=lo+30+lnl+lel;
+    out.push({name:name,method:method,data:u.subarray(ds,ds+csize)});
+    off+=46+nl+el+cl;
+  }
+  return out;
+}
+function inflate(u8){
+  if(typeof DecompressionStream==='undefined')return Promise.reject(new Error('no DecompressionStream'));
+  var stream=new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Response(stream).arrayBuffer().then(function(b){return new Uint8Array(b)});
+}
+function unzipAll(buf){
+  var entries=parseZip(buf),map={},pend=[];
+  entries.forEach(function(e){
+    if(e.method===0){map[e.name]=new TextDecoder().decode(e.data);return}
+    pend.push(inflate(e.data).then(function(d){map[e.name]=new TextDecoder().decode(d)}));
+  });
+  return Promise.all(pend).then(function(){return map});
+}
+
+/* ── 3. сбор значений полей конструктора со страницы ── */
+var F={},HARVESTED=false;
+function textOnly(el){var s='',i,c;for(i=0;i<el.childNodes.length;i++){c=el.childNodes[i];
+  if(c.nodeType===3)s+=c.nodeValue;
+  else if(c.nodeType===1&&!/^(INPUT|TEXTAREA|SELECT|SCRIPT|STYLE)$/.test(c.tagName))s+=textOnly(c);}return s}
+function labelOf(el){
+  var parts=[],i,box;
+  if(el.id){var l=document.querySelector('label[for="'+String(el.id).replace(/"/g,'\\"')+'"]');if(l)parts.push(l.textContent)}
+  if(el.closest){var p=el.closest('label');if(p)parts.push(p.textContent)}
+  var prev=el.previousElementSibling;
+  if(prev&&!/^(INPUT|TEXTAREA|SELECT)$/.test(prev.tagName))parts.push(prev.textContent);
+  box=el.parentElement;
+  for(i=0;i<3&&box;i++){parts.push(textOnly(box));box=box.parentElement}
+  parts.push(el.placeholder||'',el.id||'',el.name||'',el.getAttribute('data-key')||'',el.getAttribute('data-field')||'');
+  return NW(parts.join(' ')).toLowerCase();
+}
+var RULES=[
+ ['headName',/фио|фамили|инициал/],
+ ['head',/утвержда|руководител.*должност|должност.*руководител|кто утвержд/],
+ ['substitute',/замеща.*должност|1\.7/],
+ ['area',/област.*деятельн|1\.3/],
+ ['kind',/вид.*деятельн|1\.4/],
+ ['edu',/специальн|направлени.*подготов|укрупнен/],
+ ['eduExtra',/дополнительн.*требован|переподготов/],
+ ['stage',/стаж|2\.2/],
+ ['npa',/нормативн|нпа|правовые акт|2\.3\.2\.1/],
+ ['know',/иные.*знани|2\.3\.2\.2/],
+ ['fknow',/функциональн.*знани|2\.3\.3/],
+ ['pskill',/профессиональн.*умени|2\.3\.5/],
+ ['fskill',/функциональн.*умени|2\.3\.6/],
+ ['duties',/должностн.*обязанност|3\.2/],
+ ['rights',/вправе.*решени|4\.1/],
+ ['decisions',/обязан.*решени|4\.2/],
+ ['terms',/срок.*процедур|6\./],
+ ['interact',/взаимодейств/],
+ ['services',/госуслуг|государствен.*услуг|8\./],
+ ['kpi',/показател|эффективн|результативн|9\./],
+ ['group',/групп.*должност/],
+ ['category',/категор/],
+ ['year',/\bгод\b/],
+ ['department',/отдел|структурн.*подраздел/],
+ ['organ',/исполнительн.*орган|министерств|управлен|инспекц|комитет/],
+ ['position',/должност/]
+];
+function harvest(){
+  if(HARVESTED)return;HARVESTED=true;F={};
+  var used={},els=document.querySelectorAll('input,textarea,select'),i,k;
+  for(i=0;i<els.length;i++){
+    var el=els[i];
+    if(/^(hidden|file|checkbox|radio|button|submit)$/.test(el.type||'')||el.disabled)continue;
+    var v=el.value==null?'':String(el.value);if(!NW(v))continue;
+    var ctx=labelOf(el);
+    for(k=0;k<RULES.length;k++){
+      var key=RULES[k][0];if(used[key])continue;
+      if(RULES[k][1].test(ctx)){F[key]=v;used[key]=1;break}
+    }
+  }
+}
+function hasAny(){harvest();return Object.keys(F).some(function(k){return NW(F[k])})}
+
+/* ── 4. падежи ── */
+var GEN={'ведущий':'ведущего','главный':'главного','старший':'старшего','государственный':'государственного','заместитель':'заместителя','помощник':'помощника','советник':'советника','начальник':'начальника','консультант':'консультанта','специалист':'специалиста','инспектор':'инспектора','эксперт':'эксперта','секретарь':'секретаря','министр':'министра','руководитель':'руководителя','директор':'директора','первый':'первого'};
+function genPos(s){s=NW(s);if(!s)return'';var w=s.split(' ');for(var i=0;i<Math.min(w.length,3);i++){var l=w[i].toLowerCase();if(GEN[l])w[i]=GEN[l]}return w.join(' ')}
+var ORGG={'министерство':'министерства','управление':'управления','комитет':'комитета','инспекция':'инспекции','служба':'службы','агентство':'агентства','отдел':'отдела','департамент':'департамента'};
+function genOrg(s){s=NW(s);if(!s)return'';var w=s.split(' ');if(ORGG[w[0].toLowerCase()])w[0]=ORGG[w[0].toLowerCase()];return w.join(' ')}
+var HEAD={'министр':['министра','министру','министром'],'начальник':['начальника','начальнику','начальником'],'председатель':['председателя','председателю','председателем'],'руководитель':['руководителя','руководителю','руководителем'],'директор':['директора','директору','директором'],'губернатор':['губернатора','губернатору','губернатором'],'заместитель':['заместителя','заместителю','заместителем'],'первый':['первого','первому','первым']};
+function headForms(){
+  var raw=NW(F.head);
+  if(!raw)return{nom:'',s:'',g:'',d:'',i:''};
+  var w=raw.split(' '),l=w[0].toLowerCase(),f=HEAD[l];
+  if(!f)return{nom:raw,s:l,g:raw,d:raw,i:raw};
+  if(l==='первый'&&w[1]&&HEAD[w[1].toLowerCase()]){
+    var f2=HEAD[w[1].toLowerCase()],r2=w.slice(2).join(' '),t2=r2?' '+r2:'';
+    return{nom:raw,s:'первый '+w[1].toLowerCase(),g:f[0]+' '+f2[0]+t2,d:f[1]+' '+f2[1]+t2,i:f[2]+' '+f2[2]+t2};
+  }
+  var rest=w.slice(1).join(' '),t=rest?' '+rest:'';
+  return{nom:raw,s:l,g:f[0]+t,d:f[1]+t,i:f[2]+t};
+}
+var UGI='начальником управления государственной службы и кадровой работы Правительства Липецкой области';
+var T6='Подготовка, рассмотрение и согласование проектов управленческих и иных решений осуществляется в сроки и в соответствии с требованиями, установленными Уставом Липецкой области, Законом Липецкой области от 22 декабря 2020 года № 485-ОЗ «О нормативных правовых актах Липецкой области», Регламентом Правительства Липецкой области, постановлением Правительства Липецкой области от 28 декабря 2022 года № 359 «Об утверждении Порядка принятия, государственной регистрации и опубликования нормативных правовых актов исполнительных органов Липецкой области и структурных подразделений Правительства Липецкой области, имеющих статус юридического лица» и иными правовыми актами Липецкой области.';
+var SVC_DEF='Гражданский служащий в связи с исполнением должностных обязанностей государственные услуги (виды деятельности) не оказывает.';
+
+/* ── 5. XML-кирпичики для вставляемых абзацев ── */
+var TW=566.929133858;
+function RPR(){return '<w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/><w:b w:val="0"/><w:bCs w:val="0"/><w:i w:val="0"/><w:iCs w:val="0"/><w:sz w:val="28"/><w:szCs w:val="28"/><w:lang w:val="ru-RU"/></w:rPr>'}
+function WP(text){
+  var r=RPR();
+  var pr='<w:pPr><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/><w:ind w:firstLine="567"/><w:jc w:val="both"/></w:pPr>';
+  return '<w:p>'+pr+'<w:r>'+r+'<w:t xml:space="preserve">'+XE(text)+'</w:t></w:r></w:p>';
+}
+
+/* ── 6. подстановка значений в document.xml шаблона ── */
+function ptext(h){return dec(h.replace(/<[^>]*>/g,'')).replace(/\s+/g,' ').trim()}
+function paras(xml){
+  var out=[],re=/<w:p[ >]/g,m;
+  while((m=re.exec(xml))){
+    var s=m.index,e=xml.indexOf('</w:p>',s);if(e<0)break;e+=6;
+    out.push({s:s,e:e,text:ptext(xml.slice(s,e))});
+  }
+  return out;
+}
+function listXml(arr){return arr.map(function(x,i){return WP('- '+tidy(x,i===arr.length-1))}).join('')}
+function replaceList(xml,anchorRe,nextRe,arr){
+  if(!arr||!arr.length)return xml;
+  var ps=paras(xml),ai=-1,ni=-1,i;
+  for(i=0;i<ps.length;i++){
+    if(ai<0&&anchorRe.test(ps[i].text)){ai=i;continue}
+    if(ai>=0&&nextRe.test(ps[i].text)){ni=i;break}
+  }
+  if(ai<0)return xml;
+  var start=(ps[ai+1]?ps[ai+1].s:ps[ai].e);
+  var end=(ni>ai?ps[ni].s:ps[ai].e);
+  return xml.slice(0,start)+listXml(arr)+xml.slice(end);
+}
+function insertAfter(xml,anchorRe,extraXml){
+  var ps=paras(xml);
+  for(var i=0;i<ps.length;i++){
+    if(anchorRe.test(ps[i].text))return xml.slice(0,ps[i].e)+extraXml+xml.slice(ps[i].e);
+  }
+  return xml;
+}
+function rep(xml,token,val){return (val==null||val==='')?xml:xml.split(token).join(val)}
+function fillDocument(xml){
+  harvest();
+  var h=headForms();
+  var pos=genPos(F.position),dep=genOrg(F.department),org=genOrg(F.organ);
+  var appointIsUgskr=/угскр|государственной службы и кадровой|начальник управления/.test(NW(F.appoint).toLowerCase());
+  /* 1.7 замещение */
+  if(NW(F.substitute))xml=rep(xml,'главного консультанта [отдел] [исполнительный орган]',genPos(F.substitute));
+  /* заголовок прописными */
+  xml=rep(xml,'[ДОЛЖНОСТЬ]',pos.toUpperCase());
+  xml=rep(xml,'[ОТДЕЛ]',dep.toUpperCase());
+  xml=rep(xml,'[ИСПОЛНИТЕЛЬНЫЙ ОРГАН]',org.toUpperCase());
+  /* скаляры */
+  xml=rep(xml,'[должность]',pos);
+  xml=rep(xml,'[отдел]',dep);
+  xml=rep(xml,'[исполнительный орган]',org);
+  if(h.nom)xml=rep(xml,'[должность руководителя]',h.nom.charAt(0).toUpperCase()+h.nom.slice(1));
+  xml=rep(xml,'[И.О. Фамилия]',NW(F.headName));
+  xml=rep(xml,'[руководителем]',appointIsUgskr?UGI:h.i);
+  xml=rep(xml,'[руководителю]',h.d);
+  xml=rep(xml,'[руководителя]',h.g);
+  xml=rep(xml,'[руководитель]',h.s);
+  xml=rep(xml,'[укажите область]',NW(F.area));
+  xml=rep(xml,'[укажите вид]',NW(F.kind));
+  var sp=LN(F.edu).map(function(s){return'«'+s.replace(/^«|»$/g,'')+'»'});
+  if(sp.length)xml=rep(xml,'[перечень специальностей]',sp.join(', или '));
+  /* группа / категория */
+  if(NW(F.group)||NW(F.category)){
+    xml=xml.split('относится к ведущей группе должностей государственной гражданской службы Липецкой области категории «специалисты»')
+      .join('относится к '+(NW(F.group).toLowerCase()||'ведущей')+' группе должностей государственной гражданской службы Липецкой области категории «'+(NW(F.category).toLowerCase().replace(/[«»"]/g,'')||'специалисты')+'»');
+  }
+  /* стаж */
+  if(NW(F.stage)&&NW(F.stage)!=='не предъявляются')
+    xml=rep(xml,'направление подготовки не предъявляются.','направление подготовки '+NW(F.stage).replace(/[.;\s]+$/,'')+'.');
+  /* сроки и процедуры */
+  if(NW(F.terms))xml=rep(xml,T6,NW(F.terms));
+  /* госуслуги */
+  if(NW(F.services)&&NW(F.services)!==SVC_DEF)xml=rep(xml,SVC_DEF,NW(F.services));
+  /* взаимодействие */
+  if(NW(F.interact))
+    xml=rep(xml,'муниципальными служащими и иными работниками органов местного самоуправления муниципальных образований Липецкой области, гражданами и организациями.',
+                 'муниципальными служащими и иными работниками органов местного самоуправления муниципальных образований Липецкой области, '+NW(F.interact).replace(/[.;\s]+$/,'')+'.');
+  /* доп. требования к образованию */
+  if(NW(F.eduExtra))xml=insertAfter(xml,/^2\.1\./,LN(F.eduExtra).map(function(t){return WP(tidy(t,true))}).join(''));
+  /* списки: заменяем содержимое между заголовком пункта и следующим пунктом */
+  var npa=LN(F.npa);
+  if(npa.length){
+    var os=org?({'министерства':'министерство','управления':'управление','комитета':'комитет','инспекции':'инспекция','службы':'служба','агентства':'агентство'}[org.split(' ')[0]]||'орган'):'орган';
+    npa.push('иные нормативные правовые акты (правовые акты), регулирующие сферу деятельности '+(dep||'[отдел]')+' '+(org||'[исполнительный орган]')+' (далее соответственно – отдел, '+os+')');
+    xml=replaceList(xml,/^2\.3\.2\.1\./,/^2\.3\.2\.2\./,npa);
+  }
+  xml=replaceList(xml,/^2\.3\.2\.2\./,/^2\.3\.3\./,LN(F.know));
+  xml=replaceList(xml,/^2\.3\.3\./,/^2\.3\.4\./,LN(F.fknow));
+  xml=replaceList(xml,/^2\.3\.5\./,/^2\.3\.6\./,LN(F.pskill));
+  xml=replaceList(xml,/^2\.3\.6\./,/^3\./,LN(F.fskill));
+  var du=LN(F.duties);
+  if(du.length){
+    du.push('исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, приказами и поручениями '+(h.g||'[руководителя]')+', поручениями заместителя '+(h.g||'[руководителя]')+', начальника отдела в пределах своей компетенции');
+    xml=replaceList(xml,/^3\.2\./,/^3\.3\./,du);
+  }
+  xml=replaceList(xml,/^4\.1\./,/^4\.2\./,LN(F.rights));
+  xml=replaceList(xml,/^4\.2\./,/^5\./,LN(F.decisions));
+  xml=replaceList(xml,/Эффективность и результативность/,/Лист ознакомления/,LN(F.kpi));
+  return xml;
+}
+
+/* ── 7. сборка и скачивание ── */
+var busy=false;
+function downloadFilled(){
+  if(busy)return;busy=true;
+  fetch(TEMPLATE_URL,{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer()})
+    .then(function(buf){return unzipAll(buf)})
+    .then(function(map){
+      if(!map['word/document.xml'])throw new Error('no document.xml');
+      map['word/document.xml']=fillDocument(map['word/document.xml']);
+      var enc=new TextEncoder(),files=Object.keys(map).map(function(n){return{n:n,d:enc.encode(map[n])}});
+      saveBlob(zipStore(files),FILE_NAME);
+      toast('Готово: файл собран из шаблона primer-dr.docx с вашими значениями','ok');
+      busy=false;
+    })
+    .catch(function(err){
+      /* шаблон недоступен — отдаём статический файл как есть */
+      var a=document.createElement('a');
+      a.href=TEMPLATE_URL;a.download=FILE_NAME;a.setAttribute('data-drt-own','1');a.style.display='none';
+      document.body.appendChild(a);a.click();
+      setTimeout(function(){if(a.parentNode)a.parentNode.removeChild(a)},1200);
+      toast('Шаблон с сайта не открылся ('+(err&&err.message||'ошибка')+') — скачан primer-dr.docx без заполнения','warn');
+      busy=false;
+    });
+}
+function saveBlob(blob,name){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.setAttribute('data-drt-own','1');a.href=url;a.download=name;a.style.display='none';
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){if(a.parentNode)a.parentNode.removeChild(a);try{URL.revokeObjectURL(url)}catch(e){}},4000);
+}
+
+/* ── 8. перехват кнопок скачивания (внешний вид не меняется) ── */
+function isTrigger(el){
+  if(!el||el.nodeType!==1)return false;
+  if(el.getAttribute&&el.getAttribute('data-drt-own')==='1')return false;
+  if(el.id==='dlHero'||el.id==='dlCard'||el.id==='dlBanner')return true;
+  var href=(el.getAttribute&&el.getAttribute('href'))||'',dl=(el.getAttribute&&el.getAttribute('download'))||'';
+  if(/primer-dr\.docx?/i.test(href)||/primer-dr\.docx?/i.test(dl))return true;
+  return false;
+}
+document.addEventListener('click',function(e){
+  var t=e.target,el=null;
+  while(t&&t!==document){if(t.nodeType===1&&isTrigger(t)){el=t;break}t=t.parentNode}
+  if(!el)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  downloadFilled();
+},true);
+function patchConfig(){
+  try{if(window.CONFIG&&typeof window.CONFIG==='object')window.CONFIG.exampleFile=FILE_NAME}catch(e){}
+  try{
+    var list=document.querySelectorAll('a[href*="primer-dr.docx"], a[download*="primer-dr.docx"]');
+    for(var i=0;i<list.length;i++){var a=list[i];
+      if(a.getAttribute('data-drt-own')==='1')continue;
+      a.setAttribute('href','#');a.removeAttribute('download');a.removeAttribute('target')}
+  }catch(e){}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',patchConfig);else patchConfig();
+window.addEventListener('load',patchConfig);
+window.DRT14={download:downloadFilled,fields:function(){harvest();return F},fill:fillDocument};
+})();
+</script>
+<!-- ═══════════════ КОНЕЦ БЛОКА ═══════════════ -->
 </body>
 </html>
