@@ -2632,7 +2632,7 @@ root.innerHTML=
 '<div class="drx-layout">'+
   '<aside class="drx-card drx-rail"><div class="drx-rail-h">Пункты регламента</div><div data-steps></div><div class="drx-prog"><i data-prog style="width:0%"></i></div><div class="drx-prog-l" data-progl>Готово 0 из 11</div></aside>'+
   '<main class="drx-main"><div class="drx-banner" data-banner><span class="i">ℹ️</span><span>Загружен <b>пример</b> (консультант отдела дорожной деятельности). Замените данные на свои — или очистите форму кнопкой «Очистить».</span><button class="drx-btn drx-btn-g drx-btn-x" data-act="banner-x">Понятно</button></div><div data-content></div></main>'+
-  '<aside class="drx-card drx-pv" data-pv aria-label="Предпросмотр регламента"><div class="drx-pvh"><div class="drx-pv-title"><b>Предпросмотр ДР</b><small>Листайте документ вниз</small></div><div class="drx-pages"><span class="drx-page-stat" data-stats aria-live="off"></span><div class="drx-zoom" role="group" aria-label="Масштаб предпросмотра"><button type="button" data-zoom-out aria-label="Уменьшить масштаб" title="Уменьшить масштаб">−</button><select data-page-zoom aria-label="Масштаб предпросмотра" title="Масштаб от 50 до 200 процентов"><option value="50">50 %</option><option value="75">75 %</option><option value="100" selected>100 %</option><option value="125">125 %</option><option value="150">150 %</option><option value="175">175 %</option><option value="200">200 %</option></select><button type="button" data-zoom-in aria-label="Увеличить масштаб" title="Увеличить масштаб">+</button></div><button type="button" class="drx-expand" data-act="pv" title="На весь экран" aria-label="На весь экран">⛶</button><button type="button" class="drx-pvx" data-act="pv-close" title="Вернуться к редактированию">✕ Закрыть просмотр</button></div></div><div class="drx-pvs" tabindex="0" aria-label="Страницы документа, прокрутка"><div class="drx-paper" data-paper></div></div></aside>'+
+  '<aside class="drx-card drx-pv" data-pv aria-label="Предпросмотр регламента"><div class="drx-pvh"><div class="drx-pv-title"><b>Предпросмотр ДР</b><small>Листайте документ вниз</small></div><div class="drx-pages"><span class="drx-page-stat" data-stats aria-live="off"></span><div class="drx-zoom" role="group" aria-label="Масштаб предпросмотра"><button type="button" data-zoom-out disabled aria-label="Уменьшить масштаб" title="Уменьшить масштаб">−</button><select data-page-zoom aria-label="Масштаб предпросмотра" title="Масштаб от 50 до 200 процентов"><option value="50" selected>50 %</option><option value="75">75 %</option><option value="100">100 %</option><option value="125">125 %</option><option value="150">150 %</option><option value="175">175 %</option><option value="200">200 %</option></select><button type="button" data-zoom-in aria-label="Увеличить масштаб" title="Увеличить масштаб">+</button></div><button type="button" class="drx-expand" data-act="pv" title="На весь экран" aria-label="На весь экран">⛶</button><button type="button" class="drx-pvx" data-act="pv-close" title="Вернуться к редактированию">✕ Закрыть просмотр</button></div></div><div class="drx-pvs" tabindex="0" aria-label="Страницы документа, прокрутка"><div class="drx-paper" data-paper></div></div></aside>'+
 '</div>'+
 '<div class="drx-scrim" data-scrim></div>'+
 '<div class="drx-toasts" data-toasts></div>'+
@@ -3176,6 +3176,18 @@ function fillTemplate(template, values) {
       for(const n of Array.from(signP.children))if(n.localName!=="pPr")n.remove();
       signP.append(cleanRun);
     }
+    // Убираем отдельную лишнюю черту после должности, но не линию подписи с ФИО.
+    const sigP=headerNames.get(signCell);
+    const roleBorder=child(child(signP,"pPr"),"pBdr");
+    if(roleBorder)roleBorder.remove();
+    if(sigP&&sigP.parentElement===signCell&&sigP!==signP){
+      for(let p=signP.nextElementSibling;p&&p!==sigP;){
+        const next=p.nextElementSibling;
+        if(p.localName==="p"&&/^[\s\u200B-\u200D\uFEFF_\-–—−─━]+$|^$/.test(wordText(p))&&
+           !nodes(p,"drawing").length&&!nodes(p,"fldChar").length&&!nodes(p,"sectPr").length)p.remove();
+        p=next;
+      }
+    }
   }
   // Общие строки подписей и дат сохраняют единую горизонталь в Word и предпросмотре.
   formatHeaderRows(xml,approvalCell,signCell,headerNames,headerDates,values);
@@ -3268,7 +3280,7 @@ const pageElement = paperRoot.querySelector(".page"), viewport = paperRoot.query
 const flow = paperRoot.querySelector(".flow"), pageSlot = paperRoot.querySelector(".slot"), footer = paperRoot.querySelector(".footer");
 const previewStatus = paperRoot.querySelector(".error"), pageStack = paperRoot.querySelector(".pages");
 const pt = twips => Number(twips) / 20 + "pt";
-let pageNumber = 1, pageCount = 0, previewZoom = 100, previewModel, previewVersion = 0, pageStep = 0;
+let pageNumber = 1, pageCount = 0, previewZoom = 50, previewModel, previewVersion = 0, pageStep = 0;
 let defaultParagraph, defaultRun;
 
 function applyParagraphStyle(el, pr) {
