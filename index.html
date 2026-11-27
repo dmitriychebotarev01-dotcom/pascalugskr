@@ -2061,15 +2061,50 @@ var GROUP_RULES = [
   [/начальник отдела/, "главная", "руководители"],
   [/(помощник|советник).*(заместител|первого заместител)/, "главная", "помощники (советники)"],
   [/(помощник|советник).*губернатор/, "высшая", "помощники (советники)"],
-  [/(министр|начальник управления|руководитель инспекции)/, "высшая", "руководители"],
+  [/(министр|начальник[а]? управления|руководител[ья] инспекции)/, "высшая", "руководители"],
   [/консультант/, "ведущая", "специалисты"],
   [/инженер-инспектор/, "ведущая", "специалисты"],
   [/специалист-эксперт|секретарь судебного заседания/, "старшая", "специалисты"],
   [/старший специалист/, "старшая", "обеспечивающие специалисты"]
 ];
 var POSITIONS = ["старший специалист 3 разряда","старший специалист 2 разряда","старший специалист 1 разряда","специалист-эксперт","ведущий специалист-эксперт","главный специалист-эксперт","секретарь судебного заседания","государственный инженер-инспектор","главный государственный инженер-инспектор","консультант","ведущий консультант","главный консультант","заместитель начальника отдела","начальник отдела","помощник (советник) заместителя Губернатора Липецкой области","помощник (советник) первого заместителя Губернатора Липецкой области","помощник (советник) Губернатора Липецкой области","министр","первый заместитель министра","заместитель министра","заместитель министра – начальник управления","начальник управления","первый заместитель начальника управления","заместитель начальника управления","заместитель начальника управления в министерстве","руководитель инспекции","первый заместитель руководителя инспекции","заместитель руководителя инспекции"];
-var ORGANS_IOGV = ["министерство транспорта и дорожного хозяйства Липецкой области","министерство цифрового развития и искусственного интеллекта Липецкой области","министерство образования Липецкой области","министерство здравоохранения Липецкой области","министерство финансов Липецкой области","министерство экономического развития Липецкой области","министерство труда и социальной защиты Липецкой области","министерство сельского хозяйства Липецкой области","министерство культуры Липецкой области","министерство строительства и архитектуры Липецкой области","министерство жилищно-коммунального хозяйства Липецкой области","министерство внутренней политики Липецкой области","министерство молодежной политики Липецкой области","министерство спорта Липецкой области"];
-var ORGANS_GOV = ["управление государственной службы и кадровой работы Правительства Липецкой области","управление мобилизационной работы Правительства Липецкой области","правовое управление Правительства Липецкой области","управление делами Правительства Липецкой области","управление внутренней политики Правительства Липецкой области"];
+var ORGANS_IOGV = ["министерства внутренней политики Липецкой области", "министерства жилищно-коммунального хозяйства Липецкой области", "министерства здравоохранения Липецкой области", "министерства имущественных и земельных отношений Липецкой области", "министерства информационной политики Липецкой области", "министерства культуры Липецкой области", "министерства лесного хозяйства Липецкой области", "министерства молодежной политики Липецкой области", "министерства образования Липецкой области", "министерства природных ресурсов и экологии Липецкой области", "министерства промышленности, инвестиций и науки Липецкой области", "министерства региональной безопасности Липецкой области", "министерства сельского хозяйства Липецкой области", "министерства социальной политики Липецкой области", "министерства строительства и архитектуры Липецкой области", "министерства торговли и ценовой политики Липецкой области", "министерства транспорта и дорожного хозяйства Липецкой области", "министерства финансов Липецкой области", "министерства физической культуры и спорта Липецкой области", "министерства цифрового развития и искусственного интеллекта Липецкой области", "министерства экономического развития Липецкой области", "министерства энергетики и тарифов Липецкой области", "управления ветеринарии Липецкой области", "управления ЗАГС и архивов Липецкой области", "управления по охране, использованию объектов животного мира и водных биологических ресурсов Липецкой области", "управления по охране объектов культурного наследия Липецкой области", "государственной жилищной инспекции Липецкой области", "инспекции гостехнадзора Липецкой области", "инспекции государственного строительного надзора Липецкой области"];
+var ORGANS_GOV = ["управления государственной службы и кадровой работы Правительства Липецкой области", "управления контроля и протокола Губернатора Липецкой области Правительства Липецкой области", "правового управления Правительства Липецкой области", "управления делами Правительства Липецкой области", "управления мобилизационной работы Правительства Липецкой области", "управления по профилактике коррупционных и иных правонарушений Правительства Липецкой области", "отдела по работе с обращениями граждан Правительства Липецкой области", "отдела специальной документальной связи Правительства Липецкой области", "отдела координации деятельности по противодействию терроризму Правительства Липецкой области", "отдела информационной безопасности Правительства Липецкой области"];
+
+// Шаг 1: словарь должностей Реестра и склонение названия подразделения.
+var POSITION_CASES = [["старший специалист 3 разряда", "старшего специалиста 3 разряда"], ["старший специалист 2 разряда", "старшего специалиста 2 разряда"], ["старший специалист 1 разряда", "старшего специалиста 1 разряда"], ["специалист-эксперт", "специалиста-эксперта"], ["ведущий специалист-эксперт", "ведущего специалиста-эксперта"], ["главный специалист-эксперт", "главного специалиста-эксперта"], ["секретарь судебного заседания", "секретаря судебного заседания"], ["государственный инженер-инспектор", "государственного инженера-инспектора"], ["главный государственный инженер-инспектор", "главного государственного инженера-инспектора"], ["консультант", "консультанта"], ["ведущий консультант", "ведущего консультанта"], ["главный консультант", "главного консультанта"], ["заместитель начальника отдела", "заместителя начальника отдела"], ["начальник отдела", "начальника отдела"], ["помощник (советник) заместителя Губернатора Липецкой области", "помощника (советника) заместителя Губернатора Липецкой области"], ["помощник (советник) первого заместителя Губернатора Липецкой области", "помощника (советника) первого заместителя Губернатора Липецкой области"], ["помощник (советник) Губернатора Липецкой области", "помощника (советника) Губернатора Липецкой области"], ["министр", "министра"], ["первый заместитель министра", "первого заместителя министра"], ["заместитель министра", "заместителя министра"], ["заместитель министра – начальник управления", "заместителя министра – начальника управления"], ["начальник управления", "начальника управления"], ["первый заместитель начальника управления", "первого заместителя начальника управления"], ["заместитель начальника управления", "заместителя начальника управления"], ["заместитель начальника управления в министерстве", "заместителя начальника управления в министерстве"], ["руководитель инспекции", "руководителя инспекции"], ["первый заместитель руководителя инспекции", "первого заместителя руководителя инспекции"], ["заместитель руководителя инспекции", "заместителя руководителя инспекции"], ["старший специалист", "старшего специалиста"], ["специалист", "специалиста"], ["начальник", "начальника"], ["заместитель", "заместителя"], ["руководитель", "руководителя"], ["помощник", "помощника"], ["советник", "советника"], ["инженер", "инженера"], ["инспектор", "инспектора"], ["секретарь", "секретаря"], ["эксперт", "эксперта"], ["референт", "референта"]];
+var DEPT_CASES = [["отдел","отдела"],["управление","управления"],["сектор","сектора"],["служба","службы"],["подразделение","подразделения"],["группа","группы"],["аппарат","аппарата"],["канцелярия","канцелярии"],["приёмная","приёмной"],["приемная","приемной"],["инспекция","инспекции"],["центр","центра"],["департамент","департамента"],["бюро","бюро"]];
+function step1Text(v){return String(v||"").trim().replace(/\s+/g," ").replace(/\s*[-–—]\s+(?=начальник)/gi," – ")}
+function lowerFirst(v){return v.charAt(0).toLowerCase()+v.slice(1)}
+function step1Prefix(v,from,to){return v.slice(0,from.length).toLowerCase()===from.toLowerCase()&&(v.length===from.length||/^[\s,;–—]/.test(v.slice(from.length)))?to+v.slice(from.length):null}
+function adjectiveGen(w,female){
+ if(female){if(/ая$/i.test(w))return w.slice(0,-2)+(/[жчшщ]ая$/i.test(w)&&!/^большая$/i.test(w)?"ей":"ой");if(/яя$/i.test(w))return w.slice(0,-2)+"ей";return null}
+ if(/(?:ый|ой|ое)$/i.test(w))return w.slice(0,-2)+"ого";
+ if(/(?:ий|ее)$/i.test(w))return w.slice(0,-2)+(/[гкх]ий$/i.test(w)?"ого":"его");return null;
+}
+function headGen(v,pairs,adjectives){
+ v=step1Text(v);if(!v)return "";
+ if(v===v.toUpperCase())v=v.toLowerCase().replace(/загс/g,"ЗАГС").replace(/губернатора липецкой области/g,"Губернатора Липецкой области").replace(/правительства липецкой области/g,"Правительства Липецкой области").replace(/липецкой области/g,"Липецкой области");
+ v=lowerFirst(v);
+ var ordered=pairs.slice().sort(function(a,b){return Math.max(b[0].length,b[1].length)-Math.max(a[0].length,a[1].length)});
+ for(var pair of ordered){var r=step1Prefix(v,pair[1],pair[1]);if(r!==null)return r;r=step1Prefix(v,pair[0],pair[1]);if(r!==null)return r}
+ if(adjectives){var words=v.split(" ");for(var i=1;i<Math.min(words.length,6);i++){
+  var head=pairs.find(function(x){return x[0]===words[i]});if(!head)continue;
+  var female=/[ая]$/.test(head[0])&&!/^(?:подразделение|управление)$/.test(head[0]);
+  var prefix=words.slice(0,i).map(function(w){return adjectiveGen(w,female)});
+  if(prefix.every(Boolean))return prefix.join(" ")+" "+head[1]+(i+1<words.length?" "+words.slice(i+1).join(" "):"");
+ }}
+ return v;
+}
+function positionGen(v){return headGen(v,POSITION_CASES,true)}
+function departmentGen(v){return headGen(v,DEPT_CASES,true)}
+function positionNom(v){v=step1Text(v);var pairs=POSITION_CASES.slice().sort(function(a,b){return b[1].length-a[1].length});for(var pair of pairs){var r=step1Prefix(v,pair[1],pair[0]);if(r!==null)return r}return v}
+function organGen(v){
+ v=step1Text(v);if(!v)return "";
+ var known=ORGANS_IOGV.concat(ORGANS_GOV).find(function(o){return norm(o)===norm(v)});if(known)return known;
+ return headGen(v,DEPT_CASES.concat([["министерство","министерства"],["государственная жилищная инспекция","государственной жилищной инспекции"],["правовое управление","правового управления"]]),true);
+}
+function organOptions(organs,value){var a=[["","— выберите наименование органа —"]].concat(organs.map(function(o){return[o,o.toUpperCase()]}));if(value&&!organs.includes(value))a.push([value,value.toUpperCase()+" (ранее введённое)"]);return a}
 
 var AREAS_RAW = [
 ["П.1","Обеспечение избирательных прав и права на участие в референдуме граждан Российской Федерации",["Организация и проведение выборов, референдума","Реализация защиты избирательных прав и права на участие в референдуме граждан","Контроль финансирования выборов, референдума","Обеспечение гарантий равенства парламентских партий при освещении их деятельности государственными общедоступными телеканалами и радиоканалами","Организация финансирования подготовки и проведения выборов, референдумов"]],
@@ -2821,29 +2856,34 @@ try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&
 if(!S){S=blank();FIRST=true}
 merge(S,blank());
 normalizeHeader(S.header);
+S.position.organName=organGen(S.position.organName);S.position.department=departmentGen(S.position.department);S.position.title=positionGen(S.position.title);
 function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Перед закрытием вкладки скачайте готовый документ Word."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Не закрывайте вкладку до скачивания документа Word."}}
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
-function deriveGC(t){t=norm(t);for(var i=0;i<GROUP_RULES.length;i++){if(GROUP_RULES[i][0].test(t))return{g:GROUP_RULES[i][1],c:GROUP_RULES[i][2]}}return{g:"",c:""}}
+function deriveGC(t){t=norm(positionNom(t));for(var i=0;i<GROUP_RULES.length;i++){if(GROUP_RULES[i][0].test(t))return{g:GROUP_RULES[i][1],c:GROUP_RULES[i][2]}}return{g:"",c:""}}
 function tok(){
- var o=S.position.organName||"________________",og=o;
- if(/^министерство/i.test(o))og="министерства"+o.slice(12);else if(/^управление/i.test(o))og="управления"+o.slice(10);else if(/^инспекция/i.test(o))og="инспекции"+o.slice(9);
- var rest=og.replace(/^министерства\s*/i,"");
- var isMin=/^министерство/i.test(o),isU=/^управление/i.test(o);
- return{organ:o,organGen:og,department:S.position.department||"________",title:S.position.title||"________________",
-  headNom:isMin?("министр "+rest):isU?("начальник управления"+o.slice(10)):("руководитель инспекции"+o.slice(9)),
-  headGen:isMin?("министра "+rest):isU?("начальника управления"+o.slice(10)):("руководителя инспекции"+o.slice(9)),
-  headInstr:isMin?("министром "+rest):isU?("начальником управления"+o.slice(10)):("руководителем инспекции"+o.slice(9)),
-  deputyDat:isMin?("заместителю министра "+rest):isU?("заместителю начальника управления"+o.slice(10)):("заместителю руководителя инспекции"+o.slice(9)),
-  chiefDat:"начальнику отдела",
-  chain:(isMin?"министра, заместителя министра":"начальника управления, заместителя начальника управления")+", начальника отдела"};
+ var og=organGen(S.position.organName)||"________________", rest=og, kind="";
+ var forms=[
+  ["министерства","министерстве","министр","министра","министром","министру"],
+  ["правового управления","правовом управлении","начальник правового управления","начальника правового управления","начальником правового управления","начальнику правового управления"],
+  ["управления","управлении","начальник управления","начальника управления","начальником управления","начальнику управления"],
+  ["государственной жилищной инспекции","государственной жилищной инспекции","руководитель государственной жилищной инспекции","руководителя государственной жилищной инспекции","руководителем государственной жилищной инспекции","руководителю государственной жилищной инспекции"],
+  ["инспекции","инспекции","руководитель инспекции","руководителя инспекции","руководителем инспекции","руководителю инспекции"],
+  ["отдела","отделе","начальник отдела","начальника отдела","начальником отдела","начальнику отдела"]
+ ];
+ var f=forms.find(function(x){return step1Prefix(og,x[0],x[0])!==null});
+ if(f){kind=f[0];rest=og.slice(kind.length)}else{f=["",og,"руководитель","руководителя","руководителем","руководителю"];rest=" "+og}
+ var prep=kind?f[1]+rest:og;
+ return{organ:prep,organGen:og,department:departmentGen(S.position.department)||"________",title:positionGen(S.position.title)||"________________",
+  headNom:f[2]+rest,headGen:f[3]+rest,headInstr:f[4]+rest,deputyDat:"заместителю "+f[3]+rest,
+  chiefDat:"начальнику отдела",chain:(kind==="министерства"?"министра, заместителя министра":"начальника управления, заместителя начальника управления")+", начальника отдела"};
 }
 function T(t){var k=tok();return String(t).replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
 function eduAuto(){return(S.position.group==="старшая"&&S.position.category==="обеспечивающие специалисты")?"профессиональное образование, соответствующее направлению деятельности":"высшее образование"}
 function stageAuto(){return STAGE[S.position.group+"|"+S.position.category]||"Гражданский служащий должен иметь стаж государственной гражданской службы (далее – гражданская служба) не менее ____ лет или стаж работы по специальности, направлению подготовки не менее ____ лет."}
 function mgmtReq(){return S.position.category==="руководители"||(S.position.category==="специалисты"&&S.position.group==="главная")}
-function isChief(){return /начальник отдела/.test(norm(S.position.title))}
-function aiRes(){var m=S.blocks.ai.mode;if(m!=="auto")return m;var mgr=S.position.category==="руководители"||isChief();var it=/цифров|информа|технолог/.test(norm(S.position.department))||/^министерство цифрового/.test(norm(S.position.organName))||S.blocks.digital.on||S.activity.areas.indexOf("П.16")>=0;return mgr&&it?"both":mgr?"manager":it?"it":"off"}
+function isChief(){return /начальник отдела/.test(norm(positionNom(S.position.title)))}
+function aiRes(){var m=S.blocks.ai.mode;if(m!=="auto")return m;var mgr=S.position.category==="руководители"||isChief();var it=/цифров|информа|технолог/.test(norm(S.position.department))||/^министерств[оа] цифрового/.test(norm(S.position.organName))||S.blocks.digital.on||S.activity.areas.indexOf("П.16")>=0;return mgr&&it?"both":mgr?"manager":it?"it":"off"}
 function interRes(){var v=S.inter.variant;if(v!=="auto")return v;if(S.position.organType==="gov")return"b";var g=S.position.group;return(g==="высшая"||(g==="главная"&&!isChief()))?"c":"a"}
 function collect(id){
  var cfg=S.blocks[id],out={npa:[],pk:[],fk:[],ps:[],fs:[],duty:[],flags:{}};
@@ -2929,7 +2969,7 @@ const missing = "________________";
 function fieldValues() {
   const h = S.header, p = S.position, a = S.activity, sub = S.sub, qual = S.qual;
   const names = tok();
-  const full = [p.title || missing, p.department, p.organName].filter(Boolean).join(", ");
+  const full = [positionGen(p.title) || missing, departmentGen(p.department), organGen(p.organName)].filter(Boolean).join(" ");
   const groups = { "высшая":"высшей", "главная":"главной", "ведущая":"ведущей", "старшая":"старшей", "младшая":"младшей" };
   const types = [];
   a.areas.forEach(code => {
@@ -2967,7 +3007,7 @@ function fieldValues() {
   return {
     approvalRole:h.soglasRole, approvalName:h.soglasName,
     signRole:h.utvRole || missing, signName:h.utvName || missing, year:h.year || "____",
-    full, fullUpper:full.toUpperCase(), title:p.title || missing, group:groups[p.group] || missing, category:p.category || missing,
+    full, fullUpper:full.toUpperCase(), title:positionGen(p.title) || missing, group:groups[p.group] || missing, category:p.category || missing,
     areas:a.areas.map(c => AREA_BY[c] ? AREA_BY[c].n : c).join("; ") || missing, types:types.join("; ") || missing,
     appoint:+a.appoint === 1 ? "Губернатором Липецкой области" : +a.appoint === 2 ? "начальником управления государственной службы и кадровой работы Правительства Липецкой области" : a.minister || names.headInstr,
     subordination:["1.6. Гражданский служащий непосредственно подчиняется " + (sub.direct || missing) + (sub.oper.length ? ", а в оперативной работе – " + sub.oper.join(", ") : "") + " либо лицам, исполняющим их должностные обязанности."],
@@ -3625,6 +3665,7 @@ function specCard(id,icon,color,name,desc){
  var on=S.blocks[id].on,c=collect(id);
  return '<div class="drx-blk'+(on?" on":"")+'" style="--bk:'+color+'"><div class="drx-bt"><div class="drx-bi">'+icon+'</div><div style="flex:1"><h4>'+name+'</h4><div class="d">'+desc+'</div></div><label class="drx-sw"><input type="checkbox" data-path="blocks.'+id+'.on" data-rr="1"'+(on?" checked":"")+'><i></i></label></div>'+(on?'<div class="drx-bs"><i>+'+c.npa.length+' НПА</i><i>+'+c.duty.length+' обязанностей</i><i>+'+(c.fk.length+c.fs.length)+" знаний/умений</i></div>":"")+"</div>";
 }
+function positionGroupNote(p){return p.group?note('Должность <b>«'+esc(positionGen(p.title))+'»</b> → <b>'+p.group+"</b> группа, категория <b>«"+p.category+"»</b>. Проверьте по Реестру (8 правил примерного ДР учтены)."):note("Укажите должность — группа и категория определятся автоматически, либо задайте вручную.",true)}
 function renderStep(){
  var i=S.meta.step,st=STEPS[i],p=S.position;
  var h='<div class="drx-sh"><span class="k">Шаг '+i+" из "+(STEPS.length-1)+" · "+st.pts+"</span><h2>"+st.t+"</h2><p>"+st.d+"</p></div>";
@@ -3645,12 +3686,12 @@ function renderStep(){
  } else if(i===1){
   var organs=p.organType==="iogv"?ORGANS_IOGV:ORGANS_GOV;
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.1</span> Должность и орган</h3><div class="sub">Как в штатном расписании. Группа и категория подтянутся автоматически по Реестру (Закон ЛО № 46-ОЗ).</div>'+
-   fld("Тип органа",'<div class="drx-seg"><button data-inner="organ-type" data-v="iogv" class="'+(p.organType==="iogv"?"on":"")+'">Исполнительный орган (ИОГВ)</button><button data-inner="organ-type" data-v="gov" class="'+(p.organType==="gov"?"on":"")+'">Подразделение Правительства</button></div>')+
-   fld("Наименование органа",'<input class="drx-inp" list="drx-organs" data-path="position.organName" value="'+esc(p.organName)+'" placeholder="министерство … Липецкой области"><datalist id="drx-organs">'+organs.map(function(o){return '<option value="'+esc(o)+'">'}).join("")+"</datalist>",true)+
-   '<div class="drx-row2">'+fld("Отдел / подразделение",txt("position.department",p.department,"отдел дорожной деятельности"))+
-   fld("Должность",'<input class="drx-inp" list="drx-pos" data-path="position.title" value="'+esc(p.title)+'" placeholder="консультант"><datalist id="drx-pos">'+POSITIONS.map(function(o){return '<option value="'+esc(o)+'">'}).join("")+"</datalist>",true)+"</div></div>"+
+   fld("Тип органа",'<div class="drx-seg"><button data-inner="organ-type" data-v="iogv" class="'+(p.organType==="iogv"?"on":"")+'">Исполнительный орган</button><button data-inner="organ-type" data-v="gov" class="'+(p.organType==="gov"?"on":"")+'">Подразделение Правительства</button></div>')+
+   fld("Наименование органа",sel("position.organName",organOptions(organs,p.organName),p.organName),true)+
+   '<div class="drx-row2">'+fld("Отдел / подразделение",txt("position.department",departmentGen(p.department),"отдел дорожной деятельности"))+
+   fld("Должность",'<input class="drx-inp" list="drx-pos" data-path="position.title" value="'+esc(positionGen(p.title))+'" placeholder="консультант"><datalist id="drx-pos">'+POSITIONS.map(function(o){return '<option value="'+esc(positionGen(o))+'">'}).join("")+"</datalist>",true)+"</div>"+note("Должность и отдел автоматически приводятся к родительному падежу после ввода. Проверьте нестандартные наименования и при необходимости впишите их в нужном падеже.")+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.2</span> Группа и категория <span class="drx-auto">✓ авто из Реестра</span></h3>'+
-   (p.group?note('Должность <b>«'+esc(p.title)+'»</b> → <b>'+p.group+"</b> группа, категория <b>«"+p.category+"»</b>. Проверьте по Реестру (8 правил примерного ДР учтены)."):note("Укажите должность — группа и категория определятся автоматически, либо задайте вручную.",true))+
+   '<div data-position-gc>'+positionGroupNote(p)+"</div>"+
    sw("position.manualGC",p.manualGC,"Задать вручную","Если должность нестандартная")+
    (p.manualGC?'<div class="drx-row2">'+fld("Группа",sel("position.group",[["","— выберите —"]].concat(GROUPS.map(function(g){return[g,g]})),p.group))+fld("Категория",sel("position.category",[["","— выберите —"]].concat(CATS.map(function(c){return[c,c]})),p.category))+"</div>":"")+"</div>";
  } else if(i===2){
@@ -3765,7 +3806,8 @@ BC.addEventListener("change",function(e){
   refreshCp(id);markSaving();schedulePreview();renderRail();if(id==="areas"){if(t.checked)TOPEN[v]=true;renderTypes()}return}
  var p=d.path;if(!p)return;
  var val=t.type==="checkbox"?t.checked:(t.tagName==="SELECT"&&(p==="activity.appoint"||p==="sheet.rows")?+t.value:t.value);
- setPath(S,p,val);special(p,val);after(!!d.rr);
+ if(p==="position.title"||p==="position.department"){val=p==="position.title"?positionGen(val):departmentGen(val);t.value=val;}
+ setPath(S,p,val);special(p,val);if(p==="position.title"&&q("[data-position-gc]"))q("[data-position-gc]").innerHTML=positionGroupNote(S.position);after(!!d.rr);
 });
 BC.addEventListener("click",function(e){
  var t=e.target.closest("[data-inner],[data-step],[data-ktab],[data-leadd],[data-ledel],[data-lemv],[data-leall],[data-tadd],[data-cudel],[data-tt],[data-tall],[data-cprm],[data-cpadd]");
@@ -3784,7 +3826,7 @@ BC.addEventListener("click",function(e){
  if(d.cprm){var arr=getPath(S,CP_PATH[d.cprm]),ix=arr.indexOf(d.v);if(ix>=0)arr.splice(ix,1);refreshCp(d.cprm);if(d.cprm==="areas")renderTypes();markSaving();schedulePreview();renderRail();return}
  if(d.cpadd){cpAdd(d.cpadd);return}
  var a=d.inner;
- if(a==="organ-type"){S.position.organType=d.v;S.position.organName="";after(true)}
+ if(a==="organ-type"){if(S.position.organType!==d.v){S.position.organType=d.v;S.position.organName="";special("position.organName","");after(true)}}
  else if(a==="apply-blocks"){applyBlocks(false);renderStep()}
  else if(a==="apply-funcs"){applyFuncs(false);renderStep()}
 });
