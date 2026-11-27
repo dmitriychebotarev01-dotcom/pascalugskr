@@ -3167,6 +3167,16 @@ function fillTemplate(template, values) {
     headerCellTop(approvalCell);headerCellTop(signCell);
     alignHeaderRole(approvalCell,approvalP,"согласовано");alignHeaderRole(signCell,signP,"утверждаю");
   }
+  // Должность утверждающего не должна наследовать пробелы, табуляцию и
+  // пустые переносы из размеченного шаблона: они видны при выделении в предпросмотре.
+  if(signCell&&signP&&signP.parentElement===signCell){
+    const roleRun=nodes(signP,"r").find(r=>wordText(r).trim()===String(values.signRole).trim())||nodes(signP,"r").find(r=>wordText(r).trim());
+    if(roleRun){
+      const cleanRun=textRun(roleRun,String(values.signRole).trim());
+      for(const n of Array.from(signP.children))if(n.localName!=="pPr")n.remove();
+      signP.append(cleanRun);
+    }
+  }
   // Общие строки подписей и дат сохраняют единую горизонталь в Word и предпросмотре.
   formatHeaderRows(xml,approvalCell,signCell,headerNames,headerDates,values);
   if (Object.keys(values).some(k => !used.has(k))) throw Error("Установите размеченный файл «Примерный регламент.docx» из комплекта.");
