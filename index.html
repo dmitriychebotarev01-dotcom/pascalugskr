@@ -1495,7 +1495,8 @@ const st=document.createElement("style");st.textContent=`
 .ph-foot{display:flex;gap:8px;flex-wrap:wrap}
 .fillbox{border:1px solid var(--stroke2);border-radius:14px;background:var(--card2);padding:14px 16px;margin:0 17px 14px}
 .fillbox h5{font-size:13px;font-weight:800;margin-bottom:10px;color:var(--acc2)}
-.fillbox input{width:100%;padding:10px 13px;border-radius:11px;border:1px solid var(--stroke2);background:var(--bg2);color:var(--text);font-family:inherit;font-size:13.2px;outline:none}
+.fillbox select{width:100%;padding:10px 13px;border-radius:11px;border:1px solid var(--stroke2);background:var(--bg2);color:var(--text);font-family:inherit;font-size:13.2px;outline:none;cursor:pointer}
+.fillbox select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,255,.18)}
 .fillhint{font-size:11.8px;color:var(--muted);margin-top:8px}
 .add-btn{font-size:12.3px;font-weight:800;color:var(--ok);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.4);border-radius:999px;padding:7px 15px;transition:.2s}
 .add-btn:hover{background:var(--ok);color:#04220f}
@@ -1582,7 +1583,7 @@ const NEW_BLOCKS=[
 {id:5,icon:"📜",title:"Работа с НПА",sub:"Для служащих, участвующих в разработке нормативных правовых актов",groups:[
  {t:"Должностные обязанности",target:"п. 3.2",items:["принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности отдела."],note:"При необходимости замените «отдела» на своё подразделение / исполнительный орган."}]},
 {id:6,icon:"🗂️",title:"Персональные данные",badge:"ответственному",sub:"Для лица, ответственного за организацию обработки персональных данных",groups:[
- {t:"Должностные обязанности",target:"п. 3.2",items:PD_ITEMS,fill:true,note:"Заполните поле выше — наименование органа подставится во все пропуски автоматически. Сноска <13> — как в примерном ДР."}]}
+ {t:"Должностные обязанности",target:"п. 3.2",items:PD_ITEMS,fill:true,note:"Выберите тип органа или подразделения в списке — наименование подставится во все пропуски в нужном падеже. Сноска <13> — как в примерном ДР."}]}
 ];
 BLOCKS.forEach(b=>b.id+=6);
 BLOCKS.unshift(...NEW_BLOCKS);
@@ -1604,8 +1605,22 @@ SIDX.length=0;SECTIONS.forEach(s=>{if(s.subs)s.subs.forEach(([k,t])=>SIDX.push({
 
 /* ---------- ДОП. ЭЛЕМЕНТЫ ВНУТРИ ПУНКТОВ ---------- */
 const E=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-let pdOrgName="";try{pdOrgName=localStorage.getItem("pascal_pd_org")||"";}catch(e){}
-const fillItems=items=>{const v=pdOrgName.trim();return v?items.map(x=>x.replace(/_{3,}\s*\(указывается[^)]*\)/g,v)):items;};
+const PD_ORG_FORMS = {
+ "министерство": {gen:"министерства", prep:"министерстве"},
+ "управление": {gen:"управления", prep:"управлении"},
+ "инспекция": {gen:"инспекции", prep:"инспекции"},
+ "отдел": {gen:"отдела", prep:"отделе"}
+};
+const isPdOrg=v=>Object.prototype.hasOwnProperty.call(PD_ORG_FORMS,v);
+let pdOrgName="";
+try{const saved=localStorage.getItem("pascal_pd_org")||"";if(isPdOrg(saved))pdOrgName=saved;}catch(e){}
+const fillItems=items=>{
+ if(!isPdOrg(pdOrgName))return items;
+ const forms=PD_ORG_FORMS[pdOrgName];
+ // PH1: соблюдение в чём? Предложный падеж.
+ // PH2–PH5: работники, правовые акты, помещения чего? Родительный падеж.
+ return items.map(x=>x.replace(/_{3,}\s*\(указывается[^)]*\)/g,ph=>ph===PH1?forms.prep:forms.gen));
+};
 function posPicker(field){return `<details class="hintbox" open><summary>🧩 Подобрать формулировку по должности</summary><div class="hb-in">
 <div class="pickrow"><label>Ваша должность:</label><select class="sel" data-pos="${field}"><option value="">— выберите должность —</option>${POSITIONS.map(p=>`<option value="${p.n}">${p.n}) ${E(p.post)} · ${p.group} · «${p.cat}»</option>`).join("")}</select></div>
 <div data-posout="${field}"></div><div class="subhead">Все варианты:</div>
@@ -1655,7 +1670,7 @@ function decorateBlk(){
  document.querySelectorAll("#blkContent .acc").forEach(acc=>{
   const g=b.groups[+acc.dataset.gi];if(!g||acc.dataset.upgraded)return;acc.dataset.upgraded="1";
   if(g.role)acc.querySelector(".chev").insertAdjacentHTML("beforebegin",`<span class="grp-role">${g.role.includes("ИТ")?"ЦТ / ИТ":"руководители"}</span>`);
-  if(g.fill){acc.querySelector(".lst").insertAdjacentHTML("beforebegin",`<div class="fillbox"><h5>✍️ Автоподстановка наименования органа</h5><input type="text" id="pdOrgInput" placeholder="Например: министерство экономического развития Липецкой области" value="${E(pdOrgName)}"><div class="fillhint">Введите наименование один раз — оно подставится во все пропуски и в копируемый текст. Сохраняется в браузере.</div></div>`);
+  if(g.fill){acc.querySelector(".lst").insertAdjacentHTML("beforebegin",`<div class="fillbox"><h5><label for="pdOrgInput">✍️ Автоподстановка наименования органа</label></h5><select id="pdOrgInput"><option value="" disabled${pdOrgName?"":" selected"}>— Выберите тип органа —</option>${Object.keys(PD_ORG_FORMS).map(name=>`<option value="${E(name)}"${pdOrgName===name?" selected":""}>${E(name)}</option>`).join("")}</select><div class="fillhint">Выберите один вариант — он подставится во все пропуски и в копируемый текст в нужном падеже. Выбор сохраняется в браузере.</div></div>`);
    acc.querySelector(".lst").dataset.pdlist="1";acc.querySelector(".lst").innerHTML=fillItems(g.items).map(x=>`<li>${E(x)}</li>`).join("");}
   const cg=acc.querySelector("[data-bg]");
   if(cg)cg.insertAdjacentHTML("afterend",` <button class="add-btn" data-addbg="${b.id}" data-addbi="${acc.dataset.gi}">➕ В корзину</button>`);
@@ -1666,8 +1681,8 @@ function decorateBlk(){
 new MutationObserver(decorateBlk).observe(document.getElementById("blkContent"),{childList:true});
 new MutationObserver(decorateBlk).observe(document.getElementById("blkNav"),{childList:true});decorateBlk();
 const grpText=(b,g)=>(g.target?g.target+" — ":"")+(g.role?g.role+"\n":"")+g.t+"\n"+(g.fill?fillItems(g.items):g.items).map(i=>"- "+i).join("\n");
-document.getElementById("blkContent").addEventListener("input",e=>{
- if(e.target.id!=="pdOrgInput")return;pdOrgName=e.target.value;try{localStorage.setItem("pascal_pd_org",pdOrgName);}catch(err){}
+document.getElementById("blkContent").addEventListener("change",e=>{
+ if(e.target.id!=="pdOrgInput"||!isPdOrg(e.target.value))return;pdOrgName=e.target.value;try{localStorage.setItem("pascal_pd_org",pdOrgName);}catch(err){}
  const b=BLOCKS.find(x=>x.id===curBlk);b.groups.forEach(g=>{if(g.fill){const ul=document.querySelector('#blkContent [data-pdlist]');if(ul)ul.innerHTML=fillItems(g.items).map(x=>`<li>${E(x)}</li>`).join("");}});
 });
 document.getElementById("blkContent").addEventListener("click",e=>{
