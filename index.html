@@ -3055,10 +3055,84 @@ function alignHeaderRole(cell,roleP,label){
   p=next;
  }
 }
+/* Оформление только таблицы шапки: должности сверху, подписи и даты на общих строках. */
+function headerParagraphFormat(p,right){
+ const doc=p.ownerDocument;let pr=child(p,"pPr");if(!pr){pr=wordElement(doc,"pPr");p.prepend(pr)}
+ function setProp(name,attrs,after){
+  let el=child(pr,name);if(!el){el=wordElement(doc,name);const next=Array.from(pr.children).find(n=>n.namespaceURI===WORD_NS&&after.includes(n.localName));pr.insertBefore(el,next||null)}
+  for(const a of Array.from(el.attributes))if(a.namespaceURI===WORD_NS)el.removeAttributeNode(a);
+  for(const [k,v] of Object.entries(attrs))el.setAttributeNS(WORD_NS,"w:"+k,v);
+ }
+ setProp("spacing",{before:"0",after:"0",line:"240",lineRule:"auto"},["ind","contextualSpacing","mirrorIndents","suppressOverlap","jc","textDirection","textAlignment","textboxTightWrap","outlineLvl","divId","cnfStyle","rPr","sectPr","pPrChange"]);
+ setProp("ind",{left:"0",right:"0",firstLine:"0"},["contextualSpacing","mirrorIndents","suppressOverlap","jc","textDirection","textAlignment","textboxTightWrap","outlineLvl","divId","cnfStyle","rPr","sectPr","pPrChange"]);
+ setProp("jc",{val:right?"right":"left"},["textDirection","textAlignment","textboxTightWrap","outlineLvl","divId","cnfStyle","rPr","sectPr","pPrChange"]);
+ // Не наследуем нумерацию/табуляцию и разрывы страницы внутри шапки.
+ for(const name of ["tabs","numPr","pageBreakBefore","contextualSpacing"]){const e=child(pr,name);if(e)e.remove()}
+}
+function headerNoVerticalPadding(pr){
+ if(!pr)return;
+ const doc=pr.ownerDocument, name=pr.localName==="tblPr"?"tblCellMar":"tcMar";
+ let mar=child(pr,name);
+ if(!mar){mar=wordElement(doc,name);const order=pr.localName==="tblPr"?["tblLook","tblCaption","tblDescription","tblPrChange"]:["textDirection","tcFitText","vAlign","hideMark","headers","cellIns","cellDel","cellMerge","tcPrChange"];pr.insertBefore(mar,Array.from(pr.children).find(n=>order.includes(n.localName))||null)}
+ for(const side of ["top","bottom"]){let el=child(mar,side);if(!el){el=wordElement(doc,side);if(side==="top")mar.prepend(el);else{const next=child(mar,"right")||child(mar,"end");mar.insertBefore(el,next||null)}}el.setAttributeNS(WORD_NS,"w:w","0");el.setAttributeNS(WORD_NS,"w:type","dxa")}
+}
+function formatHeaderRows(xml,left,right,names,dates,values){
+ if(!right)return;
+ const hide=withoutApproval(values.signRole);
+ if(hide&&(!left||left===right))throw Error("В шаблоне Word блоки «Согласовано» и «Утверждаю» должны находиться в отдельных ячейках таблицы шапки.");
+ const cells=[left,right].filter(Boolean);
+ for(const cell of cells){headerCellTop(cell);for(const p of Array.from(cell.children).filter(n=>n.localName==="p"))headerParagraphFormat(p,cell===right)}
+ if(hide){Array.from(left.children).filter(n=>n.localName!=="tcPr").forEach(n=>n.remove());left.append(wordElement(xml,"p"))}
+ const row=right.parentElement, table=wordAncestor(right,"tbl");
+ if(!left||left.parentElement!==row||row.localName!=="tr"||Array.from(row.children).filter(n=>n.localName==="tc").length!==2)return;
+ const active=hide?[right]:[left,right];
+ // Подпись и дата в размеченном шаблоне находятся в отдельных абзацах.
+ // Если шаблон отличается, не перестраиваем его структуру наугад.
+ const sig=cell=>names.get(cell), date=cell=>dates.get(cell)||Array.from(cell.children).find(p=>p.localName==="p"&&p!==sig(cell)&&/г\s*\./.test(wordText(p))&&wordText(p).includes(values.year));
+ if(active.some(c=>!sig(c)||!date(c)||sig(c)===date(c)||sig(c).parentElement!==c||date(c).parentElement!==c))return;
+ const samples=new Map(active.map(c=>[c,{sig:sig(c),date:date(c)}]));
+ const base=samples.get(hide?right:left);
+ const order=Array.from(row.children).filter(n=>n.localName==="tc");
+ // Короткая линия подписи и неразрывные пробелы не дают ФИО уйти на новую строку.
+ function signText(c){
+  const p=samples.get(c).sig, name=String(c===right?values.signName:values.approvalName).trim();
+  const existing=wordText(p).match(/_{2,}/g)||[], count=existing.length?existing[0].length:14;
+  const max=c===right?12:14;
+  return "_".repeat(Math.max(5,Math.min(max,count,29-name.length)))+"\u00a0"+name.replace(/\s+/g,"\u00a0");
+ }
+ function dateText(c){
+  const t=wordText(samples.get(c).date).trim().replace(/[\t\r\n ]+/g," ");
+  return /[«»_]/.test(t)&&t.includes(values.year)?t:"«___» ____________ "+values.year+" г.";
+ }
+ const signatureRow=wordElement(xml,"tr"), dateRow=wordElement(xml,"tr");
+ for(const r of [signatureRow,dateRow]){const pr=wordElement(xml,"trPr");pr.append(wordElement(xml,"cantSplit"));r.append(pr)}
+ for(const c of order){
+  const hidden=hide&&c===left, isRight=c===right;
+  const sigCell=wordElement(xml,"tc"), dateCell=wordElement(xml,"tc");
+  const pr=child(c,"tcPr");headerNoVerticalPadding(pr);
+  for(const dest of [sigCell,dateCell])if(pr)dest.append(pr.cloneNode(true));
+  if(hidden){sigCell.append(wordElement(xml,"p"));dateCell.append(wordElement(xml,"p"))}
+  else{
+   const p=paragraphLike(base.sig,signText(c)), d=paragraphLike(base.date,dateText(c));
+   headerParagraphFormat(p,isRight);headerParagraphFormat(d,isRight);
+   sigCell.append(p);dateCell.append(d);
+   const first=samples.get(c).sig;
+   // Только пустые промежутки перед подписью и её собственные строки.
+   let prior=first.previousElementSibling;
+   while(prior&&prior.localName==="p"&&!wordText(prior).trim()){const prev=prior.previousElementSibling;prior.remove();prior=prev}
+   for(let n=first;n;){const next=n.nextElementSibling;n.remove();n=next}
+  }
+  signatureRow.append(sigCell);dateRow.append(dateCell);
+ }
+ headerNoVerticalPadding(child(table,"tblPr"));
+ const height=child(child(row,"trPr"),"trHeight");if(height)height.remove();
+ row.after(signatureRow,dateRow);
+}
 function fillTemplate(template, values) {
   const xml = template.cloneNode(true);
   const used = new Set();
   let approvalCell=null,signCell=null,approvalP=null,signP=null;
+  const headerNames=new Map(), headerDates=new Map();
   for (const control of nodes(xml,"sdt")) {
     const tag = attr(child(child(control,"sdtPr"),"tag"),"val") || "";
     if (!tag.startsWith("dr.")) continue;
@@ -3082,6 +3156,10 @@ function fillTemplate(template, values) {
       const cell=wordAncestor(control,"tc"), paragraph=wordAncestor(control,"p")||result.find(n=>n.localName==="p");
       if(key==="approvalRole"){approvalCell=cell;approvalP=paragraph}else{signCell=cell;signP=paragraph}
     }
+    if(key==="approvalName"||key==="signName"||key==="year"){
+      const cell=wordAncestor(control,"tc"), p=wordAncestor(control,"p")||result.find(n=>n.localName==="p");
+      if(cell&&p)(key==="year"?headerDates:headerNames).set(cell,p);
+    }
     control.replaceWith(...result);
   }
   // Обе должности начинаются сразу под заголовками «Согласовано» и «Утверждаю».
@@ -3089,28 +3167,8 @@ function fillTemplate(template, values) {
     headerCellTop(approvalCell);headerCellTop(signCell);
     alignHeaderRole(approvalCell,approvalP,"согласовано");alignHeaderRole(signCell,signP,"утверждаю");
   }
-  // Правый блок шапки: выравнивание всех абзацев по правому краю.
-  // Предпросмотр и экспорт Word используют одну и ту же разметку.
-  if(signCell){
-    for(const p of Array.from(signCell.children).filter(n=>n.namespaceURI===WORD_NS&&n.localName==="p")){
-      let pr=child(p,"pPr");
-      if(!pr){pr=wordElement(xml,"pPr");p.prepend(pr)}
-      let jc=child(pr,"jc");
-      if(!jc){
-        jc=wordElement(xml,"jc");
-        const afterJc=new Set(["textDirection","textAlignment","textboxTightWrap","outlineLvl","divId","cnfStyle","rPr","sectPr","pPrChange"]);
-        const next=Array.from(pr.children).find(n=>n.namespaceURI===WORD_NS&&afterJc.has(n.localName));
-        pr.insertBefore(jc,next||null);
-      }
-      jc.setAttributeNS(WORD_NS,"w:val","right");
-    }
-  }
-  if(withoutApproval(values.signRole)){
-    if(!approvalCell||!signCell||approvalCell===signCell)throw Error("В шаблоне Word блоки «Согласовано» и «Утверждаю» должны находиться в отдельных ячейках таблицы шапки.");
-    // Пустая левая ячейка оставляет «Утверждаю» на прежнем месте справа.
-    Array.from(approvalCell.children).filter(n=>n.localName!=="tcPr").forEach(n=>n.remove());
-    approvalCell.append(wordElement(xml,"p"));
-  }
+  // Общие строки подписей и дат сохраняют единую горизонталь в Word и предпросмотре.
+  formatHeaderRows(xml,approvalCell,signCell,headerNames,headerDates,values);
   if (Object.keys(values).some(k => !used.has(k))) throw Error("Установите размеченный файл «Примерный регламент.docx» из комплекта.");
   // Старая сохранённая разбивка Word относится к незаполненному образцу.
   nodes(xml,"lastRenderedPageBreak").forEach(n => n.remove());
