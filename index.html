@@ -2370,6 +2370,12 @@ styleEl.textContent=[
 ".drx-inp.drx-bad{border-color:#e11d48;box-shadow:0 0 0 4px rgba(225,29,72,.14)}",
 "select.drx-inp option{background:var(--drx-surf);color:var(--drx-ink)}",
 ".drx-row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}",
+"#drx-root .drx-sign-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:16px;align-items:start}",
+"#drx-root .drx-sign-grid>div{min-width:0}",
+"#drx-root .drx-sign-grid h3{margin-bottom:14px;min-height:24px}",
+"#drx-root .drx-sign-grid select{min-width:0;width:100%}",
+"#drx-root .drx-sign-grid .drx-role-full{font-size:12px;line-height:1.45;color:var(--drx-mut);overflow-wrap:anywhere;margin:0 0 10px;min-height:4.4em}",
+"#drx-root .drx-sign-grid input[readonly]{opacity:.85;cursor:default}",
 ".drx-auto{display:inline-flex;gap:5px;align-items:center;font-size:10.3px;font-weight:800;color:#0f9d76;background:rgba(15,157,118,.13);padding:3px 8px;border-radius:99px}",
 ".drx-seg{display:flex;background:var(--drx-surf2);border:1.5px solid var(--drx-line2);border-radius:12px;padding:4px;gap:4px;flex-wrap:wrap}",
 ".drx-seg button{flex:1;padding:9px 11px;border-radius:8px;font-weight:800;font-size:12.3px;color:var(--drx-ink2);min-width:110px}",
@@ -2722,10 +2728,65 @@ function toast(msg,type,action){
 /* ══════════════════════ 7. СОСТОЯНИЕ ══════════════════════ */
 /* Черновик принадлежит только текущей вкладке; старый общий ключ не читаем. */
 var STORE="pascal-dr-session-v8";
+const UTV_ROLES = [
+  "Губернатор Липецкой области",
+  "Первый заместитель Губернатора Липецкой области",
+  "Заместитель Губернатора Липецкой области",
+  "Начальник управления государственной службы и кадровой работы Правительства Липецкой области",
+  "Начальник управления контроля и протокола Губернатора Липецкой области Правительства Липецкой области",
+  "Начальник правового управления Правительства Липецкой области",
+  "Начальник управления делами Правительства Липецкой области",
+  "Начальник управления мобилизационной работы Правительства Липецкой области",
+  "Начальник управления по профилактике коррупционных и иных правонарушений Правительства Липецкой области",
+  "Начальник отдела по работе с обращениями граждан Правительства Липецкой области",
+  "Начальник отдела специальной документальной связи Правительства Липецкой области",
+  "Начальник отдела координации деятельности по противодействию терроризму Правительства Липецкой области",
+  "Начальник отдела информационной безопасности Правительства Липецкой области",
+  "Министр внутренней политики Липецкой области",
+  "Министр жилищно-коммунального хозяйства Липецкой области",
+  "Министр здравоохранения Липецкой области",
+  "Министр имущественных и земельных отношений Липецкой области",
+  "Министр информационной политики Липецкой области",
+  "Министр культуры Липецкой области",
+  "Министр лесного хозяйства Липецкой области",
+  "Министр молодежной политики Липецкой области",
+  "Министр образования Липецкой области",
+  "Министр природных ресурсов и экологии Липецкой области",
+  "Министр промышленности, инвестиций и науки Липецкой области",
+  "Министр региональной безопасности Липецкой области",
+  "Министр сельского хозяйства Липецкой области",
+  "Министр социальной политики Липецкой области",
+  "Министр строительства и архитектуры Липецкой области - главный архитектор области",
+  "Министр торговли и ценовой политики Липецкой области",
+  "Министр транспорта и дорожного хозяйства Липецкой области",
+  "Министр финансов Липецкой области",
+  "Министр физической культуры и спорта Липецкой области",
+  "Министр цифрового развития и искусственного интеллекта Липецкой области",
+  "Министр экономического развития Липецкой области",
+  "Министр энергетики и тарифов Липецкой области",
+  "Начальник управления ветеринарии Липецкой области",
+  "Начальник управления ЗАГС и архивов Липецкой области",
+  "Начальник управления по охране, использованию объектов животного мира и водных биологических ресурсов Липецкой области",
+  "Начальник управления по охране объектов культурного наследия Липецкой области",
+  "Руководитель государственной жилищной инспекции Липецкой области",
+  "Руководитель инспекции гостехнадзора Липецкой области",
+  "Руководитель инспекции государственного строительного надзора Липецкой области"
+];
+const UGS_ROLE = UTV_ROLES[3];
+const SOGLAS_ROLES = [UGS_ROLE, "И.о. начальника управления государственной службы и кадровой работы Правительства Липецкой области"];
+const SOGLAS_NAMES = ["Е.С. Соломахина", "Р.А. Голенских"];
+function withoutApproval(role){return role===UGS_ROLE}
+function normalizeHeader(h){
+ var n=SOGLAS_ROLES.indexOf(h.soglasRole);
+ if(n<0)n=0;
+ h.soglasRole=SOGLAS_ROLES[n];h.soglasName=SOGLAS_NAMES[n];
+ delete h.soglasAuto;
+ if(h.utvRole&&!UTV_ROLES.includes(h.utvRole)){h.utvRole="";h.utvName=""}
+}
 function li(text,on,src,lvl){return{id:uid(),text:text,on:on!==false,src:src||"custom",lvl:lvl||0}}
 function blank(){
  return{
-  header:{soglasAuto:true,soglasRole:"Начальник управления государственной службы и кадровой работы Правительства Липецкой области",soglasName:"Е.С. Соломахина",utvRole:"",utvName:"",year:"2026"},
+  header:{soglasRole:SOGLAS_ROLES[0],soglasName:SOGLAS_NAMES[0],utvRole:"",utvName:"",year:"2026"},
   position:{organType:"iogv",organName:"",department:"",title:"",group:"",category:"",manualGC:false},
   activity:{areas:[],types:{},custom:{},appoint:2,minister:""},
   sub:{direct:"",oper:[],noRepl:true,replTitle:"",replOther:false,replMinister:false},
@@ -2759,6 +2820,7 @@ var S=null,FIRST=false;
 try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
 if(!S){S=blank();FIRST=true}
 merge(S,blank());
+normalizeHeader(S.header);
 function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Перед закрытием вкладки скачайте готовый документ Word."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Не закрывайте вкладку до скачивания документа Word."}}
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
@@ -2903,7 +2965,7 @@ function fieldValues() {
       : "1.7. Гражданский служащий обязан исполнять должностные обязанности " + (sub.replTitle || missing) + " в период его временного отсутствия" + condition + "."];
   }
   return {
-    approvalRole:h.soglasRole || missing, approvalName:h.soglasName || missing,
+    approvalRole:h.soglasRole, approvalName:h.soglasName,
     signRole:h.utvRole || missing, signName:h.utvName || missing, year:h.year || "____",
     full, fullUpper:full.toUpperCase(), title:p.title || missing, group:groups[p.group] || missing, category:p.category || missing,
     areas:a.areas.map(c => AREA_BY[c] ? AREA_BY[c].n : c).join("; ") || missing, types:types.join("; ") || missing,
@@ -2972,9 +3034,31 @@ function fillSheet(table, count) {
     table.append(row);
   }
 }
+/* Шапка: находим ячейки по размеченным полям, а не по номеру таблицы. */
+function wordAncestor(node,name){
+ for(let n=node;n;n=n.parentElement)if(n.namespaceURI===WORD_NS&&n.localName===name)return n;
+ return null;
+}
+function headerCellTop(cell){
+ let pr=child(cell,"tcPr");if(!pr){pr=wordElement(cell.ownerDocument,"tcPr");cell.prepend(pr)}
+ let va=child(pr,"vAlign");if(!va){va=wordElement(cell.ownerDocument,"vAlign");const before=child(pr,"hideMark")||child(pr,"tcPrChange");pr.insertBefore(va,before||null)}
+ va.setAttributeNS(WORD_NS,"w:val","top");
+}
+function alignHeaderRole(cell,roleP,label){
+ if(!cell||!roleP||roleP.parentElement!==cell)return;
+ const heading=Array.from(cell.children).find(p=>p.localName==="p"&&wordText(p).trim().toLowerCase()===label);
+ if(!heading)return;
+ // Убираем только пустые абзацы между заголовком и должностью, не подпись и не дату.
+ let p=heading.nextElementSibling;
+ while(p&&p!==roleP){const next=p.nextElementSibling;
+  if(p.localName==="p"&&!wordText(p).trim()&&!nodes(p,"drawing").length&&!nodes(p,"fldChar").length&&!nodes(p,"sectPr").length)p.remove();
+  p=next;
+ }
+}
 function fillTemplate(template, values) {
   const xml = template.cloneNode(true);
   const used = new Set();
+  let approvalCell=null,signCell=null,approvalP=null,signP=null;
   for (const control of nodes(xml,"sdt")) {
     const tag = attr(child(child(control,"sdtPr"),"tag"),"val") || "";
     if (!tag.startsWith("dr.")) continue;
@@ -2994,7 +3078,38 @@ function fillTemplate(template, values) {
       result = [base, ...value.map(s => paragraphLike(sample,s))];
     } else if (value === null) result = Array.from(content.children);
     else result = value.map((s,i) => paragraphLike(content.children[i] || sample,s));
+    if(key==="approvalRole"||key==="signRole"){
+      const cell=wordAncestor(control,"tc"), paragraph=wordAncestor(control,"p")||result.find(n=>n.localName==="p");
+      if(key==="approvalRole"){approvalCell=cell;approvalP=paragraph}else{signCell=cell;signP=paragraph}
+    }
     control.replaceWith(...result);
+  }
+  // Обе должности начинаются сразу под заголовками «Согласовано» и «Утверждаю».
+  if(approvalCell&&signCell&&approvalCell!==signCell){
+    headerCellTop(approvalCell);headerCellTop(signCell);
+    alignHeaderRole(approvalCell,approvalP,"согласовано");alignHeaderRole(signCell,signP,"утверждаю");
+  }
+  // Правый блок шапки: выравнивание всех абзацев по правому краю.
+  // Предпросмотр и экспорт Word используют одну и ту же разметку.
+  if(signCell){
+    for(const p of Array.from(signCell.children).filter(n=>n.namespaceURI===WORD_NS&&n.localName==="p")){
+      let pr=child(p,"pPr");
+      if(!pr){pr=wordElement(xml,"pPr");p.prepend(pr)}
+      let jc=child(pr,"jc");
+      if(!jc){
+        jc=wordElement(xml,"jc");
+        const afterJc=new Set(["textDirection","textAlignment","textboxTightWrap","outlineLvl","divId","cnfStyle","rPr","sectPr","pPrChange"]);
+        const next=Array.from(pr.children).find(n=>n.namespaceURI===WORD_NS&&afterJc.has(n.localName));
+        pr.insertBefore(jc,next||null);
+      }
+      jc.setAttributeNS(WORD_NS,"w:val","right");
+    }
+  }
+  if(withoutApproval(values.signRole)){
+    if(!approvalCell||!signCell||approvalCell===signCell)throw Error("В шаблоне Word блоки «Согласовано» и «Утверждаю» должны находиться в отдельных ячейках таблицы шапки.");
+    // Пустая левая ячейка оставляет «Утверждаю» на прежнем месте справа.
+    Array.from(approvalCell.children).filter(n=>n.localName!=="tcPr").forEach(n=>n.remove());
+    approvalCell.append(wordElement(xml,"p"));
   }
   if (Object.keys(values).some(k => !used.has(k))) throw Error("Установите размеченный файл «Примерный регламент.docx» из комплекта.");
   // Старая сохранённая разбивка Word относится к незаполненному образцу.
@@ -3293,9 +3408,9 @@ let lastBlob = null, lastName = "", creatingWord = false;
 /* ══════════════════════ 11. ВАЛИДАЦИЯ ══════════════════════ */
 function validate(){
  var e=[];
- if(!S.header.utvRole)e.push({step:0,msg:"Укажите должность утверждающего («Утверждаю»)",path:"header.utvRole"});
+ if(!UTV_ROLES.includes(S.header.utvRole))e.push({step:0,msg:"Укажите должность утверждающего («Утверждаю»)",path:"header.utvRole"});
  if(!S.header.utvName)e.push({step:0,msg:"Укажите ФИО утверждающего",path:"header.utvName"});
- if(!S.header.soglasName)e.push({step:0,msg:"Укажите ФИО согласующего («Согласовано»)",path:"header.soglasName"});
+
  if(!S.position.organName)e.push({step:1,msg:"Укажите исполнительный орган / подразделение",path:"position.organName"});
  if(!S.position.title)e.push({step:1,msg:"Укажите наименование должности",path:"position.title"});
  if(!S.position.group||!S.position.category)e.push({step:1,msg:"Не определены группа и категория (уточните должность или задайте вручную)",path:"position.title"});
@@ -3319,7 +3434,7 @@ function stepStatus(i){
 
 /* ══════════════════════ 12. ШАГИ ══════════════════════ */
 var STEPS=[
- {t:"Шапка документа",d:"Согласовано · Утверждаю",pts:"сноски 1–2, Указ № 4"},
+ {t:"Шапка документа",d:"Согласовано · Утверждаю",pts:"сноски 1–2"},
  {t:"Должность",d:"пп. 1.1–1.2",pts:"Реестр № 46-ОЗ"},
  {t:"Области · виды · назначение",d:"пп. 1.3–1.5",pts:"Справочник: 32 области"},
  {t:"Подчинение и замещение",d:"пп. 1.6–1.7",pts:"сноска 7"},
@@ -3434,12 +3549,19 @@ function renderStep(){
  var i=S.meta.step,st=STEPS[i],p=S.position;
  var h='<div class="drx-sh"><span class="k">Шаг '+i+" из "+(STEPS.length-1)+" · "+st.pts+"</span><h2>"+st.t+"</h2><p>"+st.d+"</p></div>";
  if(i===0){
-  h+='<div class="drx-card drx-b"><h3><span class="pt">Согласовано</span> Согласующее лицо</h3><div class="sub">Сноска 1: руководитель структурного подразделения Правительства по вопросам госслужбы и кадров. ⚠️ Указ № 4: если назначение не через УГСКР — согласовывает начальник ИОГВ.</div>'+
-   fld("Должность",txt("header.soglasRole",S.header.soglasRole),true)+fld("ФИО",txt("header.soglasName",S.header.soglasName,"Е.С. Соломахина"),true)+
-   (S.header.soglasAuto?note("Заполняется <b>автоматически</b> по варианту назначения (п. 1.5). Правка вручную отключает автоподстановку."):'<button class="drx-btn drx-btn-g drx-btn-x" data-inner="soglas-auto">↺ Вернуть автоподстановку</button>')+"</div>"+
-   '<div class="drx-card drx-b"><h3><span class="pt">Утверждаю</span> Представитель нанимателя</h3><div class="sub">Сноска 2: должность представителя нанимателя или уполномоченного лица.</div>'+
-   fld("Должность",txt("header.utvRole",S.header.utvRole,"Министр … / Начальник управления …"),true)+
-   '<div class="drx-row2">'+fld("ФИО",txt("header.utvName",S.header.utvName,"И.О. Фамилия"),true)+fld("Год",txt("header.year",S.header.year,"2026"))+"</div></div>";
+  var skipApproval=withoutApproval(S.header.utvRole);
+  var approval=skipApproval?"":'<div><h3><span class="pt">Согласовано</span></h3>'+
+   fld("Должность",sel("header.soglasRole",SOGLAS_ROLES,S.header.soglasRole),true)+
+   '<div class="drx-role-full">'+esc(S.header.soglasRole)+'</div>'+
+   fld("ФИО",'<input class="drx-inp" data-path="header.soglasName" value="'+esc(S.header.soglasName)+'" readonly aria-label="ФИО согласующего">',true)+'</div>';
+  h+='<div class="drx-card drx-b"><div class="drx-sign-grid">'+approval+
+   '<div><h3><span class="pt">Утверждаю</span></h3>'+
+   fld("Должность",sel("header.utvRole",[["","— выберите должность —"]].concat(UTV_ROLES),S.header.utvRole),true)+
+   '<div class="drx-role-full">'+esc(S.header.utvRole||"Выберите должность утверждающего.")+'</div>'+
+   fld("ФИО",txt("header.utvName",S.header.utvName,"И.О. Фамилия"),true)+'</div></div>'+
+   fld("Год",txt("header.year",S.header.year,"2026"))+
+   '<div class="sub">Сноска 1: согласует ДР начальник управления государственной службы и кадровой работы Правительства Липецкой области. Утверждает либо руководитель исполнительного органа, на гражданского служащего которого разрабатывается должностной регламент, либо (в случае, если ДР разрабатывается на заместителя руководителя или руководителя исполнительного органа) Губернатор Липецкой области или заместитель Губернатора Липецкой области, координирующий деятельность органа.</div>'+
+   (skipApproval?note("При выборе начальника управления государственной службы и кадровой работы Правительства Липецкой области блок согласования не включается в документ."):"")+"</div>";
  } else if(i===1){
   var organs=p.organType==="iogv"?ORGANS_IOGV:ORGANS_GOV;
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.1</span> Должность и орган</h3><div class="sub">Как в штатном расписании. Группа и категория подтянутся автоматически по Реестру (Закон ЛО № 46-ОЗ).</div>'+
@@ -3455,7 +3577,7 @@ function renderStep(){
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.3</span> Области профессиональной служебной деятельности</h3><div class="sub">Справочник квалификационных требований (ч. 8 ст. 12 № 79-ФЗ): <b>'+AREAS.length+" области (П.1–П.32)</b>. Можно несколько. Поиск — по названию и шифру.</div>"+
    cpHtml("areas","Область деятельности",false)+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.4</span> Виды профессиональной служебной деятельности</h3><div class="sub">'+TYPES_TOTAL+" видов из Справочника. Раскройте область и отметьте нужные виды — <b>минимум один для каждой области</b>.</div><div data-types></div></div>"+
-   '<div class="drx-card drx-b"><h3><span class="pt">1.5</span> Назначение на должность</h3><div class="sub">Кто назначает и освобождает. Влияет на «Согласовано» (Указ № 4).</div>'+
+   '<div class="drx-card drx-b"><h3><span class="pt">1.5</span> Назначение на должность</h3><div class="sub">Кто назначает и освобождает.</div>'+
    fld("Вариант назначения",sel("activity.appoint",[[1,"1 — Губернатор Липецкой области"],[2,"2 — Начальник УГСКР Правительства Липецкой области"],[3,"3 — Министр / руководитель органа"]],S.activity.appoint),true)+
    (S.activity.appoint===3?fld("Кем именно (творительный падеж)",txt("activity.minister",S.activity.minister,"министром транспорта и дорожного хозяйства Липецкой области"),true)+note("Подставляется из наименования органа — отредактируйте при необходимости."):"")+"</div>";
  } else if(i===3){
@@ -3532,19 +3654,12 @@ function renderStep(){
 }
 
 /* ══════════════════════ 13. СОБЫТИЯ КОНТЕНТА ══════════════════════ */
-function autofillHeader(){
- if(S.header.soglasAuto){
-  if(S.activity.appoint===2){S.header.soglasRole="Начальник управления государственной службы и кадровой работы Правительства Липецкой области";if(!S.header.soglasName)S.header.soglasName="Е.С. Соломахина"}
-  else{var k=tok();S.header.soglasRole=k.headNom.charAt(0).toUpperCase()+k.headNom.slice(1)}
- }
- if(!S.header.utvRole&&S.position.organName){var t=tok();S.header.utvRole=t.headNom.charAt(0).toUpperCase()+t.headNom.slice(1)}
-}
 function special(path,v){
  if(path==="position.title"&&!S.position.manualGC){var d=deriveGC(v);S.position.group=d.g;S.position.category=d.c;
-  var ch=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)ch=x});if(ch&&!ch.touched)ch.on=isChief();autofillHeader()}
- if(path==="position.organName"){autofillHeader();if(S.activity.appoint===3)S.activity.minister=tok().headInstr}
- if(path==="activity.appoint"){autofillHeader();if(+v===3&&!S.activity.minister)S.activity.minister=tok().headInstr}
- if(path==="header.soglasRole"||path==="header.soglasName"){if(document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.path===path)S.header.soglasAuto=false}
+  var ch=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)ch=x});if(ch&&!ch.touched)ch.on=isChief()}
+ if(path==="position.organName"){if(S.activity.appoint===3)S.activity.minister=tok().headInstr}
+ if(path==="activity.appoint"){if(+v===3&&!S.activity.minister)S.activity.minister=tok().headInstr}
+ if(path==="header.soglasRole")normalizeHeader(S.header);
  if(path==="blocks.gt.on"||path==="blocks.pdn.on"){applyBlocks(true);toast(v?"Специальная роль включена — положения добавлены.":"Положения роли удалены.","ok")}
  if(path==="position.group"||path==="position.category"){var c2=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)c2=x});if(c2&&!c2.touched)c2.on=isChief()}
 }
@@ -3589,10 +3704,9 @@ BC.addEventListener("click",function(e){
  if(d.cprm){var arr=getPath(S,CP_PATH[d.cprm]),ix=arr.indexOf(d.v);if(ix>=0)arr.splice(ix,1);refreshCp(d.cprm);if(d.cprm==="areas")renderTypes();markSaving();schedulePreview();renderRail();return}
  if(d.cpadd){cpAdd(d.cpadd);return}
  var a=d.inner;
- if(a==="organ-type"){S.position.organType=d.v;S.position.organName="";autofillHeader();after(true)}
+ if(a==="organ-type"){S.position.organType=d.v;S.position.organName="";after(true)}
  else if(a==="apply-blocks"){applyBlocks(false);renderStep()}
  else if(a==="apply-funcs"){applyFuncs(false);renderStep()}
- else if(a==="soglas-auto"){S.header.soglasAuto=true;autofillHeader();after(true)}
 });
 BC.addEventListener("keydown",function(e){
  if(e.key!=="Enter")return;
@@ -3691,7 +3805,7 @@ function confirmM(title,text,fn){_mok=fn;showM("<h3>"+title+"</h3><p>"+text+'</p
 /* ══════════════════════ 15. СТАРТ ══════════════════════ */
 function boot(){
  installButton();
- if(FIRST){applyBlocks(true);applyFuncs(true);autofillHeader();saveNow()}
+ if(FIRST){applyBlocks(true);applyFuncs(true);saveNow()}
  renderRail();renderPaper();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);
