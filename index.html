@@ -2147,7 +2147,6 @@ var AREA_BY = {}; AREAS.forEach(function (a) { AREA_BY[a.c] = a; });
 var TYPES_TOTAL = AREAS.reduce(function (s, a) { return s + a.t.length; }, 0);
 
 var DIRECTIONS = ["Государственное и муниципальное управление","Юриспруденция","Экономика","Финансы и кредит","Менеджмент","Управление персоналом","Прикладная информатика","Информационные системы и технологии","Программная инженерия","Бизнес-информатика","Автоматизация и управление","Автоматизация технологических процессов и производств","Автоматизированные системы обработки информации и управления","Автомобили и автомобильное хозяйство","Автомобильные дороги и аэродромы","Агроинженерия","Агрохимия и агропочвоведение","Информационная безопасность","Компьютерная безопасность","Документоведение и архивоведение","Журналистика","Реклама и связи с общественностью","Политология","Социология","Социальная работа","Психология","Педагогическое образование","Организация работы с молодежью","Физическая культура","Строительство","Организация перевозок и управление на транспорте","Лечебное дело","Фармация"];
-var OPER_PRESETS = ["заместителю Губернатора Липецкой области, координирующему и контролирующему деятельность министерства","министру транспорта и дорожного хозяйства Липецкой области","первому заместителю министра","заместителю министра","начальнику отдела"];
 
 var FUNCTIONS = [
  {id:"norm",name:"Нормативное правовое регулирование и выработка государственной политики",know:["порядка подготовки, согласования и внесения проектов нормативных правовых актов","основ нормотворческой техники и правил юридической техники","порядка проведения антикоррупционной экспертизы нормативных правовых актов и их проектов"],skill:["подготовки проектов нормативных правовых актов и управленческих решений","проведения правовой и антикоррупционной экспертизы проектов правовых актов","анализа правоприменительной практики и подготовки предложений по совершенствованию законодательства"]},
@@ -2259,7 +2258,7 @@ var SEC7="Взаимодействие гражданского служащег
 var SEC7V={a:"Объяснительные записки, заявления о служебной проверке, иные заявления и предварительные уведомления о намерении выполнять иную оплачиваемую работу на имя {headGen} гражданский служащий представляет в письменной форме.",b:"Заявления о служебной проверке и иные заявления на имя начальника управления государственной службы и кадровой работы Правительства Липецкой области, предварительные уведомления о намерениях выполнять иную оплачиваемую работу на имя Губернатора Липецкой области гражданский служащий представляет в письменной форме.",c:"Объяснительные записки, заявления о служебной проверке, иные заявления и предварительные уведомления о намерении выполнять иную оплачиваемую работу на имя Губернатора Липецкой области гражданский служащий представляет в письменной форме."};
 var SEC7I="В целях исполнения должностных обязанностей и поручений гражданский служащий вправе взаимодействовать с гражданскими служащими и работниками {organGen}, иных исполнительных органов Липецкой области, муниципальными служащими и иными работниками органов местного самоуправления муниципальных образований Липецкой области, гражданами и организациями.";
 var OTHER_MIN="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, приказами и поручениями {chain} в пределах своей компетенции";
-var OTHER_GOV="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, поручениями заместителя Губернатора Липецкой области, координирующего и контролирующего деятельность {organGen}, приказами и поручениями {headShortGen}, поручениями заместителя {headShortGen}, начальника отдела, в том числе полученными через электронные приложения, используемые в локальной сети Правительства Липецкой области, а также с использованием автоматизированной системы «Битрикс24», размещенной в сети Интернет по адресу www.bitrix24.ru, в пределах своей компетенции";
+var OTHER_GOV="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, {otherGovChain}, в том числе полученными через электронные приложения, используемые в локальной сети Правительства Липецкой области, а также с использованием автоматизированной системы «Битрикс24», размещенной в сети Интернет по адресу www.bitrix24.ru, в пределах своей компетенции";
 var D_OBR="осуществлять либо обеспечивать объективное, всестороннее и своевременное рассмотрение обращений граждан и юридических лиц, структурных подразделений Правительства Липецкой области, исполнительных органов Липецкой области, органов местного самоуправления муниципальных образований Липецкой области в порядке и сроки, установленные действующим законодательством, подготовку проектов ответов на их обращения в пределах своей компетенции";
 var D_NPA="принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности отдела";
 var D_MSG="использовать в целях рабочих коммуникаций отечественный многофункциональный сервис обмена информацией в качестве средства мгновенного обмена сообщениями";
@@ -2837,7 +2836,7 @@ function blank(){
   header:{soglasRole:SOGLAS_ROLES[0],soglasName:SOGLAS_NAMES[0],utvRole:"",utvName:"",year:"2026"},
   position:{organType:"iogv",organName:"",department:"",title:"",group:"",category:"",manualGC:false},
   activity:{areas:[],types:{},custom:{}},
-  sub:{direct:"",oper:[],noRepl:true,replTitle:"",replOther:false,replMinister:false},
+  sub:{governorDeputy:false, deputy:"none", departmentChief:false,noRepl:true,replTitle:"",replOther:false,replMinister:false},
   qual:{eduOverride:false,eduText:"",directions:[],dpo:"",stageOverride:false,stageText:""},
   blocks:{knd:{on:false,role:"insp"},antiterror:{on:false,role:"A",variant:"base"},anticor:{on:false,role:"full",s62:true},zampolit:{on:false},digital:{on:false,role:"rct"},client:{on:false},infobez:{on:false},antimonopoly:{on:false},zakupki:{on:false},gosuslugi:{on:false,role:"dep"},mobil:{on:false},gos217:{on:false,role:"organ"},ai:{mode:"auto"},pdn:{on:false},gt:{on:false}},
   funcs:[],mgmtAuto:true,mgmtOn:false,
@@ -2855,7 +2854,7 @@ function example(){
  s.position={organType:"iogv",organName:"министерство транспорта и дорожного хозяйства Липецкой области",department:"отдел дорожной деятельности",title:"консультант",group:"ведущая",category:"специалисты",manualGC:false};
  s.header.utvRole="Министр транспорта и дорожного хозяйства Липецкой области";s.header.utvName="А.В. Смирнов";
  s.activity={areas:["П.18","П.32"],types:{"П.18":[4],"П.32":[2]},custom:{}};
- s.sub={direct:"министру транспорта и дорожного хозяйства Липецкой области",oper:["заместителю министра","начальнику отдела дорожной деятельности"],noRepl:true,replTitle:"",replOther:false,replMinister:false};
+ s.sub={governorDeputy:false,deputy:"deputy",departmentChief:true,noRepl:true,replTitle:"",replOther:false,replMinister:false};
  s.qual.directions=["Автомобильные дороги и аэродромы","Организация перевозок и управление на транспорте","Государственное и муниципальное управление"];
  s.blocks.digital={on:true,role:"spec"};s.blocks.gos217={on:true,role:"organ"};
  s.funcs=["delo","info"];
@@ -2867,7 +2866,15 @@ function merge(t,d){for(var k in d){if(t[k]===undefined)t[k]=d[k];else if(d[k]&&
 var S=null,FIRST=false;
 try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
 if(!S){S=blank();FIRST=true}
+// Миграция старых свободных полей 1.6 в переключатели, без изменения п. 1.7.
+if(S.sub&&Array.isArray(S.sub.oper)&&S.sub.deputy===undefined){
+ var oldOper=S.sub.oper.join(" ");
+ S.sub.governorDeputy=/заместителю Губернатора/i.test(oldOper);
+ S.sub.deputy=/первому заместителю/i.test(oldOper)?"first":/заместителю (?:министра|начальника|руководителя)/i.test(oldOper)?"deputy":"none";
+ S.sub.departmentChief=/начальнику отдела/i.test(oldOper);
+}
 merge(S,blank());
+delete S.sub.direct;delete S.sub.oper;
 delete S.activity.appoint;delete S.activity.minister;
 normalizeHeader(S.header);
 S.position.organName=organGen(S.position.organName);S.position.department=departmentGen(S.position.department);S.position.title=positionGen(S.position.title);
@@ -2876,8 +2883,8 @@ function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
 function deriveGC(t){t=norm(positionNom(t));for(var i=0;i<GROUP_RULES.length;i++){if(GROUP_RULES[i][0].test(t))return{g:GROUP_RULES[i][1],c:GROUP_RULES[i][2]}}return{g:"",c:""}}
-function tok(){
- var og=organGen(S.position.organName)||"________________", rest=og, kind="";
+function organInfo(p){
+ var og=organGen(p.organName)||"________________", rest=og, kind="";
  var forms=[
   ["министерства","министерстве","министр","министра","министром","министру"],
   ["правового управления","правовом управлении","начальник правового управления","начальника правового управления","начальником правового управления","начальнику правового управления"],
@@ -2890,13 +2897,84 @@ function tok(){
  if(f){kind=f[0];rest=og.slice(kind.length)}else{f=["",og,"руководитель","руководителя","руководителем","руководителю"];rest=" "+og}
  var prep=kind?f[1]+rest:og;
  var about=(/^[аеёиоуыэюя]/i.test(prep)?"об ":"о ")+prep;
- var headShort=kind?f[3]:"руководителя";
- var chain=headShort+", заместителя "+headShort+(kind==="отдела"?"":", начальника отдела");
- return{organ:prep,organGen:og,organAbout:about,headShortGen:headShort,department:departmentGen(S.position.department)||"________",title:positionGen(S.position.title)||"________________",
-  headNom:f[2]+rest,headGen:f[3]+rest,headInstr:f[4]+rest,deputyDat:"заместителю "+f[3]+rest,
-  chiefDat:"начальнику отдела",chain:chain};
+ var short=kind==="министерства"?["министр","министра","министру","министром"]:
+  kind==="правового управления"||kind==="управления"?["начальник управления","начальника управления","начальнику управления","начальником управления"]:
+  kind==="государственной жилищной инспекции"||kind==="инспекции"?["руководитель инспекции","руководителя инспекции","руководителю инспекции","руководителем инспекции"]:
+  kind==="отдела"?["начальник отдела","начальника отдела","начальнику отдела","начальником отдела"]:["руководитель","руководителя","руководителю","руководителем"];
+ return {kind,organ:prep,organGen:og,organAbout:about,head:{nom:f[2]+rest,gen:f[3]+rest,dat:f[5]+rest,instr:f[4]+rest,short}};
 }
-function T(t){var k=tok();return String(t).replace(/Положение о \{organGen\}/g,"Положение {organAbout}").replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
+function person(key,nom,gen,dat,instr,short,defined){
+ return {key,nom,gen,dat,instr,short:short||[nom,gen,dat,instr],defined:!!defined};
+}
+function organHeadPerson(info,role){
+ var h=info.head, extra=role&&role.indexOf(" - главный архитектор области")>=0;
+ return person("head",h.nom+(extra?" – главный архитектор области":""),h.gen+(extra?" – главного архитектора области":""),h.dat+(extra?" – главному архитектору области":""),h.instr+(extra?" – главным архитектором области":""),h.short,true);
+}
+function governorPerson(role){
+ if(role===UTV_ROLES[1])return person("firstGovernorDeputy","Первый заместитель Губернатора Липецкой области","первого заместителя Губернатора Липецкой области","первому заместителю Губернатора Липецкой области","первым заместителем Губернатора Липецкой области");
+ if(role===UTV_ROLES[2])return person("governorDeputy","заместитель Губернатора Липецкой области","заместителя Губернатора Липецкой области","заместителю Губернатора Липецкой области","заместителем Губернатора Липецкой области",["заместитель Губернатора Липецкой области","заместителя Губернатора Липецкой области","заместителю Губернатора Липецкой области","заместителем Губернатора Липецкой области"]);
+ return person("governor","Губернатор Липецкой области","Губернатора Липецкой области","Губернатору Липецкой области","Губернатором Липецкой области");
+}
+function approverPerson(s,info){
+ var role=s.header.utvRole,binding=approvalOrgan(role);
+ if(binding)return organHeadPerson(organInfo({organName:binding.organName}),role);
+ if(UTV_ROLES.slice(0,3).includes(role))return governorPerson(role);
+ return null;
+}
+function departmentChiefAvailable(s){
+ var d=departmentGen(s.position.department);
+ return !!d && /(?:^|\s)отдела(?:\s|$)/i.test(d) && !/^начальник отдела(?:\s|$)/i.test(positionNom(s.position.title));
+}
+function subordinationModel(s){
+ var p=s.position,sub=s.sub,info=organInfo(p),senior=governorAppointmentPost(p),direct=[],oper=[],approver=approverPerson(s,info);
+ function add(list,r){if(r&&!direct.concat(oper).some(x=>x.key===r.key))list.push(r)}
+ if(senior){
+  add(direct,governorPerson(UTV_ROLES[0]));
+  if(sub.governorDeputy){var g=governorPerson(UTV_ROLES[2]);g.dat+=", координирующему и контролирующему деятельность "+info.organGen;g.defined=true;add(direct,g)}
+  add(oper,approver);
+ }else{
+  add(direct,approver);
+  if(sub.deputy==="first"||sub.deputy==="deputy"){
+   var first=sub.deputy==="first",h=info.head, gen=h.gen, short=h.short[1], key=first?"firstDeputy":"deputy";
+   var n=first?"первый заместитель ":"заместитель ", ge=first?"первого заместителя ":"заместителя ", da=first?"первому заместителю ":"заместителю ", ins=first?"первым заместителем ":"заместителем ";
+   var scope=departmentGen(p.department);
+   var dat=da+gen+(first?"":", координирующему и контролирующему деятельность "+[scope,info.organGen].filter(Boolean).join(" "));
+   add(oper,person(key,n+gen,ge+gen,dat,ins+gen,[n+short,ge+short,da+short,ins+short],true));
+  }
+  if(sub.departmentChief&&departmentChiefAvailable(s)){
+   var dept=departmentGen(p.department)+" "+info.organGen;
+   // Два разных лица не должны получать одинаковое сокращённое наименование.
+   var unique=!direct.some(r=>r.defined&&r.short[0]==="начальник отдела");
+   add(oper,person("chief","начальник "+dept,"начальника "+dept,"начальнику "+dept,"начальником "+dept,["начальник отдела","начальника отдела","начальнику отдела","начальником отдела"],unique));
+  }
+ }
+ var all=direct.concat(oper);
+ function fullDat(r){return r.dat+(r.defined?" (далее – "+r.short[0]+")":"")}
+ function ref(r,c){return r.defined?r.short[c]:[r.nom,r.gen,r.dat,r.instr][c]}
+ function refs(list,c){return Array.from(new Set(list.map(r=>ref(r,c)))).join(", ")}
+ var text="1.6. Гражданский служащий непосредственно подчиняется "+(direct.map(fullDat).join(", ")||missing)+(oper.length?", а в оперативной работе – "+oper.map(fullDat).join(", "):"")+ (all.length>1?", либо лицам, исполняющим их должностные обязанности.":", либо лицу, исполняющему его должностные обязанности.");
+ return {senior,direct,oper,all,text,ref,refs,approver,info};
+}
+function tok(){
+ var m=subordinationModel(S),info=m.info,h=info.head;
+ var head=m.all.find(r=>r.key==="head"), deputy=m.oper.find(r=>r.key==="firstDeputy"||r.key==="deputy"),chief=m.oper.find(r=>r.key==="chief");
+ var dat=m.refs(m.oper.length?m.oper:m.direct,2)||missing;
+ var chain=m.refs(m.all,1)||missing;
+ // Сокращение используется только после его определения в п. 1.6.
+ var headShort=head?m.ref(head,1):h.gen;
+ // Вариант 2 по-прежнему содержит поручения курирующего заместителя Губернатора.
+ // Если он уже определён в п. 1.6, используем введённое там сокращение.
+ var g=m.all.find(r=>r.key==="governorDeputy");
+ var govRef=g&&g.defined?m.ref(g,1):"заместителя Губернатора Липецкой области, координирующего и контролирующего деятельность "+info.organGen;
+ var managers=m.all.filter(r=>r.key!=="governorDeputy"&&r.key!=="firstDeputy"&&r.key!=="deputy"&&r.key!=="chief");
+ var assistants=m.all.filter(r=>r.key==="firstDeputy"||r.key==="deputy"||r.key==="chief");
+ var govChain=["поручениями "+govRef,managers.length?"приказами и поручениями "+m.refs(managers,1):"",assistants.length?"поручениями "+m.refs(assistants,1):""].filter(Boolean).join(", ");
+ return {organ:info.organ,organGen:info.organGen,organAbout:info.organAbout,headShortGen:headShort,
+  department:departmentGen(S.position.department)||"________",title:positionGen(S.position.title)||missing,
+  headNom:head?m.ref(head,0):h.nom,headGen:headShort,headInstr:head?m.ref(head,3):h.instr,
+  deputyDat:deputy?m.ref(deputy,2):dat,chiefDat:chief?m.ref(chief,2):dat,supervisorsDat:dat,chain:chain,otherGovChain:govChain};
+}
+function T(t){var k=tok();if(t===SEC7V.b&&S.header.utvRole===UGS_ROLE)t=t.replace("начальника управления государственной службы и кадровой работы Правительства Липецкой области",k.headGen);return String(t).replace(/Положение о \{organGen\}/g,"Положение {organAbout}").replace(/\{deputyDat\}, \{chiefDat\}/g,"{supervisorsDat}").replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
 // Пункт 1.5: представитель нанимателя определяется только по должности и органу.
 const APPOINT_GOVERNOR_POSTS = [
  "министр", "начальник управления", "руководитель инспекции",
@@ -2908,10 +2986,12 @@ const APPOINT_GOVERNOR_POSTS = [
 const APPOINT_MINISTRIES = [
  "здравоохранения", "образования", "социальной политики", "региональной безопасности"
 ];
-function appointmentAuthority(p){
+function governorAppointmentPost(p){
  var title=norm(positionNom(p.title)).replace(/\s*[-–—]\s*(?=начальник)/g," – ");
- // Учитываем и полное наименование должности с уточнением органа.
- if(APPOINT_GOVERNOR_POSTS.some(function(post){return title===post||title.indexOf(post+" ")===0}))return "Губернатором Липецкой области";
+ return APPOINT_GOVERNOR_POSTS.some(function(post){return title===post||title.indexOf(post+" ")===0});
+}
+function appointmentAuthority(p){
+ if(governorAppointmentPost(p))return "Губернатором Липецкой области";
  var organ=norm(organGen(p.organName));
  var ministry=APPOINT_MINISTRIES.find(function(name){return organ==="министерства "+name+" липецкой области"});
  if(ministry)return "министром "+ministry+" Липецкой области";
@@ -3048,7 +3128,7 @@ function fieldValues() {
     full, fullUpper:full.toUpperCase(), title:positionGen(p.title) || missing, group:groups[p.group] || missing, category:p.category || missing,
     areas:a.areas.map(c => AREA_BY[c] ? AREA_BY[c].n : c).join("; ") || missing, types:types.join("; ") || missing,
     appoint:appointmentAuthority(p),
-    subordination:["1.6. Гражданский служащий непосредственно подчиняется " + (sub.direct || missing) + (sub.oper.length ? ", а в оперативной работе – " + sub.oper.join(", ") : "") + " либо лицам, исполняющим их должностные обязанности."],
+    subordination:[subordinationModel(S).text],
     replacement, education:qual.eduOverride && qual.eduText || eduAuto(),
     directions:directions + (qual.dpo ? " Дополнительно: " + qual.dpo.replace(/[.]$/, "") + "." : ""),
     experience:["2.2. " + (qual.stageOverride && qual.stageText || stageAuto())],
@@ -3574,7 +3654,7 @@ function validate(){
  if(!S.position.group||!S.position.category)e.push({step:1,msg:"Не определены группа и категория (уточните должность или задайте вручную)",path:"position.title"});
  if(!S.activity.areas.length)e.push({step:2,msg:"Выберите хотя бы одну область деятельности (п. 1.3)",path:""});
  else S.activity.areas.forEach(function(c){var n=(S.activity.types[c]||[]).length+(S.activity.custom[c]||[]).length;if(!n)e.push({step:2,msg:"Для области "+c+" не выбран ни один вид деятельности (п. 1.4)",path:""})});
- if(!S.sub.direct)e.push({step:3,msg:"Укажите непосредственное подчинение (п. 1.6)",path:"sub.direct"});
+ if(!subordinationModel(S).direct.length||!S.position.title||!S.position.organName||!S.header.utvRole)e.push({step:3,msg:"Для п. 1.6 заполните утверждающего, должность и орган на шагах 0–1",path:""});
  if(!S.sub.noRepl&&!S.sub.replTitle&&!S.sub.replMinister)e.push({step:3,msg:"Укажите замещаемую должность (п. 1.7)",path:"sub.replTitle"});
  if(!S.qual.directions.length)e.push({step:4,msg:"Выберите направления подготовки / специальности (п. 2.1)",path:""});
  if(!S.lists.duty.some(function(x){return x.on}))e.push({step:6,msg:"Нет ни одной должностной обязанности (п. 3.2)",path:""});
@@ -3585,7 +3665,7 @@ function validate(){
 }
 function stepStatus(i){
  var errs=validate().filter(function(e){return e.step===i});
- var touched=[S.header.utvName,S.position.title,S.activity.areas.length,S.sub.direct,S.qual.directions.length,Object.keys(S.blocks).some(function(k){return S.blocks[k].on}),S.lists.duty.some(function(x){return x.on&&x.src!=="base"}),true,true,S.meta.step>=10][i];
+ var touched=[S.header.utvName,S.position.title,S.activity.areas.length,subordinationModel(S).direct.length,S.qual.directions.length,Object.keys(S.blocks).some(function(k){return S.blocks[k].on}),S.lists.duty.some(function(x){return x.on&&x.src!=="base"}),true,true,S.meta.step>=10][i];
  if(errs.length)return "warn";if(touched)return "ok";return "";
 }
 
@@ -3615,8 +3695,8 @@ function tare(p,v,ph){return '<textarea class="drx-inp" data-path="'+p+'" rows="
 function sel(p,opts,v){return '<select class="drx-inp" data-path="'+p+'" data-rr="1">'+opts.map(function(o){var a=Array.isArray(o)?o:[o,o];return '<option value="'+esc(a[0])+'"'+(String(v)===String(a[0])?" selected":"")+">"+esc(a[1])+"</option>"}).join("")+"</select>"}
 function sw(p,on,label,desc){return '<div class="drx-swr"><label class="drx-sw"><input type="checkbox" data-path="'+p+'" data-rr="1"'+(on?" checked":"")+'><i></i></label><div><div>'+label+"</div>"+(desc?'<div class="d">'+desc+"</div>":"")+"</div></div>"}
 function note(t,warn){return '<div class="drx-note"><span class="i">'+(warn?"⚠️":"ℹ️")+"</span><span>"+t+"</span></div>"}
-var CP_PATH={areas:"activity.areas",dirs:"qual.directions",oper:"sub.oper",funcs:"funcs"};
-var CP_OPTS={areas:function(){return AREAS.map(function(a){return[a.c,a.n]})},dirs:function(){return DIRECTIONS.map(function(d){return["",d]})},oper:function(){return OPER_PRESETS.map(function(o){return["",o]})},funcs:function(){return FUNCTIONS.map(function(f){return[f.id,f.name]})}};
+var CP_PATH={areas:"activity.areas",dirs:"qual.directions",funcs:"funcs"};
+var CP_OPTS={areas:function(){return AREAS.map(function(a){return[a.c,a.n]})},dirs:function(){return DIRECTIONS.map(function(d){return["",d]})},funcs:function(){return FUNCTIONS.map(function(f){return[f.id,f.name]})}};
 var CPQ={};
 function cpLabel(id,v){
  if(id==="areas"&&AREA_BY[v])return v+". "+AREA_BY[v].n;
@@ -3743,9 +3823,14 @@ function renderStep(){
    '<div class="drx-f"><label>Представитель нанимателя (творительный падеж)</label><div class="drx-inp" role="status" style="overflow-wrap:anywhere">'+esc(appointmentAuthority(p))+'</div></div>'+
    "</div>";
  } else if(i===3){
-  h+='<div class="drx-card drx-b"><h3><span class="pt">1.6</span> Подчинение</h3><div class="sub">Сноска 7: непосредственно — руководителю; оперативно — заместителю, координирующему работу, и начальнику отдела.</div>'+
-   fld("Непосредственно подчиняется (дательный падеж)",txt("sub.direct",S.sub.direct,"министру … / начальнику управления …"),true)+
-   cpHtml("oper","В оперативной работе (можно несколько)",true)+"</div>"+
+  var sm=subordinationModel(S), si=sm.info;
+  h+='<div class="drx-card drx-b"><h3><span class="pt">1.6</span> Подчинение <span class="drx-auto">✓ автоматически</span></h3><div class="sub">Непосредственное подчинение определяется по должности и утверждающему (шаги 0–1).</div>'+
+   fld("Непосредственно подчиняется",'<div class="drx-inp" role="status" style="overflow-wrap:anywhere">'+esc(sm.direct[0]?sm.direct[0].dat:"Выберите утверждающего на шаге 0")+'</div>',true)+
+   (sm.senior?sw("sub.governorDeputy",S.sub.governorDeputy,"Добавить заместителя Губернатора Липецкой области",esc("Координирующего и контролирующего деятельность "+si.organGen))+
+    fld("В оперативной работе",'<div class="drx-inp" role="status" style="overflow-wrap:anywhere">'+esc(sm.oper.length?sm.oper[0].dat:sm.approver?"Совпадает с непосредственным подчинением (повтор не требуется)":"Выберите утверждающего на шаге 0")+'</div>'):
+    fld("В оперативной работе — заместитель руководителя",sel("sub.deputy",[["none","Не указывать"],["first","первому заместителю "+si.head.gen],["deputy","заместителю "+si.head.gen]],S.sub.deputy))+
+    (departmentChiefAvailable(S)?sw("sub.departmentChief",S.sub.departmentChief,"Добавить начальника отдела",esc("начальнику "+departmentGen(p.department)+" "+si.organGen)):note("Начальника отдела можно добавить, если на шаге 1 указан отдел и служащий не является его начальником.")))+
+   note("<b>Готовая формулировка:</b> "+esc(sm.text))+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.7</span> Замещение</h3>'+sw("sub.noRepl",S.sub.noRepl,"Замещения нет","Пункт 1.7 не включается в регламент")+
    (!S.sub.noRepl?sw("sub.replMinister",S.sub.replMinister,"Замещение министра (государственная должность)","Полномочия по п. 3.2 Положения о министерстве")+(!S.sub.replMinister?fld("Чьи обязанности исполняет (родительный падеж)",txt("sub.replTitle",S.sub.replTitle,"ведущего консультанта отдела …"),true)+sw("sub.replOther",S.sub.replOther,"Должность из другой группы","Добавить оговорку о соответствии квалтребованиям"):""):"")+"</div>";
  } else if(i===4){
@@ -3780,7 +3865,7 @@ function renderStep(){
   h+=note("Пункты <b>3.1</b> (ст. 15–18, 20, 20.1–20.3 79-ФЗ), <b>3.3</b> (уведомление о склонении к коррупции) и <b>3.4</b> (защита ПДн) — типовые, включаются автоматически.");
   h+=listHtml("duty","Должностные обязанности","3.2","Базовые: работа с обращениями, участие в разработке НПА, отечественный мессенджер. «Организация работы отдела» включается для начальников отделов. Подпункты (↳) выводятся с отступом.","осуществлять …; обеспечивать …");
   h+='<div class="drx-card drx-b"><h3><span class="pt">3.2</span> Иные обязанности (завершающий пункт)</h3><div class="sub">Два варианта из примерного ДР — выберите один.</div>'+
-   sel("other.variant",[["min","Вариант 1: приказы и поручения министра, заместителя министра, начальника отдела"],["gov","Вариант 2: + заместитель Губернатора, электронные приложения и «Битрикс24»"]],S.other.variant)+
+   sel("other.variant",[["min","Вариант 1: приказы и поручения руководителей, указанных в п. 1.6"],["gov","Вариант 2: + заместитель Губернатора, электронные приложения и «Битрикс24»"]],S.other.variant)+
    note(esc(T(S.other.variant==="gov"?OTHER_GOV:OTHER_MIN)))+
    fld("Дополнительная «иная» обязанность (необязательно)",txt("other.custom",S.other.custom,""))+"</div>";
  } else if(i===8){
