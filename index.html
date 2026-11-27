@@ -2140,7 +2140,9 @@ var AREAS_RAW = [
 ["П.31","Регулирование в сфере официального статистического учета",["Проведение федеральных статистических наблюдений и формирование на их основе официальной статистической информации","Составление национальных счетов","Проведение Всероссийской переписи населения и Всероссийской сельскохозяйственной переписи"]],
 ["П.32","Управление в сфере архивного дела и делопроизводства",["Обеспечение сохранности и государственный учет документов","Организация использования и публикации архивных документов","Комплектование и документационное обеспечение управления"]]
 ];
-var AREAS = AREAS_RAW.map(function (a) { return { c: a[0], n: a[1], t: a[2] }; });
+// В пп. 1.3–1.4 наименования начинаются со строчной буквы; остальные буквы и аббревиатуры сохраняются.
+function activityLower(text) { return String(text).replace(/^[А-ЯЁA-Z](?=[а-яёa-z])/, function (c) { return c.toLowerCase(); }); }
+var AREAS = AREAS_RAW.map(function (a) { return { c: a[0], n: activityLower(a[1]), t: a[2].map(activityLower) }; });
 var AREA_BY = {}; AREAS.forEach(function (a) { AREA_BY[a.c] = a; });
 var TYPES_TOTAL = AREAS.reduce(function (s, a) { return s + a.t.length; }, 0);
 
@@ -2977,7 +2979,7 @@ function fieldValues() {
     if (area) (a.types[code] || []).slice().sort((x,y) => x-y).forEach(i => {
       if (area.t[i]) types.push(area.t[i]);
     });
-    types.push(...(a.custom[code] || []));
+    types.push(...(a.custom[code] || []).map(activityLower));
   });
   const selected = key => S.lists[key].filter(x => x.on && x.text.trim()).map(x => ({text:T(x.text), level:x.lvl || 0}));
   const bullet = (text, level = 0) => ({text, level});
@@ -3643,7 +3645,7 @@ function renderTypes(){
    '<div class="drx-tb"><div class="drx-tt"><input placeholder="Поиск вида…" data-tq="'+c+'" value="'+esc(qq)+'"><button class="drx-btn drx-btn-g drx-btn-x" data-tall="'+c+'" data-v="1">все '+a.t.length+'</button><button class="drx-btn drx-btn-g drx-btn-x" data-tall="'+c+'" data-v="0">сброс</button></div>'+
    '<div class="drx-tl">'+a.t.map(function(t,i){var code=c+"."+(i+1),hide=qq&&norm(code+" "+t).indexOf(norm(qq))<0;
     return '<label class="drx-to" style="'+(hide?"display:none":"")+'"><input type="checkbox" data-ta="'+c+'" data-ti="'+i+'"'+(st.indexOf(i)>=0?" checked":"")+'><span class="code">'+code+"</span><span>"+esc(t)+"</span></label>"}).join("")+"</div>"+
-   cu.map(function(t,i){return '<label class="drx-to"><input type="checkbox" checked disabled><span class="code">свой</span><span>'+esc(t)+' <button class="drx-btn drx-btn-x" data-cudel="'+c+'" data-ci="'+i+'">✕</button></span></label>'}).join("")+
+   cu.map(function(t,i){return '<label class="drx-to"><input type="checkbox" checked disabled><span class="code">свой</span><span>'+esc(activityLower(t))+' <button class="drx-btn drx-btn-x" data-cudel="'+c+'" data-ci="'+i+'">✕</button></span></label>'}).join("")+
    '<div class="drx-ai"><input placeholder="Свой вид деятельности…" data-tnew="'+c+'"><button class="drx-btn drx-btn-g drx-btn-x" data-tadd="'+c+'">＋</button></div></div></div>';
  }).join(""):note("Сначала выберите области деятельности выше — виды появятся здесь. В справочнике <b>"+AREAS.length+" области и "+TYPES_TOTAL+" видов</b>; для каждой области нужен <b>хотя бы один вид</b>.",true);
 }
@@ -3821,7 +3823,7 @@ BC.addEventListener("click",function(e){
  if(d.leall){var k=d.leall,on=d.v==="1";S.lists[k].forEach(function(x){x.on=on});renderList(k);markSaving();schedulePreview();return}
  if(d.tt){TOPEN[d.tt]=!(TOPEN[d.tt]!==false);var el=q('[data-tc="'+d.tt+'"]');if(el)el.classList.toggle("open");return}
  if(d.tall){S.activity.types[d.tall]=d.v==="1"?AREA_BY[d.tall].t.map(function(_,i){return i}):[];markSaving();schedulePreview();renderTypes();renderRail();return}
- if(d.tadd){var inp=q('[data-tnew="'+d.tadd+'"]'),v=inp.value.trim();if(!v)return;if(!S.activity.custom[d.tadd])S.activity.custom[d.tadd]=[];S.activity.custom[d.tadd].push(v);markSaving();schedulePreview();renderTypes();return}
+ if(d.tadd){var inp=q('[data-tnew="'+d.tadd+'"]'),v=inp.value.trim();if(!v)return;if(!S.activity.custom[d.tadd])S.activity.custom[d.tadd]=[];S.activity.custom[d.tadd].push(activityLower(v));markSaving();schedulePreview();renderTypes();return}
  if(d.cudel!==undefined){S.activity.custom[d.cudel].splice(+d.ci,1);markSaving();schedulePreview();renderTypes();return}
  if(d.cprm){var arr=getPath(S,CP_PATH[d.cprm]),ix=arr.indexOf(d.v);if(ix>=0)arr.splice(ix,1);refreshCp(d.cprm);if(d.cprm==="areas")renderTypes();markSaving();schedulePreview();renderRail();return}
  if(d.cpadd){cpAdd(d.cpadd);return}
@@ -3834,7 +3836,7 @@ BC.addEventListener("keydown",function(e){
  if(e.key!=="Enter")return;
  var t=e.target,d=t.dataset;
  if(d.lenew){e.preventDefault();addLI(d.lenew)}
- else if(d.tnew){e.preventDefault();var v=t.value.trim();if(v){if(!S.activity.custom[d.tnew])S.activity.custom[d.tnew]=[];S.activity.custom[d.tnew].push(v);markSaving();schedulePreview();renderTypes()}}
+ else if(d.tnew){e.preventDefault();var v=t.value.trim();if(v){if(!S.activity.custom[d.tnew])S.activity.custom[d.tnew]=[];S.activity.custom[d.tnew].push(activityLower(v));markSaving();schedulePreview();renderTypes()}}
  else if(d.cpnew){e.preventDefault();cpAdd(d.cpnew)}
 });
 function cpAdd(id){
