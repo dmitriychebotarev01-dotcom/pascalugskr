@@ -3084,6 +3084,21 @@ const wordText = node => nodes(node, "t").map(t => t.textContent).join("");
 const wordElement = (doc, name) => doc.createElementNS(WORD_NS, "w:" + name);
 const missing = "________________";
 
+// Пункт 1.7: замещаемая должность с подразделением и органом из шага 1.
+function replacementFullTitle(sub,p){
+ let title=positionGen(sub.replTitle),dept=departmentGen(p.department),organ=organGen(p.organName);
+ if(!title)return missing;
+ const hasSuffix=(v,s)=>!!s&&(norm(v)===norm(s)||norm(v).endsWith(" "+norm(s)));
+ // При вводе полного наименования не повторяем уже указанный орган или отдел.
+ if(hasSuffix(title,organ))title=title.slice(0,title.length-organ.length).trim();
+ if(dept&&!hasSuffix(title,dept)){
+  // «начальника отдела» + «отдела транспорта» → «начальника отдела транспорта».
+  const head=DEPT_CASES.map(pair=>pair[1]).find(w=>hasSuffix(title,w)&&(norm(dept)===norm(w)||norm(dept).startsWith(norm(w)+" ")||norm(dept).endsWith(" "+norm(w))));
+  if(head)title=title.slice(0,title.length-head.length).trim();
+  title=[title,dept].filter(Boolean).join(" ");
+ }
+ return [title,organ].filter(Boolean).join(" ");
+}
 function fieldValues() {
   const h = S.header, p = S.position, a = S.activity, sub = S.sub, qual = S.qual;
   const names = tok();
@@ -3117,10 +3132,10 @@ function fieldValues() {
   const directions = (qual.directions.join("; ") || missing) + ".";
   let replacement = [];
   if (!sub.noRepl) {
-    const condition = sub.replOther ? " (при условии соответствия квалификационным требованиям, предъявляемым для замещения указанной должности)" : "";
+    const condition = sub.replOther ? " при условии соответствия квалификационным требованиям, предъявляемым для замещения указанной должности" : "";
     replacement = [sub.replMinister
       ? "1.7. В период временного отсутствия министра гражданский служащий исполняет его полномочия, предусмотренные пунктом 3.2. Положения " + names.organAbout + "."
-      : "1.7. Гражданский служащий обязан исполнять должностные обязанности " + (sub.replTitle || missing) + " в период его временного отсутствия" + condition + "."];
+      : "1.7. Гражданский служащий обязан исполнять должностные обязанности " + replacementFullTitle(sub,p) + " в период его временного отсутствия" + condition + "."];
   }
   return {
     approvalRole:h.soglasRole, approvalName:h.soglasName,
@@ -3655,7 +3670,7 @@ function validate(){
  if(!S.activity.areas.length)e.push({step:2,msg:"Выберите хотя бы одну область деятельности (п. 1.3)",path:""});
  else S.activity.areas.forEach(function(c){var n=(S.activity.types[c]||[]).length+(S.activity.custom[c]||[]).length;if(!n)e.push({step:2,msg:"Для области "+c+" не выбран ни один вид деятельности (п. 1.4)",path:""})});
  if(!subordinationModel(S).direct.length||!S.position.title||!S.position.organName||!S.header.utvRole)e.push({step:3,msg:"Для п. 1.6 заполните утверждающего, должность и орган на шагах 0–1",path:""});
- if(!S.sub.noRepl&&!S.sub.replTitle&&!S.sub.replMinister)e.push({step:3,msg:"Укажите замещаемую должность (п. 1.7)",path:"sub.replTitle"});
+ if(!S.sub.noRepl&&!String(S.sub.replTitle||"").trim()&&!S.sub.replMinister)e.push({step:3,msg:"Укажите замещаемую должность (п. 1.7)",path:"sub.replTitle"});
  if(!S.qual.directions.length)e.push({step:4,msg:"Выберите направления подготовки / специальности (п. 2.1)",path:""});
  if(!S.lists.duty.some(function(x){return x.on}))e.push({step:6,msg:"Нет ни одной должностной обязанности (п. 3.2)",path:""});
  if(!S.lists.decR.some(function(x){return x.on}))e.push({step:7,msg:"Пуст перечень «вправе принимать решения» (п. 4.1)",path:""});
@@ -3832,7 +3847,7 @@ function renderStep(){
     (departmentChiefAvailable(S)?sw("sub.departmentChief",S.sub.departmentChief,"Добавить начальника отдела",esc("начальнику "+departmentGen(p.department)+" "+si.organGen)):note("Начальника отдела можно добавить, если на шаге 1 указан отдел и служащий не является его начальником.")))+
    note("<b>Готовая формулировка:</b> "+esc(sm.text))+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.7</span> Замещение</h3>'+sw("sub.noRepl",S.sub.noRepl,"Замещения нет","Пункт 1.7 не включается в регламент")+
-   (!S.sub.noRepl?sw("sub.replMinister",S.sub.replMinister,"Замещение министра (государственная должность)","Полномочия по п. 3.2 Положения о министерстве")+(!S.sub.replMinister?fld("Чьи обязанности исполняет (родительный падеж)",txt("sub.replTitle",S.sub.replTitle,"ведущего консультанта отдела …"),true)+sw("sub.replOther",S.sub.replOther,"Должность из другой группы","Добавить оговорку о соответствии квалтребованиям"):""):"")+"</div>";
+   (!S.sub.noRepl?sw("sub.replMinister",S.sub.replMinister,"Замещение министра (государственная должность)","Полномочия по п. 3.2 Положения о министерстве")+(!S.sub.replMinister?fld("Чьи обязанности исполняет (родительный падеж)",txt("sub.replTitle",S.sub.replTitle,"ведущего консультанта"),true)+note("Укажите только должность. Отдел и орган автоматически подставляются из шага 1 в родительном падеже.")+sw("sub.replOther",S.sub.replOther,"Должность из другой группы","Добавить оговорку о соответствии квалтребованиям"):""):"")+"</div>";
  } else if(i===4){
   h+='<div class="drx-card drx-b"><h3><span class="pt">2.1</span> Образование <span class="drx-auto">✓ авто по ст. 12 79-ФЗ</span></h3><div class="sub">Сноски 8–10: уровень — по категории/группе; специальности — с учетом области и вида; ДПО — при необходимости.</div>'+
    note("Требуемый уровень: <b>"+eduAuto()+"</b>"+(S.position.group?" ("+S.position.group+" группа, «"+S.position.category+"»)":" — укажите должность на шаге 1"))+
@@ -3931,7 +3946,7 @@ BC.addEventListener("change",function(e){
   refreshCp(id);markSaving();schedulePreview();renderRail();if(id==="areas"){if(t.checked)TOPEN[v]=true;renderTypes()}return}
  var p=d.path;if(!p)return;
  var val=t.type==="checkbox"?t.checked:(t.tagName==="SELECT"&&p==="sheet.rows"?+t.value:t.value);
- if(p==="position.title"||p==="position.department"){val=p==="position.title"?positionGen(val):departmentGen(val);t.value=val;}
+ if(p==="position.title"||p==="position.department"||p==="sub.replTitle"){val=p==="position.department"?departmentGen(val):positionGen(val);t.value=val;}
  setPath(S,p,val);special(p,val);if(p==="position.title"&&q("[data-position-gc]"))q("[data-position-gc]").innerHTML=positionGroupNote(S.position);after(!!d.rr);
 });
 BC.addEventListener("click",function(e){
