@@ -2259,7 +2259,7 @@ var SEC7="Взаимодействие гражданского служащег
 var SEC7V={a:"Объяснительные записки, заявления о служебной проверке, иные заявления и предварительные уведомления о намерении выполнять иную оплачиваемую работу на имя {headGen} гражданский служащий представляет в письменной форме.",b:"Заявления о служебной проверке и иные заявления на имя начальника управления государственной службы и кадровой работы Правительства Липецкой области, предварительные уведомления о намерениях выполнять иную оплачиваемую работу на имя Губернатора Липецкой области гражданский служащий представляет в письменной форме.",c:"Объяснительные записки, заявления о служебной проверке, иные заявления и предварительные уведомления о намерении выполнять иную оплачиваемую работу на имя Губернатора Липецкой области гражданский служащий представляет в письменной форме."};
 var SEC7I="В целях исполнения должностных обязанностей и поручений гражданский служащий вправе взаимодействовать с гражданскими служащими и работниками {organGen}, иных исполнительных органов Липецкой области, муниципальными служащими и иными работниками органов местного самоуправления муниципальных образований Липецкой области, гражданами и организациями.";
 var OTHER_MIN="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, приказами и поручениями {chain} в пределах своей компетенции";
-var OTHER_GOV="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, поручениями заместителя Губернатора Липецкой области, координирующего и контролирующего деятельность министерства, приказами и поручениями министра, поручениями заместителя министра, начальника отдела, в том числе полученными через электронные приложения, используемые в локальной сети Правительства Липецкой области, а также с использованием автоматизированной системы «Битрикс24», размещенной в сети Интернет по адресу www.bitrix24.ru, в пределах своей компетенции";
+var OTHER_GOV="исполнять иные обязанности, предусмотренные законодательством Российской Федерации и Липецкой области, распоряжениями Губернатора Липецкой области и Правительства Липецкой области, поручениями заместителя Губернатора Липецкой области, координирующего и контролирующего деятельность {organGen}, приказами и поручениями {headShortGen}, поручениями заместителя {headShortGen}, начальника отдела, в том числе полученными через электронные приложения, используемые в локальной сети Правительства Липецкой области, а также с использованием автоматизированной системы «Битрикс24», размещенной в сети Интернет по адресу www.bitrix24.ru, в пределах своей компетенции";
 var D_OBR="осуществлять либо обеспечивать объективное, всестороннее и своевременное рассмотрение обращений граждан и юридических лиц, структурных подразделений Правительства Липецкой области, исполнительных органов Липецкой области, органов местного самоуправления муниципальных образований Липецкой области в порядке и сроки, установленные действующим законодательством, подготовку проектов ответов на их обращения в пределах своей компетенции";
 var D_NPA="принимать участие в разработке законов Липецкой области, указов и распоряжений Губернатора Липецкой области, постановлений и распоряжений Правительства Липецкой области и иных нормативных правовых актов по направлению деятельности отдела";
 var D_MSG="использовать в целях рабочих коммуникаций отечественный многофункциональный сервис обмена информацией в качестве средства мгновенного обмена сообщениями";
@@ -2809,6 +2809,17 @@ const UTV_ROLES = [
   "Руководитель инспекции гостехнадзора Липецкой области",
   "Руководитель инспекции государственного строительного надзора Липецкой области"
 ];
+// Первые три утверждающих не привязаны к конкретному органу.
+// Остальные идут в том же порядке, что 10 подразделений Правительства и 29 исполнительных органов.
+const APPROVER_ORGANS = new Map(ORGANS_GOV.concat(ORGANS_IOGV).map(function(organ,i){
+ return [UTV_ROLES[i+3],{organType:i<ORGANS_GOV.length?"gov":"iogv",organName:organ}];
+}));
+function approvalOrgan(role){return APPROVER_ORGANS.get(role)||null}
+function syncApprovalOrgan(s){
+ var binding=approvalOrgan(s.header.utvRole);
+ if(binding){s.position.organType=binding.organType;s.position.organName=binding.organName;}
+ return binding;
+}
 const UGS_ROLE = UTV_ROLES[3];
 const SOGLAS_ROLES = [UGS_ROLE, "И.о. начальника управления государственной службы и кадровой работы Правительства Липецкой области"];
 const SOGLAS_NAMES = ["Е.С. Соломахина", "Р.А. Голенских"];
@@ -2860,6 +2871,7 @@ merge(S,blank());
 delete S.activity.appoint;delete S.activity.minister;
 normalizeHeader(S.header);
 S.position.organName=organGen(S.position.organName);S.position.department=departmentGen(S.position.department);S.position.title=positionGen(S.position.title);
+syncApprovalOrgan(S);
 function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Перед закрытием вкладки скачайте готовый документ Word."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Не закрывайте вкладку до скачивания документа Word."}}
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
@@ -2877,11 +2889,14 @@ function tok(){
  var f=forms.find(function(x){return step1Prefix(og,x[0],x[0])!==null});
  if(f){kind=f[0];rest=og.slice(kind.length)}else{f=["",og,"руководитель","руководителя","руководителем","руководителю"];rest=" "+og}
  var prep=kind?f[1]+rest:og;
- return{organ:prep,organGen:og,department:departmentGen(S.position.department)||"________",title:positionGen(S.position.title)||"________________",
+ var about=(/^[аеёиоуыэюя]/i.test(prep)?"об ":"о ")+prep;
+ var headShort=kind?f[3]:"руководителя";
+ var chain=headShort+", заместителя "+headShort+(kind==="отдела"?"":", начальника отдела");
+ return{organ:prep,organGen:og,organAbout:about,headShortGen:headShort,department:departmentGen(S.position.department)||"________",title:positionGen(S.position.title)||"________________",
   headNom:f[2]+rest,headGen:f[3]+rest,headInstr:f[4]+rest,deputyDat:"заместителю "+f[3]+rest,
-  chiefDat:"начальнику отдела",chain:(kind==="министерства"?"министра, заместителя министра":"начальника управления, заместителя начальника управления")+", начальника отдела"};
+  chiefDat:"начальнику отдела",chain:chain};
 }
-function T(t){var k=tok();return String(t).replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
+function T(t){var k=tok();return String(t).replace(/Положение о \{organGen\}/g,"Положение {organAbout}").replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
 // Пункт 1.5: представитель нанимателя определяется только по должности и органу.
 const APPOINT_GOVERNOR_POSTS = [
  "министр", "начальник управления", "руководитель инспекции",
@@ -3024,7 +3039,7 @@ function fieldValues() {
   if (!sub.noRepl) {
     const condition = sub.replOther ? " (при условии соответствия квалификационным требованиям, предъявляемым для замещения указанной должности)" : "";
     replacement = [sub.replMinister
-      ? "1.7. В период временного отсутствия министра гражданский служащий исполняет его полномочия, предусмотренные пунктом 3.2. Положения о " + names.organGen + "."
+      ? "1.7. В период временного отсутствия министра гражданский служащий исполняет его полномочия, предусмотренные пунктом 3.2. Положения " + names.organAbout + "."
       : "1.7. Гражданский служащий обязан исполнять должностные обязанности " + (sub.replTitle || missing) + " в период его временного отсутствия" + condition + "."];
   }
   return {
@@ -3701,15 +3716,18 @@ function renderStep(){
    '<div><h3><span class="pt">Утверждаю</span></h3>'+
    fld("Должность",sel("header.utvRole",[["","— выберите должность —"]].concat(UTV_ROLES),S.header.utvRole),true)+
    '<div class="drx-role-full">'+esc(S.header.utvRole||"Выберите должность утверждающего.")+'</div>'+
+   (approvalOrgan(S.header.utvRole)?note("Наименование органа на шаге 1 будет заполнено автоматически по утверждающему."):(S.header.utvRole?note("Наименование органа выбирается вручную на шаге 1."):""))+
    fld("ФИО",txt("header.utvName",S.header.utvName,"И.О. Фамилия"),true)+'</div></div>'+
    fld("Год",txt("header.year",S.header.year,"2026"))+
    '<div class="sub">Сноска 1: согласует ДР начальник управления государственной службы и кадровой работы Правительства Липецкой области. Утверждает либо руководитель исполнительного органа, на гражданского служащего которого разрабатывается должностной регламент, либо (в случае, если ДР разрабатывается на заместителя руководителя или руководителя исполнительного органа) Губернатор Липецкой области или заместитель Губернатора Липецкой области, координирующий деятельность органа.</div>'+
    (skipApproval?note("При выборе начальника управления государственной службы и кадровой работы Правительства Липецкой области блок согласования не включается в документ."):"")+"</div>";
  } else if(i===1){
+  var binding=approvalOrgan(S.header.utvRole);
   var organs=p.organType==="iogv"?ORGANS_IOGV:ORGANS_GOV;
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.1</span> Должность и орган</h3><div class="sub">Как в штатном расписании. Группа и категория подтянутся автоматически по Реестру (Закон ЛО № 46-ОЗ).</div>'+
-   fld("Тип органа",'<div class="drx-seg"><button data-inner="organ-type" data-v="iogv" class="'+(p.organType==="iogv"?"on":"")+'">Исполнительный орган</button><button data-inner="organ-type" data-v="gov" class="'+(p.organType==="gov"?"on":"")+'">Подразделение Правительства</button></div>')+
-   fld("Наименование органа",sel("position.organName",organOptions(organs,p.organName),p.organName),true)+
+   fld("Тип органа",'<div class="drx-seg"><button data-inner="organ-type" data-v="iogv" class="'+(p.organType==="iogv"?"on":"")+'"'+(binding?' disabled aria-disabled="true"':'')+'>Исполнительный орган</button><button data-inner="organ-type" data-v="gov" class="'+(p.organType==="gov"?"on":"")+'"'+(binding?' disabled aria-disabled="true"':'')+'>Подразделение Правительства</button></div>')+
+   fld("Наименование органа",binding?'<select class="drx-inp" data-path="position.organName" disabled aria-label="Наименование органа (автоматически)"><option value="'+esc(binding.organName)+'">'+esc(binding.organName.toUpperCase())+'</option></select>':sel("position.organName",organOptions(organs,p.organName),p.organName),true)+
+   (binding?note("Орган определён автоматически по утверждающему на шаге 0. Чтобы изменить орган, измените утверждающую должность."):"")+
    '<div class="drx-row2">'+fld("Отдел / подразделение",txt("position.department",departmentGen(p.department),"отдел дорожной деятельности"))+
    fld("Должность",'<input class="drx-inp" list="drx-pos" data-path="position.title" value="'+esc(positionGen(p.title))+'" placeholder="консультант"><datalist id="drx-pos">'+POSITIONS.map(function(o){return '<option value="'+esc(positionGen(o))+'">'}).join("")+"</datalist>",true)+"</div>"+note("Должность и отдел автоматически приводятся к родительному падежу после ввода. Проверьте нестандартные наименования и при необходимости впишите их в нужном падеже.")+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.2</span> Группа и категория <span class="drx-auto">✓ авто из Реестра</span></h3>'+
@@ -3802,6 +3820,7 @@ function special(path,v){
  if(path==="position.title"&&!S.position.manualGC){var d=deriveGC(v);S.position.group=d.g;S.position.category=d.c;
   var ch=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)ch=x});if(ch&&!ch.touched)ch.on=isChief()}
  if(path==="header.soglasRole")normalizeHeader(S.header);
+ if(path==="header.utvRole"||path==="position.organName")syncApprovalOrgan(S);
  if(path==="blocks.gt.on"||path==="blocks.pdn.on"){applyBlocks(true);toast(v?"Специальная роль включена — положения добавлены.":"Положения роли удалены.","ok")}
  if(path==="position.group"||path==="position.category"){var c2=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)c2=x});if(c2&&!c2.touched)c2.on=isChief()}
 }
@@ -3847,7 +3866,7 @@ BC.addEventListener("click",function(e){
  if(d.cprm){var arr=getPath(S,CP_PATH[d.cprm]),ix=arr.indexOf(d.v);if(ix>=0)arr.splice(ix,1);refreshCp(d.cprm);if(d.cprm==="areas")renderTypes();markSaving();schedulePreview();renderRail();return}
  if(d.cpadd){cpAdd(d.cpadd);return}
  var a=d.inner;
- if(a==="organ-type"){if(S.position.organType!==d.v){S.position.organType=d.v;S.position.organName="";special("position.organName","");after(true)}}
+ if(a==="organ-type"){if(!approvalOrgan(S.header.utvRole)&&S.position.organType!==d.v){S.position.organType=d.v;S.position.organName="";special("position.organName","");after(true)}}
  else if(a==="apply-blocks"){applyBlocks(false);renderStep()}
  else if(a==="apply-funcs"){applyFuncs(false);renderStep()}
 });
