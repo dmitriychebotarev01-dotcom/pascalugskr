@@ -2513,7 +2513,46 @@ styleEl.textContent=[
 "@media(max-width:1230px){.drx-layout{grid-template-columns:206px minmax(0,1fr)}.drx-pv{position:absolute;right:0;top:0;bottom:0;z-index:7;width:min(490px,94vw);max-height:none;border-radius:0;transform:translateX(105%);transition:transform .3s}.drx-pv.open{transform:none}.drx-pvx{display:block}}",
 "@media(max-width:860px){.drx-layout{grid-template-columns:1fr;padding-top:12px}.drx-rail{position:static;max-height:none;display:flex;gap:6px;overflow-x:auto;padding:8px}.drx-rail-h,.drx-prog,.drx-prog-l{display:none}.drx-step{flex:none;width:auto;padding:8px 11px}.drx-step .lb{display:none}.drx-step.drx-cur .lb{display:inline}.drx-step .st{display:none}.drx-bg2{grid-template-columns:1fr}.drx-row2{grid-template-columns:1fr}.drx-hide-m{display:none!important}.drx-bar .drx-ttl span{display:none}}",
 "@media(max-width:620px){.drx-btn{padding:9px 12px;font-size:12.3px}}",
-"@media(prefers-reduced-motion:reduce){#drx-root *,#drx-nav-btn{animation-duration:.001s!important;transition-duration:.001s!important}}"
+"@media(prefers-reduced-motion:reduce){#drx-root *,#drx-nav-btn{animation-duration:.001s!important;transition-duration:.001s!important}}",
+"#drx-root .drx-bar{padding:12px clamp(12px,2vw,24px);gap:12px;box-shadow:0 4px 18px #0001;z-index:2}",
+"#drx-root .drx-acts{gap:8px}",
+"#drx-root .drx-btn{padding:10px 15px;border:1px solid transparent;border-radius:11px;font-size:13px;white-space:nowrap}",
+"#drx-root .drx-btn-x{padding:6px 10px;font-size:11.5px;border-radius:8px}",
+"#drx-root .drx-btn-s{padding:8px 12px;font-size:12px}",
+"#drx-root .drx-btn-p{background:var(--drx-accent-img,var(--drx-accent));background-color:var(--drx-accent);color:var(--drx-accent-ink)}",
+"#drx-root .drx-btn-g{background:var(--drx-surf2);border-color:var(--drx-line2);color:var(--drx-ink)}",
+"#drx-root .drx-btn-g:hover{background:var(--drx-accent-soft);border-color:var(--drx-accent)}",
+"#drx-root .drx-btn-d{background:rgba(225,29,72,.12);border-color:rgba(225,29,72,.45);color:#e11d48}",
+"#drx-root .drx-btn-d:hover{background:#e11d48;color:white}",
+"#drx-root .drx-acts [data-act=reset]{padding:11px 17px;font-size:13px;font-weight:800}",
+"#drx-root .drx-view-btn{border-color:var(--drx-accent-line);color:var(--drx-ink);background:var(--drx-accent-soft)}",
+"#drx-root .drx-btn:disabled{opacity:.5;cursor:wait;transform:none}",
+"#drx-root button:focus-visible,#drx-root .drx-pvs:focus-visible{outline:2px solid var(--drx-accent);outline-offset:-2px}",
+"#drx-root .drx-layout{min-height:0;gap:20px}",
+"#drx-root .drx-card{border-radius:17px;box-shadow:0 5px 22px rgba(0,0,0,.08)}",
+"#drx-root .drx-rail{padding:14px 10px}",
+"#drx-root .drx-step{padding:10px 9px;text-align:left}",
+"#drx-root .drx-step.drx-cur{background:var(--drx-accent-soft);box-shadow:inset 3px 0 0 var(--drx-accent)}",
+"#drx-root .drx-b{padding:22px}",
+"#drx-root .drx-pv{min-height:0;height:calc(100dvh - 126px);max-height:calc(100dvh - 126px)}",
+"#drx-root .drx-pvh{flex:none;min-height:60px;flex-wrap:wrap;padding:12px 15px;gap:10px}",
+"#drx-root .drx-pv-title{display:flex;flex-direction:column;line-height:1.4;gap:2px}",
+"#drx-root .drx-pv-title b{font-size:13px}",
+"#drx-root .drx-pv-title small{font-size:10.5px;color:var(--drx-mut)}",
+"#drx-root .drx-pages{gap:7px;flex-wrap:wrap}",
+"#drx-root .drx-page-stat{font-size:11px;font-weight:800;color:var(--drx-mut);white-space:nowrap}",
+"#drx-root .drx-pages button{font:800 12px var(--drx-font);padding:8px 10px;border:1px solid var(--drx-line2);border-radius:9px;background:var(--drx-surf2);color:var(--drx-ink)}",
+"#drx-root .drx-pages button:hover{border-color:var(--drx-accent);background:var(--drx-accent-soft)}",
+"#drx-root .drx-pvs{min-height:0;overscroll-behavior:contain;overflow:auto;scrollbar-gutter:stable;padding:18px 13px 24px;background:var(--drx-surf2)}",
+"#drx-root .drx-pvx{display:none}",
+"#drx-root.drx-preview-full .drx-pv{position:absolute;inset:0;width:100%;height:100%;max-height:none;border:0;border-radius:0;transform:none;z-index:12;background:var(--drx-bg)}",
+"#drx-root.drx-preview-full .drx-pvh{padding:14px clamp(12px,3vw,32px);box-shadow:0 4px 20px #0002}",
+"#drx-root.drx-preview-full .drx-pv-title b{font-size:16px}",
+"#drx-root.drx-preview-full .drx-pvs{padding:24px clamp(10px,3vw,34px) 36px}",
+"#drx-root.drx-preview-full .drx-pvx{display:inline-flex;background:var(--drx-accent-soft);border-color:var(--drx-accent-line)}",
+"#drx-root.drx-preview-full .drx-expand{display:none}",
+"@media(max-width:1230px){#drx-root:not(.drx-preview-full) .drx-pv{visibility:hidden;pointer-events:none}#drx-root.drx-preview-full .drx-pv{visibility:visible;pointer-events:auto}}",
+"@media(max-width:860px){#drx-root .drx-acts{margin-left:0;width:100%;gap:6px}#drx-root .drx-acts .drx-btn{padding:9px 11px;font-size:12px}#drx-root .drx-b{padding:16px}#drx-root .drx-bar{gap:8px;padding:10px}#drx-root .drx-bar .drx-ttl span{display:inline}#drx-root .drx-pvh{gap:8px}#drx-root.drx-preview-full .drx-pvs{padding:14px 8px 24px}}"
 ].join("\n");
 document.head.appendChild(styleEl);
 
@@ -2572,20 +2611,17 @@ root.innerHTML=
   '<div class="drx-ttl">🛠<span>Конструктор ДР</span></div>'+
   '<span class="drx-save" data-save>✓ Сохранено</span>'+
   '<div class="drx-acts">'+
-    '<button class="drx-btn drx-btn-g drx-btn-x drx-hide-m" data-act="example">✨ Пример</button>'+
-    '<button class="drx-btn drx-btn-g drx-btn-x drx-hide-m" data-act="export">💾 Проект</button>'+
-    '<button class="drx-btn drx-btn-g drx-btn-x drx-hide-m" data-act="import">📥 Загрузить</button>'+
-    '<button class="drx-btn drx-btn-d drx-btn-x drx-hide-m" data-act="reset" title="Очистить всё">↺</button>'+
-    '<button class="drx-btn drx-btn-g drx-btn-x" data-act="pv">👁<span class="drx-hide-m"> Просмотр</span></button>'+
+    '<button class="drx-btn drx-btn-g" data-act="sample" title="Скачать примерный регламент Word">📄 Примерный ДР</button>'+
+    '<button class="drx-btn drx-btn-d" data-act="reset" title="Очистить весь регламент">↺ Очистить</button>'+
+    '<button class="drx-btn drx-btn-g drx-view-btn" data-act="pv" title="Развернуть предпросмотр на весь экран">⛶ Просмотр</button>'+
     '<button class="drx-btn drx-btn-p" data-act="create">⚡ Создать ДР</button>'+
     '<button class="drx-btn drx-btn-g drx-btn-x" data-act="close" title="Закрыть конструктор">✕<span class="drx-hide-m"> Закрыть</span></button>'+
   '</div>'+
-  '<input type="file" accept=".json" data-file hidden>'+
 '</div>'+
 '<div class="drx-layout">'+
   '<aside class="drx-card drx-rail"><div class="drx-rail-h">Пункты регламента</div><div data-steps></div><div class="drx-prog"><i data-prog style="width:0%"></i></div><div class="drx-prog-l" data-progl>Готово 0 из 11</div></aside>'+
-  '<main class="drx-main"><div class="drx-banner" data-banner><span class="i">ℹ️</span><span>Загружен <b>пример</b> (консультант отдела дорожной деятельности). Замените данные на свои — или очистите форму кнопкой ↺.</span><button class="drx-btn drx-btn-g drx-btn-x" data-act="banner-x">Понятно</button></div><div data-content></div></main>'+
-  '<aside class="drx-card drx-pv" data-pv><div class="drx-pvh">👁<b>Предпросмотр</b><div class="drx-pages"><button type="button" data-page-zoom aria-label="Изменить масштаб" aria-pressed="false">100 %</button><button type="button" data-page-prev aria-label="Предыдущая страница" disabled>‹</button><span class="stats" data-stats aria-live="polite"></span><button type="button" data-page-next aria-label="Следующая страница" disabled>›</button></div><button class="drx-pvx" data-act="pv-close">✕</button></div><div class="drx-pvs"><div class="drx-paper" data-paper></div></div></aside>'+
+  '<main class="drx-main"><div class="drx-banner" data-banner><span class="i">ℹ️</span><span>Загружен <b>пример</b> (консультант отдела дорожной деятельности). Замените данные на свои — или очистите форму кнопкой «Очистить».</span><button class="drx-btn drx-btn-g drx-btn-x" data-act="banner-x">Понятно</button></div><div data-content></div></main>'+
+  '<aside class="drx-card drx-pv" data-pv aria-label="Предпросмотр регламента"><div class="drx-pvh"><div class="drx-pv-title"><b>Предпросмотр ДР</b><small>Листайте документ вниз</small></div><div class="drx-pages"><span class="drx-page-stat" data-stats aria-live="off"></span><button type="button" data-page-zoom aria-label="Показать в масштабе 100 процентов" aria-pressed="false">100 %</button><button type="button" class="drx-expand" data-act="pv" title="На весь экран" aria-label="На весь экран">⛶</button><button type="button" class="drx-pvx" data-act="pv-close" title="Вернуться к редактированию">✕ Закрыть просмотр</button></div></div><div class="drx-pvs" tabindex="0" aria-label="Страницы документа, прокрутка"><div class="drx-paper" data-paper></div></div></aside>'+
 '</div>'+
 '<div class="drx-scrim" data-scrim></div>'+
 '<div class="drx-toasts" data-toasts></div>'+
@@ -2625,6 +2661,7 @@ function openDR(){
   q("[data-content]").scrollTop=0;
 }
 function closeDR(){
+  if(root.classList.contains("drx-preview-full"))closePV();
   root.classList.remove("drx-on");
   document.body.style.overflow=prevOverflow||"";
   saveNow();
@@ -2633,25 +2670,51 @@ root.addEventListener("click",function(e){
   var a=e.target.closest("[data-act]");if(!a)return;
   var k=a.dataset.act;
   if(k==="close")closeDR();
-  else if(k==="pv"){q("[data-pv]").classList.contains("open")?closePV():openPV()}
+  else if(k==="pv")openPV();
   else if(k==="pv-close")closePV();
   else if(k==="create")createDR();
-  else if(k==="export")exportJSON();
-  else if(k==="import")q("[data-file]").click();
-  else if(k==="reset")confirmM("Очистить конструктор?","Все заполненные пункты, блоки и списки будут удалены. Скачайте проект (.json), если хотите сохранить черновик.",function(){S=blank();saveNow();renderStep();renderPaper();toast("Форма очищена. Начните с шапки документа.","ok")});
-  else if(k==="example")confirmM("Заполнить примером?","Текущие данные будут заменены примером: консультант отдела дорожной деятельности, области П.18 и П.32, блоки ЦТ и госуслуги 217-р.",function(){S=example();applyBlocks(true);applyFuncs(true);autofillHeader();saveNow();renderStep();renderPaper();toast("Пример загружен — посмотрите предпросмотр справа.","ok")});
+  else if(k==="reset")confirmM("Очистить конструктор?","Все заполненные пункты, блоки и списки будут удалены. Это действие нельзя отменить. Если документ нужен, сначала скачайте его в Word.",function(){S=blank();saveNow();renderStep();pageScroll.scrollTop=0;renderPaper();toast("Форма очищена. Начните с шапки документа.","ok")});
   else if(k==="banner-x"){S.meta.banner=false;q("[data-banner]").style.display="none";markSaving()}
-  else if(k==="sample"){const link=document.createElement("a");link.href=TEMPLATE_FILE;link.download=TEMPLATE_FILE;document.body.append(link);link.click();link.remove()}
+  else if(k==="sample")downloadSample();
 });
-function openPV(){q("[data-pv]").classList.add("open");if(matchMedia("(max-width:1230px)").matches)q("[data-scrim]").classList.add("on");fitPage()}
-function closePV(){q("[data-pv]").classList.remove("open");q("[data-scrim]").classList.remove("on")}
-q("[data-scrim]").addEventListener("click",closePV);
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&root.classList.contains("drx-on")){if(q("[data-modal]").classList.contains("on"))closeM();else closeDR()}});
-q("[data-file]").addEventListener("change",function(e){
-  var f=e.target.files[0];if(!f)return;var r=new FileReader();
-  r.onload=function(){try{var j=JSON.parse(r.result);if(!j.state||!j.state.lists)throw 0;S=merge(j.state,blank());saveNow();renderStep();renderPaper();toast("Проект загружен. Все пункты восстановлены.","ok")}catch(x){toast("Не удалось прочитать файл проекта.","err")}e.target.value=""};
-  r.readAsText(f);
-});
+async function downloadSample(){
+  if(localWordFile){download(localWordFile,TEMPLATE_FILE);return}
+  if(location.protocol==="file:"){
+    const link=document.createElement("a");link.href=TEMPLATE_FILE;link.download=TEMPLATE_FILE;document.body.append(link);link.click();link.remove();return;
+  }
+  const buttons=qa('[data-act="sample"]');buttons.forEach(b=>b.disabled=true);
+  try{
+    const response=await fetch(new URL(TEMPLATE_FILE,document.baseURI));
+    if(!response.ok)throw Error("Файл «Примерный регламент.docx» должен лежать рядом с index.html.");
+    const blob=await response.blob();
+    const sig=new Uint8Array(await blob.slice(0,4).arrayBuffer());
+    if(sig[0]!==80||sig[1]!==75||sig[2]!==3||sig[3]!==4)throw Error("По адресу шаблона не найден документ Word.");
+    download(blob,TEMPLATE_FILE);
+  }catch(error){toast("Не удалось скачать примерный ДР. "+esc(error.message),"err")}
+  finally{buttons.forEach(b=>b.disabled=false)}
+}
+var previewReturnFocus=null;
+function openPV(){
+  if(root.classList.contains("drx-preview-full"))return;
+  previewReturnFocus=document.activeElement;
+  const panel=q("[data-pv]"), anchor=previewAnchor();
+  root.appendChild(panel);root.classList.add("drx-preview-full");
+  panel.classList.add("open");
+  q(".drx-bar").inert=true;q(".drx-layout").inert=true;
+  fitPage(anchor);renderPaper();
+  q('[data-act="pv-close"]').focus({preventScroll:true});
+}
+function closePV(){
+  if(!root.classList.contains("drx-preview-full"))return;
+  const panel=q("[data-pv]"), anchor=previewAnchor();
+  q(".drx-layout").appendChild(panel);panel.classList.remove("open");
+  root.classList.remove("drx-preview-full");
+  q(".drx-bar").inert=false;q(".drx-layout").inert=false;
+  fitPage(anchor);
+  if(previewReturnFocus&&previewReturnFocus.isConnected)previewReturnFocus.focus({preventScroll:true});
+  previewReturnFocus=null;
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&root.classList.contains("drx-on")){if(q("[data-modal]").classList.contains("on"))closeM();else if(root.classList.contains("drx-preview-full"))closePV();else closeDR()}});
 function toast(msg,type,action){
   var t=document.createElement("div");t.className="drx-toast "+(type||"");t.innerHTML="<span>"+msg+"</span>";
   if(action){var b=document.createElement("button");b.textContent=action.label;b.onclick=function(){action.fn();t.remove()};t.appendChild(b)}
@@ -2699,7 +2762,7 @@ var S=null,FIRST=false;
 try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
 if(!S){S=blank();FIRST=true}
 merge(S,blank());
-function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Для работы после её закрытия скачайте проект (.json)."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Скачайте проект (.json), чтобы не потерять данные."}}
+function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Перед закрытием вкладки скачайте готовый документ Word."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Не закрывайте вкладку до скачивания документа Word."}}
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
 function deriveGC(t){t=norm(t);for(var i=0;i<GROUP_RULES.length;i++){if(GROUP_RULES[i][0].test(t))return{g:GROUP_RULES[i][1],c:GROUP_RULES[i][2]}}return{g:"",c:""}}
@@ -3005,7 +3068,9 @@ const paperHost = q("[data-paper]");
 const paperRoot = paperHost.attachShadow({mode:"open"});
 paperRoot.innerHTML = `<style>
   :host{display:block;min-width:0;color-scheme:light}
-  .slot{position:relative;overflow:hidden;margin:0 auto;box-shadow:0 2px 9px #0003}
+  .pages{display:flex;flex-direction:column;gap:18px;width:max-content;min-width:100%;padding-bottom:2px}
+  .slot{position:relative;overflow:hidden;margin:0 auto;flex:none;background:#fff;box-shadow:0 3px 14px #0003}
+  .slot[hidden],.error[hidden]{display:none!important}
   .page{position:absolute;left:0;top:0;transform-origin:top left;box-sizing:border-box;
     color:#000;background:white;text-transform:none;letter-spacing:normal;font-weight:400;
     font-style:normal;line-height:normal;font-synthesis:none;-webkit-text-size-adjust:none;text-size-adjust:none}
@@ -3018,10 +3083,10 @@ paperRoot.innerHTML = `<style>
   .footer{position:absolute}
   .error{font:14px/1.45 system-ui;padding:12px;color:var(--drx-ink)}
   .error button{display:block;margin-top:8px}
-</style><div class="slot" hidden><article class="page" lang="ru"><div class="clip"><div class="flow"></div></div><div class="footer"></div></article></div><div class="error" role="status">Открываем шаблон…</div>`;
+</style><div class="pages"><div class="slot" hidden><article class="page" lang="ru"><div class="clip"><div class="flow"></div></div><div class="footer"></div></article></div></div><div class="error" role="status">Открываем шаблон…</div>`;
 const pageElement = paperRoot.querySelector(".page"), viewport = paperRoot.querySelector(".clip");
 const flow = paperRoot.querySelector(".flow"), pageSlot = paperRoot.querySelector(".slot"), footer = paperRoot.querySelector(".footer");
-const previewStatus = paperRoot.querySelector(".error");
+const previewStatus = paperRoot.querySelector(".error"), pageStack = paperRoot.querySelector(".pages");
 const pt = twips => Number(twips) / 20 + "pt";
 let pageNumber = 1, pageCount = 0, actualSize = false, previewModel, previewVersion = 0, pageStep = 0;
 let defaultParagraph, defaultRun;
@@ -3112,30 +3177,62 @@ function renderTable(source) {
   });
   return table;
 }
-function fitPage() {
-  if (!previewModel || pageSlot.hidden || !paperHost.clientWidth) return;
-  const scale = actualSize ? 1 : Math.min(1,paperHost.clientWidth / parseFloat(getComputedStyle(pageElement).width));
-  pageElement.style.transform = "scale(" + scale + ")";
-  pageSlot.style.width = parseFloat(getComputedStyle(pageElement).width) * scale + "px";
-  pageSlot.style.height = parseFloat(getComputedStyle(pageElement).height) * scale + "px";
+function previewAnchor(){
+  if(pageSlot.hidden||!pageCount)return {page:0,fraction:0};
+  const height=pageSlot.getBoundingClientRect().height;
+  const first=pageSlot.getBoundingClientRect().top-pageScroll.getBoundingClientRect().top+pageScroll.scrollTop;
+  const stride=height+18;
+  const y=Math.max(0,pageScroll.scrollTop-first);
+  const page=Math.min(pageCount-1,Math.floor(y/(stride||1)));
+  return {page,fraction:Math.min(1,(y-page*stride)/(height||1))};
 }
-function showPage(n) {
-  pageNumber = Math.min(Math.max(1,n),pageCount || 1);
-  flow.style.transform = "translateX(" + (-(pageNumber-1) * pageStep) + "px)";
-  q("[data-stats]").textContent = pageCount ? "Стр. " + pageNumber + " из " + pageCount : "";
-  q("[data-page-prev]").disabled = pageNumber <= 1;
-  q("[data-page-next]").disabled = pageNumber >= pageCount;
-  footer.replaceChildren();
-  if (!previewModel) return;
-  const section = nodes(previewModel.xml,"sectPr").at(-1);
-  const part = previewModel.footers[pageNumber === 1 && child(section,"titlePg") ? "first" : "default"];
-  if (part) nodes(part,"p").forEach(p => {
-    const value = renderParagraph(p);
-    if (nodes(p,"instrText").some(t => /\bPAGE\b/i.test(t.textContent))) value.textContent = String(pageNumber);
-    footer.append(value);
+function restorePreview(anchor){
+  if(!anchor||pageSlot.hidden||!pageCount)return;
+  const height=pageSlot.getBoundingClientRect().height;
+  const first=pageSlot.getBoundingClientRect().top-pageScroll.getBoundingClientRect().top+pageScroll.scrollTop;
+  pageScroll.scrollTop=anchor.page===0&&anchor.fraction===0?0:first+Math.min(anchor.page,pageCount-1)*(height+18)+anchor.fraction*height;
+}
+function updatePageStatus(){
+  pageNumber=pageCount?previewAnchor().page+1:1;
+  q("[data-stats]").textContent=pageCount?"Стр. "+pageNumber+" из "+pageCount:"";
+}
+function fitPage(anchor) {
+  if (!previewModel || pageSlot.hidden || !paperHost.clientWidth) return;
+  if(!anchor||Array.isArray(anchor))anchor=previewAnchor();
+  const width=parseFloat(getComputedStyle(pageElement).width),height=parseFloat(getComputedStyle(pageElement).height);
+  if(!width||!height)return;
+  const scale = actualSize ? 1 : Math.min(1,paperHost.clientWidth / width);
+  for(const slot of pageStack.children){
+    slot.style.width=width*scale+"px";slot.style.height=height*scale+"px";
+    slot.firstElementChild.style.transform="scale("+scale+")";
+  }
+  restorePreview(anchor);updatePageStatus();
+}
+function fillPageSlot(slot,n){
+  slot.querySelector(".flow").style.transform="translateX("+(-(n-1)*pageStep)+"px)";
+  slot.setAttribute("aria-label","Страница "+n);
+  const foot=slot.querySelector(".footer");foot.replaceChildren();
+  const section=nodes(previewModel.xml,"sectPr").at(-1);
+  const part=previewModel.footers[n===1&&child(section,"titlePg")?"first":"default"];
+  if(part)nodes(part,"p").forEach(p=>{
+    const value=renderParagraph(p);
+    if(nodes(p,"instrText").some(t=>/\bPAGE\b/i.test(t.textContent)))value.textContent=String(n);
+    foot.append(value);
   });
 }
+function renderPageStack(anchor){
+  // Each slot clips the same Word layout at a different column; page numbers remain independent.
+  fillPageSlot(pageSlot,1);
+  const rest=document.createDocumentFragment();
+  for(let n=2;n<=pageCount;n++){
+    const slot=pageSlot.cloneNode(true);fillPageSlot(slot,n);rest.append(slot);
+  }
+  pageStack.append(rest);fitPage(anchor);
+}
 function drawDocument(model) {
+  const anchor=previewAnchor();
+  while(pageStack.children.length>1)pageStack.lastElementChild.remove();
+  flow.style.transform="none";
   const section = nodes(model.xml,"sectPr").at(-1), size = child(section,"pgSz"), margin = child(section,"pgMar");
   const width = Number(attr(size,"w")), height = Number(attr(size,"h"));
   const left = Number(attr(margin,"left")), right = Number(attr(margin,"right"));
@@ -3157,10 +3254,10 @@ function drawDocument(model) {
   previewStatus.hidden = true; pageSlot.hidden = false;
   pageStep = parseFloat(getComputedStyle(flow).width);
   pageCount = Math.max(1,Math.round(flow.scrollWidth / pageStep));
-  previewModel = model; showPage(pageNumber); fitPage();
+  previewModel = model; renderPageStack(anchor);
 }
 function previewError(error) {
-  pageSlot.hidden = true; previewModel = null; pageCount = 0; showPage(1);
+  pageSlot.hidden = true; while(pageStack.children.length>1)pageStack.lastElementChild.remove(); previewModel = null; pageCount = 0; updatePageStatus();
   previewStatus.hidden = false;
   const local = location.protocol === "file:";
   previewStatus.textContent = local && !localWordFile ? error.message : "Не удалось открыть шаблон. " + error.message;
@@ -3177,13 +3274,12 @@ async function renderPaper() {
 }
 const schedulePreview = debounce(renderPaper,180);
 const pageScroll = q(".drx-pvs");
-q("[data-page-next]").onclick = () => {showPage(pageNumber+1); pageScroll.scrollTop = 0;};
-q("[data-page-prev]").onclick = () => {showPage(pageNumber-1); pageScroll.scrollTop = 0;};
+pageScroll.addEventListener("scroll",updatePageStatus,{passive:true});
 q("[data-page-zoom]").onclick = e => {
   actualSize = !actualSize; e.currentTarget.textContent = actualSize ? "По ширине" : "100 %";
-  e.currentTarget.setAttribute("aria-pressed",String(actualSize)); fitPage();
+  e.currentTarget.setAttribute("aria-pressed",String(actualSize)); e.currentTarget.setAttribute("aria-label",actualSize?"Подогнать по ширине":"Показать в масштабе 100 процентов"); fitPage();
 };
-new ResizeObserver(fitPage).observe(paperHost);
+new ResizeObserver(()=>fitPage()).observe(paperHost);
 let lastBlob = null, lastName = "", creatingWord = false;
 
 /* ══════════════════════ 11. ВАЛИДАЦИЯ ══════════════════════ */
@@ -3417,7 +3513,7 @@ function renderStep(){
   h+='<div class="drx-card drx-b"><h3>✓ Проверка перед созданием</h3><div class="sub">Всё, что требует примерный ДР и сноски, — проверено. Нажмите на строку, чтобы перейти к нужному шагу.</div>'+
    (errs.length?errs.map(function(e){return '<div class="drx-vr bad"><span class="i">⚠️</span><span>'+esc(e.msg)+'</span><button class="drx-btn drx-btn-g drx-btn-x" data-step="'+e.step+'">Исправить</button></div>'}).join(""):'<div class="drx-vr ok"><span class="i">✓</span><span>Все обязательные пункты заполнены — регламент готов к сборке 🎉</span></div>')+
    STEPS.slice(0,10).map(function(s,si){return stepStatus(si)==="ok"?'<div class="drx-vr ok"><span class="i">✓</span><span>Шаг '+si+". "+s.t+'</span><button class="drx-btn drx-btn-g drx-btn-x" data-step="'+si+'">Открыть</button></div>':""}).join("")+"</div>"+
-   '<div class="drx-card drx-hero"><span class="em">🗂️</span><h3 style="justify-content:center;font-size:17px">Ваш регламент готов собраться в Word!</h3><p>Данные будут внесены в «Примерный регламент.docx». Поля, интервалы, таблицы и колонтитулы заданы в шаблоне. Файл .docx откроется в Microsoft Word, LibreOffice и Р7-Офис.</p><button class="drx-btn drx-btn-p big" data-act="create">⚡ Создать ДР</button><div style="display:flex;gap:9px;justify-content:center;margin-top:13px;flex-wrap:wrap"><button class="drx-btn drx-btn-g drx-btn-s" data-act="export">💾 Скачать проект (.json)</button><button class="drx-btn drx-btn-g drx-btn-s" data-act="sample">📤 Примерный ДР (шаблон)</button><button class="drx-btn drx-btn-g drx-btn-s" data-act="pv">👁 Предпросмотр</button></div></div>';
+   '<div class="drx-card drx-hero"><span class="em">🗂️</span><h3 style="justify-content:center;font-size:17px">Ваш регламент готов собраться в Word!</h3><p>Данные будут внесены в «Примерный регламент.docx». Поля, интервалы, таблицы и колонтитулы заданы в шаблоне. Файл .docx откроется в Microsoft Word, LibreOffice и Р7-Офис.</p><button class="drx-btn drx-btn-p big" data-act="create">⚡ Создать ДР</button><div style="display:flex;gap:9px;justify-content:center;margin-top:13px;flex-wrap:wrap"><button class="drx-btn drx-btn-g drx-btn-s" data-act="sample">📤 Примерный ДР (шаблон)</button><button class="drx-btn drx-btn-g drx-btn-s" data-act="pv">👁 Предпросмотр</button></div></div>';
  }
  h+='<div class="drx-nav2">'+(i>0?'<button class="drx-btn drx-btn-g" data-step="'+(i-1)+'">← Назад</button>':"")+(i<10?'<button class="drx-btn drx-btn-p" data-step="'+(i+1)+'">Далее: '+STEPS[i+1].t+" →</button>":'<button class="drx-btn drx-btn-p" data-act="create">⚡ Создать ДР</button>')+"</div>";
  q("[data-content]").innerHTML=h;
@@ -3583,7 +3679,6 @@ q("[data-modal]").addEventListener("click",function(e){
  if(e.target.closest("[data-mok]")){closeM();if(_mok)_mok()}
 });
 function confirmM(title,text,fn){_mok=fn;showM("<h3>"+title+"</h3><p>"+text+'</p><div class="drx-ma"><button class="drx-btn drx-btn-d" data-mok>Да, продолжить</button><button class="drx-btn drx-btn-g" data-mclose>Отмена</button></div>')}
-function exportJSON(){saveNow();download(new Blob([JSON.stringify({app:"pascal-dr",v:7,ts:Date.now(),state:S},null,1)],{type:"application/json"}),"Проект ДР — "+(S.position.title||"черновик")+".json");toast("Проект сохранён в .json — можно передать коллеге или загрузить позже.","ok")}
 
 /* ══════════════════════ 15. СТАРТ ══════════════════════ */
 function boot(){
