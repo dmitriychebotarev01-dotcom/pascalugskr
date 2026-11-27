@@ -2825,7 +2825,7 @@ function blank(){
  return{
   header:{soglasRole:SOGLAS_ROLES[0],soglasName:SOGLAS_NAMES[0],utvRole:"",utvName:"",year:"2026"},
   position:{organType:"iogv",organName:"",department:"",title:"",group:"",category:"",manualGC:false},
-  activity:{areas:[],types:{},custom:{},appoint:2,minister:""},
+  activity:{areas:[],types:{},custom:{}},
   sub:{direct:"",oper:[],noRepl:true,replTitle:"",replOther:false,replMinister:false},
   qual:{eduOverride:false,eduText:"",directions:[],dpo:"",stageOverride:false,stageText:""},
   blocks:{knd:{on:false,role:"insp"},antiterror:{on:false,role:"A",variant:"base"},anticor:{on:false,role:"full",s62:true},zampolit:{on:false},digital:{on:false,role:"rct"},client:{on:false},infobez:{on:false},antimonopoly:{on:false},zakupki:{on:false},gosuslugi:{on:false,role:"dep"},mobil:{on:false},gos217:{on:false,role:"organ"},ai:{mode:"auto"},pdn:{on:false},gt:{on:false}},
@@ -2843,7 +2843,7 @@ function example(){
  var s=blank();
  s.position={organType:"iogv",organName:"министерство транспорта и дорожного хозяйства Липецкой области",department:"отдел дорожной деятельности",title:"консультант",group:"ведущая",category:"специалисты",manualGC:false};
  s.header.utvRole="Министр транспорта и дорожного хозяйства Липецкой области";s.header.utvName="А.В. Смирнов";
- s.activity={areas:["П.18","П.32"],types:{"П.18":[4],"П.32":[2]},custom:{},appoint:3,minister:"министром транспорта и дорожного хозяйства Липецкой области"};
+ s.activity={areas:["П.18","П.32"],types:{"П.18":[4],"П.32":[2]},custom:{}};
  s.sub={direct:"министру транспорта и дорожного хозяйства Липецкой области",oper:["заместителю министра","начальнику отдела дорожной деятельности"],noRepl:true,replTitle:"",replOther:false,replMinister:false};
  s.qual.directions=["Автомобильные дороги и аэродромы","Организация перевозок и управление на транспорте","Государственное и муниципальное управление"];
  s.blocks.digital={on:true,role:"spec"};s.blocks.gos217={on:true,role:"organ"};
@@ -2857,6 +2857,7 @@ var S=null,FIRST=false;
 try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
 if(!S){S=blank();FIRST=true}
 merge(S,blank());
+delete S.activity.appoint;delete S.activity.minister;
 normalizeHeader(S.header);
 S.position.organName=organGen(S.position.organName);S.position.department=departmentGen(S.position.department);S.position.title=positionGen(S.position.title);
 function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Перед закрытием вкладки скачайте готовый документ Word."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Не закрывайте вкладку до скачивания документа Word."}}
@@ -2881,6 +2882,26 @@ function tok(){
   chiefDat:"начальнику отдела",chain:(kind==="министерства"?"министра, заместителя министра":"начальника управления, заместителя начальника управления")+", начальника отдела"};
 }
 function T(t){var k=tok();return String(t).replace(/\{(\w+)\}/g,function(m,n){return k[n]!==undefined?k[n]:m})}
+// Пункт 1.5: представитель нанимателя определяется только по должности и органу.
+const APPOINT_GOVERNOR_POSTS = [
+ "министр", "начальник управления", "руководитель инспекции",
+ "первый заместитель министра", "первый заместитель начальника управления",
+ "первый заместитель руководителя инспекции", "заместитель министра",
+ "заместитель министра – начальник управления", "заместитель начальника управления",
+ "заместитель руководителя инспекции", "заместитель начальника управления в министерстве"
+];
+const APPOINT_MINISTRIES = [
+ "здравоохранения", "образования", "социальной политики", "региональной безопасности"
+];
+function appointmentAuthority(p){
+ var title=norm(positionNom(p.title)).replace(/\s*[-–—]\s*(?=начальник)/g," – ");
+ // Учитываем и полное наименование должности с уточнением органа.
+ if(APPOINT_GOVERNOR_POSTS.some(function(post){return title===post||title.indexOf(post+" ")===0}))return "Губернатором Липецкой области";
+ var organ=norm(organGen(p.organName));
+ var ministry=APPOINT_MINISTRIES.find(function(name){return organ==="министерства "+name+" липецкой области"});
+ if(ministry)return "министром "+ministry+" Липецкой области";
+ return "начальником управления государственной службы и кадровой работы Правительства Липецкой области";
+}
 function eduAuto(){return(S.position.group==="старшая"&&S.position.category==="обеспечивающие специалисты")?"профессиональное образование, соответствующее направлению деятельности":"высшее образование"}
 function stageAuto(){return STAGE[S.position.group+"|"+S.position.category]||"Гражданский служащий должен иметь стаж государственной гражданской службы (далее – гражданская служба) не менее ____ лет или стаж работы по специальности, направлению подготовки не менее ____ лет."}
 function mgmtReq(){return S.position.category==="руководители"||(S.position.category==="специалисты"&&S.position.group==="главная")}
@@ -3011,7 +3032,7 @@ function fieldValues() {
     signRole:h.utvRole || missing, signName:h.utvName || missing, year:h.year || "____",
     full, fullUpper:full.toUpperCase(), title:positionGen(p.title) || missing, group:groups[p.group] || missing, category:p.category || missing,
     areas:a.areas.map(c => AREA_BY[c] ? AREA_BY[c].n : c).join("; ") || missing, types:types.join("; ") || missing,
-    appoint:+a.appoint === 1 ? "Губернатором Липецкой области" : +a.appoint === 2 ? "начальником управления государственной службы и кадровой работы Правительства Липецкой области" : a.minister || names.headInstr,
+    appoint:appointmentAuthority(p),
     subordination:["1.6. Гражданский служащий непосредственно подчиняется " + (sub.direct || missing) + (sub.oper.length ? ", а в оперативной работе – " + sub.oper.join(", ") : "") + " либо лицам, исполняющим их должностные обязанности."],
     replacement, education:qual.eduOverride && qual.eduText || eduAuto(),
     directions:directions + (qual.dpo ? " Дополнительно: " + qual.dpo.replace(/[.]$/, "") + "." : ""),
@@ -3538,7 +3559,6 @@ function validate(){
  if(!S.position.group||!S.position.category)e.push({step:1,msg:"Не определены группа и категория (уточните должность или задайте вручную)",path:"position.title"});
  if(!S.activity.areas.length)e.push({step:2,msg:"Выберите хотя бы одну область деятельности (п. 1.3)",path:""});
  else S.activity.areas.forEach(function(c){var n=(S.activity.types[c]||[]).length+(S.activity.custom[c]||[]).length;if(!n)e.push({step:2,msg:"Для области "+c+" не выбран ни один вид деятельности (п. 1.4)",path:""})});
- if(S.activity.appoint===3&&!S.activity.minister)e.push({step:2,msg:"Укажите, какой министр назначает на должность (п. 1.5)",path:"activity.minister"});
  if(!S.sub.direct)e.push({step:3,msg:"Укажите непосредственное подчинение (п. 1.6)",path:"sub.direct"});
  if(!S.sub.noRepl&&!S.sub.replTitle&&!S.sub.replMinister)e.push({step:3,msg:"Укажите замещаемую должность (п. 1.7)",path:"sub.replTitle"});
  if(!S.qual.directions.length)e.push({step:4,msg:"Выберите направления подготовки / специальности (п. 2.1)",path:""});
@@ -3700,9 +3720,10 @@ function renderStep(){
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.3</span> Области профессиональной служебной деятельности</h3><div class="sub">Справочник квалификационных требований (ч. 8 ст. 12 № 79-ФЗ): <b>'+AREAS.length+" области (П.1–П.32)</b>. Можно несколько. Поиск — по названию и шифру.</div>"+
    cpHtml("areas","Область деятельности",false)+"</div>"+
    '<div class="drx-card drx-b"><h3><span class="pt">1.4</span> Виды профессиональной служебной деятельности</h3><div class="sub">'+TYPES_TOTAL+" видов из Справочника. Раскройте область и отметьте нужные виды — <b>минимум один для каждой области</b>.</div><div data-types></div></div>"+
-   '<div class="drx-card drx-b"><h3><span class="pt">1.5</span> Назначение на должность</h3><div class="sub">Кто назначает и освобождает.</div>'+
-   fld("Вариант назначения",sel("activity.appoint",[[1,"1 — Губернатор Липецкой области"],[2,"2 — Начальник УГСКР Правительства Липецкой области"],[3,"3 — Министр / руководитель органа"]],S.activity.appoint),true)+
-   (S.activity.appoint===3?fld("Кем именно (творительный падеж)",txt("activity.minister",S.activity.minister,"министром транспорта и дорожного хозяйства Липецкой области"),true)+note("Подставляется из наименования органа — отредактируйте при необходимости."):"")+"</div>";
+   '<div class="drx-card drx-b"><h3><span class="pt">1.5</span> Назначение на должность <span class="drx-auto">✓ автоматически</span></h3><div class="sub">Кто назначает и освобождает.</div>'+
+   note("Определяется автоматически по должности и органу, указанным на шаге 1. Ручной выбор не требуется.")+
+   '<div class="drx-f"><label>Представитель нанимателя (творительный падеж)</label><div class="drx-inp" role="status" style="overflow-wrap:anywhere">'+esc(appointmentAuthority(p))+'</div></div>'+
+   "</div>";
  } else if(i===3){
   h+='<div class="drx-card drx-b"><h3><span class="pt">1.6</span> Подчинение</h3><div class="sub">Сноска 7: непосредственно — руководителю; оперативно — заместителю, координирующему работу, и начальнику отдела.</div>'+
    fld("Непосредственно подчиняется (дательный падеж)",txt("sub.direct",S.sub.direct,"министру … / начальнику управления …"),true)+
@@ -3780,8 +3801,6 @@ function renderStep(){
 function special(path,v){
  if(path==="position.title"&&!S.position.manualGC){var d=deriveGC(v);S.position.group=d.g;S.position.category=d.c;
   var ch=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)ch=x});if(ch&&!ch.touched)ch.on=isChief()}
- if(path==="position.organName"){if(S.activity.appoint===3)S.activity.minister=tok().headInstr}
- if(path==="activity.appoint"){if(+v===3&&!S.activity.minister)S.activity.minister=tok().headInstr}
  if(path==="header.soglasRole")normalizeHeader(S.header);
  if(path==="blocks.gt.on"||path==="blocks.pdn.on"){applyBlocks(true);toast(v?"Специальная роль включена — положения добавлены.":"Положения роли удалены.","ok")}
  if(path==="position.group"||path==="position.category"){var c2=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)c2=x});if(c2&&!c2.touched)c2.on=isChief()}
@@ -3807,7 +3826,7 @@ BC.addEventListener("change",function(e){
   if(t.checked&&ix2<0)arr2.push(v);if(!t.checked&&ix2>=0)arr2.splice(ix2,1);
   refreshCp(id);markSaving();schedulePreview();renderRail();if(id==="areas"){if(t.checked)TOPEN[v]=true;renderTypes()}return}
  var p=d.path;if(!p)return;
- var val=t.type==="checkbox"?t.checked:(t.tagName==="SELECT"&&(p==="activity.appoint"||p==="sheet.rows")?+t.value:t.value);
+ var val=t.type==="checkbox"?t.checked:(t.tagName==="SELECT"&&p==="sheet.rows"?+t.value:t.value);
  if(p==="position.title"||p==="position.department"){val=p==="position.title"?positionGen(val):departmentGen(val);t.value=val;}
  setPath(S,p,val);special(p,val);if(p==="position.title"&&q("[data-position-gc]"))q("[data-position-gc]").innerHTML=positionGroupNote(S.position);after(!!d.rr);
 });
