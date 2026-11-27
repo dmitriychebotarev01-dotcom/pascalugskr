@@ -2607,7 +2607,8 @@ function toast(msg,type,action){
 }
 
 /* ══════════════════════ 7. СОСТОЯНИЕ ══════════════════════ */
-var STORE="pascal-dr-v7";
+/* Черновик принадлежит только текущей вкладке; старый общий ключ не читаем. */
+var STORE="pascal-dr-session-v8";
 function li(text,on,src,lvl){return{id:uid(),text:text,on:on!==false,src:src||"custom",lvl:lvl||0}}
 function blank(){
  return{
@@ -2642,10 +2643,10 @@ function example(){
 }
 function merge(t,d){for(var k in d){if(t[k]===undefined)t[k]=d[k];else if(d[k]&&typeof d[k]==="object"&&!Array.isArray(d[k])&&t[k]&&typeof t[k]==="object"&&!Array.isArray(t[k]))merge(t[k],d[k])}return t}
 var S=null,FIRST=false;
-try{var raw=localStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
-if(!S){S=example();FIRST=true}
+try{var raw=sessionStorage.getItem(STORE);if(raw){var jj=JSON.parse(raw);if(jj&&jj.lists&&jj.activity&&Array.isArray(jj.activity.areas))S=jj}}catch(e){S=null}
+if(!S){S=blank();FIRST=true}
 merge(S,blank());
-function saveNow(){try{localStorage.setItem(STORE,JSON.stringify(S));var el=q("[data-save]");el.classList.remove("drx-saving");el.textContent="✓ Сохранено"}catch(e){}}
+function saveNow(){var el=q("[data-save]");el.classList.remove("drx-saving");try{sessionStorage.setItem(STORE,JSON.stringify(S));el.textContent="✓ Сохранено";el.title="Черновик сохранён в этой вкладке. Для работы после её закрытия скачайте проект (.json)."}catch(e){el.textContent="⚠ Не сохранено";el.title="Хранилище вкладки недоступно. Скачайте проект (.json), чтобы не потерять данные."}}
 var save=debounce(saveNow,500);
 function markSaving(){var el=q("[data-save]");el.classList.add("drx-saving");el.textContent="⏱ Сохраняю…";save()}
 function deriveGC(t){t=norm(t);for(var i=0;i<GROUP_RULES.length;i++){if(GROUP_RULES[i][0].test(t))return{g:GROUP_RULES[i][1],c:GROUP_RULES[i][2]}}return{g:"",c:""}}
@@ -3349,6 +3350,7 @@ function boot(){
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);
 else boot();
 window.addEventListener("beforeunload",function(){if(root.classList.contains("drx-on"))saveNow()});
+window.addEventListener("pagehide",function(){if(root.classList.contains("drx-on"))saveNow()});
 window.DRX={open:openDR,close:closeDR};
 })();
 </script>
