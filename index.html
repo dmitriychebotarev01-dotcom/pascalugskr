@@ -2849,7 +2849,7 @@ function blank(){
   blocks:{knd:{on:false,role:"insp"},antiterror:{on:false,role:"A",variant:"base"},anticor:{on:false,role:"full",s62:true},zampolit:{on:false},digital:{on:false,role:"rct"},client:{on:false},infobez:{on:false},antimonopoly:{on:false},zakupki:{on:false},gosuslugi:{on:false,role:"dep"},mobil:{on:false},gos217:{on:false,role:"organ"},ai:{mode:"auto"},pdn:{on:false},gt:{on:false}},
   funcs:[],mgmtAuto:true,mgmtOn:false,
   lists:{npa:[li("постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области» (далее – Регламент Правительства Липецкой области)",true,"base"),li("Положение о {organGen}",true,"base"),li("иные нормативные правовые акты (правовые акты), регулирующие сферу деятельности отдела {organGen}",true,"base")],pk:[],fk:[],ps:[],fs:[],duty:[li(D_OBR,true,"base"),li(D_NPA,true,"base"),li(D_MSG,true,"base"),li(D_CHIEF,false,"base"),li(D_AT,false,"base")],decR:DEC_R.map(function(t){return li(t,true,"base")}),decM:DEC_M.map(function(t){return li(t,true,"base")}),services:[],kpi:[]},
-  other:{variant:"min",custom:""},
+  other:{variant:"min",custom:"",curatedDepartments:""},
   inter:{variant:"auto"},
   services:{none:true},
   sheet:{rows:8},
@@ -3119,6 +3119,7 @@ function applyBlocks(silent){
  if(ai==="manager"||ai==="both")addAI(AI_MGR);
  if(ai==="it"||ai==="both")addAI(AI_IT);
  S.flags={s62:s62,p52:p52};
+ syncOrderedLists();
  if(!silent)toast("Блоки применены: <b>+"+added+"</b> положений"+(removed?", обновлено "+removed:"")+". Дубли пропущены автоматически.","ok");
  markSaving();schedulePreview();renderRail();
 }
@@ -3160,10 +3161,123 @@ function replacementFullTitle(sub,p){
  }
  return [title,organ].filter(Boolean).join(" ");
 }
+// Полное наименование должности: не повторяем «отдела» перед названием отдела.
+function fullPositionTitle(p){
+ const title=positionGen(p.title), dept=departmentGen(p.department), organ=organGen(p.organName);
+ const plain=[title||missing,dept,organ].filter(Boolean).join(" ");
+ if(!/^(?:заместителя )?начальника отдела(?:\s|$)/i.test(title))return plain;
+ const isDepartment=v=>/(?:^|\s)отдела(?:\s|$)/i.test(v);
+ const same=(a,b)=>norm(a)===norm(b);
+ const ends=(a,b)=>!!b&&(same(a,b)||norm(a).endsWith(" "+norm(b)));
+ // Для самостоятельного отдела Правительства название уже содержится в органе.
+ const unit=dept&&!same(dept,organ)?dept:"";
+ if(unit&&isDepartment(unit))return replacementFullTitle({replTitle:title},{...p,department:unit});
+ if(!unit&&isDepartment(organ)&&/^(?:заместителя )?начальника отдела$/i.test(title))
+  return [title.replace(/\s+отдела$/i,""),organ].filter(Boolean).join(" ");
+ if(!unit&&ends(title,organ))return title;
+ return plain;
+}
+
+// Единый обязательный порядок пп. 2.3.2.1 и 3.2 для интерфейса, предпросмотра и Word.
+const ORDER_REGULATION = "постановление Правительства Липецкой области от 10 января 2024 года № 5 «Об утверждении Регламента Правительства Липецкой области» (далее – Регламент Правительства Липецкой области)";
+const ORDER_ORGAN_POSITION = "Положение о {organGen}";
+function orderPlain(text){return norm(String(text||"").replace(/^\s*[-–—•]\s*/,"").replace(/[.;\s]+$/,""));}
+function isRegulation(text){var t=orderPlain(text);return t==="регламент правительства липецкой области"||/^(?:постановление|постановления) правительства липецкой области от 10 января 2024 года (?:№|n)\s*5(?:\s|$)/.test(t)||/^постановление правительства липецкой области.*(?:№|n)\s*5\s+об утверждении регламента правительства липецкой области/.test(t)}
+function isNpaClosing(text){return /^иные нормативные правовые акты\s*\(правовые акты\),?\s*регулирующие сферу деятельности/.test(orderPlain(text))}
+function npaRank(text){
+ var t=orderPlain(text), lead=t.split(/\s+(?:от\s+\d|(?:№|n)\s*\d)/i)[0];
+ if(isNpaClosing(t))return 150;
+ if(/^конституци[яи]\s+(?:российской федерации|рф)/.test(t))return 0;
+ if(/^федеральн(?:ый|ого) конституционн(?:ый|ого) закон/.test(t))return 10;
+ if(/^(?:[а-я-]+\s+){0,5}кодекс(?:а)?(?:\s|$)/u.test(t))return 20;
+ if(/^федеральн(?:ый|ого) закон/.test(t)||/^закон(?:а)? (?:российской федерации|рф)/.test(t))return 30;
+ if(/^указ(?:а)? президента (?:российской федерации|рф)/.test(t))return 40;
+ if(/^постановлени[ея] правительства (?:российской федерации|рф)/.test(t))return 50;
+ if(/^распоряжени[ея] правительства (?:российской федерации|рф)/.test(t))return 60;
+ if(/^(?:международн[а-я]+\s+)?(?:конвенци[яи]|соглашени[ея]|договор)/.test(t)||/^резолюци[яи] генеральной ассамблеи оон/.test(t))return 70;
+ if(/^(?:приказ|приказа|распоряжение|постановление|решение)\s+(?:фстэк|фсб|фапси|федеральн[а-я]+|мин[а-я]+ россии|министерства [^«]+ российской федерации|рос[а-я]+|центрального банка)/.test(t)||/^(?:гост|концепци[яи]|комплексный план|военная доктрина|стратеги[яи]|национальн[а-я]+ стандарт)/.test(t))return 75;
+ if(/^устав(?:а)? липецкой области/.test(t))return 79;
+ if(/^закон(?:а)? липецкой области/.test(t))return 80;
+ if(/^указ(?:а)? (?:губернатора|главы администрации) липецкой области/.test(t))return 90;
+ if(isRegulation(t))return 109;
+ if(/^постановлени[ея] (?:правительства|администрации) липецкой области/.test(t))return 100;
+ if(/^распоряжени[ея] (?:губернатора|главы администрации) липецкой области/.test(t))return 110;
+ if(/^распоряжени[ея] (?:правительства|администрации) липецкой области/.test(t))return 120;
+ if(/^положение (?:о|об)\s/.test(t)||/^инструкция .*исполнительного органа липецкой области/.test(t)||/^(?:приказ|приказа|распоряжение|постановление|решение)\s+/.test(t)&&(/липецкой области/.test(lead)||/^(?:приказ|приказа|распоряжение|постановление|решение)\s+(?:министерства|управления|инспекции|отдела|правового управления|государственной жилищной инспекции)/.test(t)))return 130;
+ // Сохраняем и не классифицируем наугад акты с неизвестным издателем.
+ return 140;
+}
+function orderOrganNames(p){
+ var organ=organGen(p.organName),dept=departmentGen(p.department),kind=organInfo(p).kind;
+ if(organ&&norm(dept)===norm(organ))dept="";
+ if(dept&&organ&&norm(dept).endsWith(" "+norm(organ)))dept=dept.slice(0,dept.length-organ.length).trim();
+ var short=kind==="министерства"?"министерство":kind==="управления"||kind==="правового управления"?"управление":kind==="инспекции"||kind==="государственной жилищной инспекции"?"инспекция":kind==="отдела"?"отдел":"орган";
+ var gen={"министерство":"министерства","управление":"управления","инспекция":"инспекции","отдел":"отдела","орган":"органа"}[short];
+ var depShort=DEPT_CASES.find(function(pair){return new RegExp("(?:^|\\s)"+pair[1]+"(?:\\s|$)","i").test(dept)});
+ return {organ:organ,dept:dept,short:short,gen:gen,depShort:depShort?depShort[0]:"отдел",depGen:depShort?depShort[1]:"отдела"};
+}
+function npaClosing(p){
+ var n=orderOrganNames(p), name=[n.dept,n.organ].filter(Boolean).join(" ")||missing;
+ var labels=[n.dept?n.depShort:"",n.organ?n.short:""].filter(Boolean);
+ return "иные нормативные правовые акты (правовые акты), регулирующие сферу деятельности "+name+(labels.length>1?" (далее соответственно – "+labels.join(", ")+")":labels.length?" (далее – "+labels[0]+")":"");
+}
+function leadershipDutyKind(p){
+ var t=norm(positionNom(p.title||"")).replace(/\s*[-–—]\s*(?=начальник)/g," – ");
+ if(/^(?:первый )?заместитель (?:министра|начальника управления|руководителя инспекции)(?:\s|$)/.test(t))return "deputy";
+ if(/^начальник отдела(?:\s|$)/.test(t))return "department";
+ if(/^(?:министр|начальник управления|руководитель инспекции)(?:\s|$)/.test(t))return "head";
+ return "";
+}
+function curatedDepartmentsText(v){
+ return String(v||"").split(/\n|;|,(?=\s*(?:отдел[а]?|управлени[ея]|сектор[а]?|служб[аы])(?:\s|$))/i).map(function(s){return departmentGen(s.trim().replace(/[.;,]+$/,""))}).filter(Boolean).join(", ");
+}
+function leadershipDuty(p,other){
+ var k=leadershipDutyKind(p), n=orderOrganNames(p);
+ if(k==="deputy")return "координировать и контролировать деятельность "+(curatedDepartmentsText(other.curatedDepartments)||missing);
+ if(!k)return "";
+ var unit=k==="department"?(n.dept?n.depGen:"отдела"):n.gen;
+ return "осуществлять организацию и контролировать работу "+unit+", распределять обязанности между гражданскими служащими "+unit+", давать поручения, контролировать их исполнение, анализировать эффективность работы гражданских служащих "+unit;
+}
+function dutyRank(text){
+ var t=orderPlain(text);
+ if(/^(?:осуществлять (?:работу|деятельность) со сведениями|работать со сведениями),?\s*составляющими государственную тайну/.test(t))return 70;
+ if(t===orderPlain(D_NPA)||/^принимать участие в разработке законов липецкой области, указов и распоряжений губернатора/.test(t))return 80;
+ if(t===orderPlain(D_OBR)||/^осуществлять либо обеспечивать объективное, всестороннее и своевременное рассмотрение обращений/.test(t))return 90;
+ if(t===orderPlain(D_MSG)||/^использовать в целях рабочих коммуникаций отечественный многофункциональный сервис обмена информацией/.test(t))return 100;
+ return 10;
+}
+function lockedRow(id,text){return {id:"ordered-"+id,text:text,on:true,src:"auto-order",lvl:0,orderRole:id}}
+function orderLocked(x){return !!x&&x.src==="auto-order"}
+function dutyGroups(rows){
+ var groups=[];rows.forEach(function(x){if(x.lvl&&groups.length)groups[groups.length-1].push(x);else groups.push([x])});
+ return groups;
+}
+function dutyGroupRank(g){return g[0].orderRole==="leadership"?0:dutyRank(g[0].text)}
+function syncOrderedLists(){
+ var positionText=orderPlain(T(ORDER_ORGAN_POSITION));
+ var npa=S.lists.npa.filter(function(x){return !orderLocked(x)&&!isRegulation(x.text)&&!isNpaClosing(x.text)&&orderPlain(x.text)!==orderPlain(ORDER_ORGAN_POSITION)&&orderPlain(x.text)!==positionText});
+ npa.push(lockedRow("regulation",ORDER_REGULATION),lockedRow("organ-position",ORDER_ORGAN_POSITION),lockedRow("npa-closing",npaClosing(S.position)));
+ npa.sort(function(a,b){return npaRank(a.text)-npaRank(b.text)});
+ S.lists.npa.splice(0,S.lists.npa.length,...npa);
+ var duty=S.lists.duty.filter(function(x){return !orderLocked(x)&&orderPlain(x.text)!==orderPlain(D_CHIEF)&&dutyRank(x.text)!==100});
+ var lead=leadershipDuty(S.position,S.other);
+ if(lead)duty.unshift(lockedRow("leadership",lead));
+ duty.push(lockedRow("messenger",D_MSG));
+ duty=dutyGroups(duty).sort(function(a,b){return dutyGroupRank(a)-dutyGroupRank(b)}).flat();
+ S.lists.duty.splice(0,S.lists.duty.length,...duty);
+}
+function orderedDutyItems(custom){
+ // «Иная» пользовательская обязанность остаётся перед фиксированным хвостом.
+ var groups=dutyGroups(S.lists.duty).map(function(g){return {rank:dutyGroupRank(g),items:g.filter(x=>x.on&&x.text.trim()).map(x=>({text:T(x.text),level:x.lvl||0}))}});
+ if(custom.trim())groups.push({rank:10,items:[{text:custom,level:0}]});
+ return groups.sort((a,b)=>a.rank-b.rank).flatMap(g=>g.items);
+}
+
 function fieldValues() {
+  syncOrderedLists();
   const h = S.header, p = S.position, a = S.activity, sub = S.sub, qual = S.qual;
   const names = tok();
-  const full = [positionGen(p.title) || missing, departmentGen(p.department), organGen(p.organName)].filter(Boolean).join(" ");
+  const full = fullPositionTitle(p);
   const groups = { "высшая":"высшей", "главная":"главной", "ведущая":"ведущей", "старшая":"старшей", "младшая":"младшей" };
   const types = [];
   a.areas.forEach(code => {
@@ -3187,7 +3301,7 @@ function fieldValues() {
     return list(items.length ? items : [bullet(text)]);
   }
   const extraDuties = [bullet(T(S.other.variant === "gov" ? OTHER_GOV : OTHER_MIN))];
-  if (S.other.custom.trim()) extraDuties.push(bullet(S.other.custom));
+  // Дополнительная обязанность включается до фиксированного хвоста п. 3.2.
   const pk = selected("pk");
   const services = selected("services");
   const directions = eduDirectionsText(p,qual);
@@ -3213,7 +3327,7 @@ function fieldValues() {
     management:(S.mgmtAuto ? mgmtReq() : S.mgmtOn) ? list(MGMT.map((t,i) => bullet(t, i ? 1 : 0))) : [],
     ps:fallback("ps","умениями, необходимыми для исполнения должностных обязанностей по замещаемой должности"),
     fs:fallback("fs","умениями работы с документами и информационными системами в объеме, необходимом для исполнения должностных обязанностей"),
-    duty:list(selected("duty").concat(extraDuties)), decR:list(selected("decR")), decM:list(selected("decM")),
+    duty:list(orderedDutyItems(S.other.custom).concat(extraDuties)), decR:list(selected("decR")), decM:list(selected("decM")),
     chain:names.chain, chain52:names.chain + (S.flags.p52 ? ", в том числе по вопросам цифровой трансформации исполнительного органа государственной власти Липецкой области" : "") + ".",
     section6:S.flags.s62 ? ["6.2. " + SEC62[0], ...list(SEC62.slice(1).map(item => bullet(item.t,item.l)))] : [],
     interaction:[T(SEC7V[interRes()])], organStaff:"работниками " + names.organGen,
@@ -3742,7 +3856,7 @@ function validate(){
  if(!subordinationModel(S).direct.length||!S.position.title||!S.position.organName||!S.header.utvRole)e.push({step:3,msg:"Для п. 1.6 заполните утверждающего, должность и орган на шагах 0–1",path:""});
  if(!S.sub.noRepl&&!String(S.sub.replTitle||"").trim()&&!S.sub.replMinister)e.push({step:3,msg:"Укажите замещаемую должность (п. 1.7)",path:"sub.replTitle"});
  if(!eduDirections().length)e.push({step:4,msg:"Выберите направления подготовки или готовый блок (п. 2.1)",path:""});
- if(!S.lists.duty.some(function(x){return x.on}))e.push({step:6,msg:"Нет ни одной должностной обязанности (п. 3.2)",path:""});
+ if(leadershipDutyKind(S.position)==="deputy"&&!curatedDepartmentsText(S.other.curatedDepartments))e.push({step:7,msg:"Укажите курируемые подразделения (п. 3.2)",path:"other.curatedDepartments"});
  if(!S.lists.decR.some(function(x){return x.on}))e.push({step:7,msg:"Пуст перечень «вправе принимать решения» (п. 4.1)",path:""});
  if(!S.lists.decM.some(function(x){return x.on}))e.push({step:7,msg:"Пуст перечень «обязан принимать решения» (п. 4.2)",path:""});
  if(!S.services.none&&!S.lists.services.some(function(x){return x.on}))e.push({step:8,msg:"Раздел 8: отметьте «услуги не оказываются» или добавьте услуги",path:""});
@@ -3820,16 +3934,19 @@ function listHtml(key,title,pt,sub,ph){
 }
 function renderList(key){
  var host=q('[data-le="'+key+'"]');if(!host)return;
+ if(key==="npa"||key==="duty")syncOrderedLists();
  var items=S.lists[key],on=items.filter(function(x){return x.on}).length,qq=host.dataset.q||"";
  host.innerHTML='<div class="drx-leb"><span class="cnt"><b>'+on+"</b>/"+items.length+' в документ</span><input class="drx-leq" placeholder="Поиск в списке…" data-leq="'+key+'" value="'+esc(qq)+'"><button class="drx-btn drx-btn-g drx-btn-x" data-leall="'+key+'" data-v="1">все</button><button class="drx-btn drx-btn-g drx-btn-x" data-leall="'+key+'" data-v="0">ничего</button></div>'+
  '<div class="drx-ler">'+(items.length?items.map(function(x){
-  var hide=qq&&norm(x.text).indexOf(norm(qq))<0;
-  var lbl=x.src==="base"?"базовый":x.src==="custom"?"свой":x.src==="func"?"функции":x.src==="ai"?"ИИ":"блок";
-  return '<div class="drx-row'+(x.on?"":" off")+(x.lvl?" l1":"")+'" data-row="'+x.id+'" draggable="true" style="'+(hide?"display:none":"")+'">'+
-   '<span class="drx-grip">⠿</span>'+
-   '<input type="checkbox" data-leon="'+key+'" data-id="'+x.id+'"'+(x.on?" checked":"")+">"+
-   '<div><span class="drx-src '+(x.src==="custom"?"c":"")+'">'+lbl+'</span><textarea class="drx-txt" rows="1" data-letxt="'+key+'" data-id="'+x.id+'">'+esc(x.text)+"</textarea></div>"+
-   '<div class="drx-la"><button data-lemv="'+key+'" data-id="'+x.id+'" data-d="-1" title="Вверх">↑</button><button data-lemv="'+key+'" data-id="'+x.id+'" data-d="1" title="Вниз">↓</button><button class="del" data-ledel="'+key+'" data-id="'+x.id+'" title="Удалить">🗑</button></div></div>';
+  var fixed=orderLocked(x), display=fixed?T(x.text):x.text;
+  var hide=qq&&norm(display).indexOf(norm(qq))<0;
+  var canMove=!fixed&&key!=="npa"&&(key!=="duty"||dutyRank(x.text)===10);
+  var lbl=fixed?"автоматически · обязательно":x.src==="base"?"базовый":x.src==="custom"?"свой":x.src==="func"?"функции":x.src==="ai"?"ИИ":"блок";
+  return '<div class="drx-row'+(x.on?"":" off")+(x.lvl?" l1":"")+'" data-row="'+x.id+'" draggable="'+(canMove?"true":"false")+'" style="'+(hide?"display:none":"")+'">'+
+   '<span class="drx-grip">'+(canMove?"⠿":"·")+'</span>'+
+   '<input type="checkbox" data-leon="'+key+'" data-id="'+x.id+'"'+(x.on?" checked":"")+(fixed?" disabled":"")+">"+
+   '<div><span class="drx-src '+(x.src==="custom"?"c":"")+'">'+lbl+'</span><textarea class="drx-txt" rows="1" data-letxt="'+key+'" data-id="'+x.id+'"'+(fixed?" readonly":"")+'>'+esc(display)+"</textarea></div>"+
+   '<div class="drx-la">'+(canMove?'<button data-lemv="'+key+'" data-id="'+x.id+'" data-d="-1" title="Вверх">↑</button><button data-lemv="'+key+'" data-id="'+x.id+'" data-d="1" title="Вниз">↓</button>':"")+(fixed?"":'<button class="del" data-ledel="'+key+'" data-id="'+x.id+'" title="Удалить">🗑</button>')+'</div></div>';
  }).join(""):'<div class="drx-lem">Пока пусто. Добавьте пункт ниже.</div>')+"</div>"+
  '<div class="drx-lea"><input placeholder="'+esc(host.dataset.ph)+'" data-lenew="'+key+'"><button class="drx-btn drx-btn-p drx-btn-s" data-leadd="'+key+'">＋ Добавить</button></div>';
  [].slice.call(host.querySelectorAll(".drx-txt")).forEach(function(t){t.style.height="auto";t.style.height=t.scrollHeight+"px"});
@@ -3869,6 +3986,7 @@ function specCard(id,icon,color,name,desc){
 }
 function positionGroupNote(p){return p.group?note('Должность <b>«'+esc(positionGen(p.title))+'»</b> → <b>'+p.group+"</b> группа, категория <b>«"+p.category+"»</b>. Проверьте по Реестру (8 правил примерного ДР учтены)."):note("Укажите должность — группа и категория определятся автоматически, либо задайте вручную.",true)}
 function renderStep(){
+ syncOrderedLists();
  var i=S.meta.step,st=STEPS[i],p=S.position;
  var h='<div class="drx-sh"><span class="k">Шаг '+i+" из "+(STEPS.length-1)+" · "+st.pts+"</span><h2>"+st.t+"</h2><p>"+st.d+"</p></div>";
  if(i===0){
@@ -3941,18 +4059,19 @@ function renderStep(){
    '<div class="drx-card drx-b"><h3>🪄 Функции служащего → знания и умения</h3><div class="sub">Как в 1С: выберите функции и нажмите «Заполнить по функциям» — пополнятся вкладки 2.3.3 и 2.3.6.</div>'+
    cpHtml("funcs","Функции (можно несколько)",false)+'<button class="drx-btn drx-btn-p drx-btn-s" data-inner="apply-funcs">✓ Заполнить по функциям</button></div>'+
    '<div class="drx-tabs">'+[["npa","НПА · 2.3.2.1"],["pk","Проф. знания · 2.3.2.2"],["fk","Функц. знания · 2.3.3"],["ps","Проф. умения · 2.3.5"],["fs","Функц. умения · 2.3.6"]].map(function(x){return '<button data-ktab="'+x[0]+'" class="'+(tab===x[0]?"on":"")+'">'+x[1]+' <span class="b">'+S.lists[x[0]].filter(function(y){return y.on}).length+"</span></button>"}).join("")+"</div>";
-  if(tab==="npa")h+=listHtml("npa","Нормативные правовые акты","2.3.2.1","Обязательные для всех: Регламент Правительства (ПП ЛО № 5), Положение об органе, иные НПА сферы деятельности отдела. Галочка = вывод в документ.","Федеральный закон от … № …-ФЗ «…»");
+  if(tab==="npa")h+=listHtml("npa","Нормативные правовые акты","2.3.2.1","НПА автоматически располагаются по заданной иерархии. Регламент Правительства — последний среди постановлений Правительства области. Положение об органе и завершающая формулировка подставляются автоматически; обязательные строки не отключаются.","Федеральный закон от … № …-ФЗ «…»");
   if(tab==="pk")h+=listHtml("pk","Иные профессиональные знания","2.3.2.2","Наполняется блоками (ЦТ, ИИ, антитеррор, закупки…) и вашими формулировками.","порядок …; методы …; принципы …");
   if(tab==="fk")h+=listHtml("fk","Функциональные знания","2.3.3","Наполняется блоками и выбором функций выше.","методов …; порядка …");
   if(tab==="ps")h+=listHtml("ps","Профессиональные умения","2.3.5","ИИ-умения, закупки, КНД, антитеррор — из блоков; свои — кнопкой «Добавить».","осуществления …; разработки …");
   if(tab==="fs")h+=listHtml("fs","Функциональные умения","2.3.6","Внедрение цифровых технологий, работа с гостайной, делопроизводство…","ведения …; организации …");
  } else if(i===7){
   h+=note("Пункты <b>3.1</b> (ст. 15–18, 20, 20.1–20.3 79-ФЗ), <b>3.3</b> (уведомление о склонении к коррупции) и <b>3.4</b> (защита ПДн) — типовые, включаются автоматически.");
-  h+=listHtml("duty","Должностные обязанности","3.2","Базовые: работа с обращениями, участие в разработке НПА, отечественный мессенджер. «Организация работы отдела» включается для начальников отделов. Подпункты (↳) выводятся с отступом.","осуществлять …; обеспечивать …");
+  if(leadershipDutyKind(p)==="deputy")h+='<div class="drx-card drx-b"><h3><span class="pt">3.2</span> Курируемые подразделения</h3>'+fld("Курируемые отделы",tare("other.curatedDepartments",S.other.curatedDepartments,"отдела дорожной деятельности; отдела транспорта"),true)+note("Укажите названия в родительном падеже; несколько подразделений можно разделять новой строкой или точкой с запятой. Они автоматически включаются в первую обязанность.")+"</div>";
+  h+=listHtml("duty","Должностные обязанности","3.2","Первая обязанность для руководителя или заместителя руководителя органа — автоматически. В конце: гостайна, разработка НПА, обращения (при выборе), отечественный сервис обмена сообщениями и иные обязанности. Подпункты остаются вместе с основным положением.","осуществлять …; обеспечивать …");
   h+='<div class="drx-card drx-b"><h3><span class="pt">3.2</span> Иные обязанности (завершающий пункт)</h3><div class="sub">Два варианта из примерного ДР — выберите один.</div>'+
    sel("other.variant",[["min","Вариант 1: приказы и поручения руководителей, указанных в п. 1.6"],["gov","Вариант 2: + заместитель Губернатора, электронные приложения и «Битрикс24»"]],S.other.variant)+
    note(esc(T(S.other.variant==="gov"?OTHER_GOV:OTHER_MIN)))+
-   fld("Дополнительная «иная» обязанность (необязательно)",txt("other.custom",S.other.custom,""))+"</div>";
+   fld("Дополнительная обязанность (перед обязательными завершающими пунктами, необязательно)",txt("other.custom",S.other.custom,""))+"</div>";
  } else if(i===8){
   h+=listHtml("decR","Вправе самостоятельно принимать решения","4.1","6 типовых формулировок примерного ДР предзаполнены — отредактируйте под себя.","по …");
   h+=listHtml("decM","Обязан самостоятельно принимать решения","4.2","3 типовые формулировки предзаполнены.","по …");
@@ -3987,27 +4106,28 @@ function renderStep(){
 
 /* ══════════════════════ 13. СОБЫТИЯ КОНТЕНТА ══════════════════════ */
 function special(path,v){
- if(path==="position.title"&&!S.position.manualGC){var d=deriveGC(v);S.position.group=d.g;S.position.category=d.c;
-  var ch=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)ch=x});if(ch&&!ch.touched)ch.on=isChief()}
+ if(path==="position.title"&&!S.position.manualGC){var d=deriveGC(v);S.position.group=d.g;S.position.category=d.c;}
  if(path==="header.soglasRole")normalizeHeader(S.header);
  if(path==="header.utvRole"||path==="position.organName")syncApprovalOrgan(S);
  if(path==="blocks.gt.on"||path==="blocks.pdn.on"){applyBlocks(true);toast(v?"Специальная роль включена — положения добавлены.":"Положения роли удалены.","ok")}
- if(path==="position.group"||path==="position.category"){var c2=null;S.lists.duty.forEach(function(x){if(x.text===D_CHIEF)c2=x});if(c2&&!c2.touched)c2.on=isChief()}
+ if(path.startsWith("position.")||path==="header.utvRole")syncOrderedLists();
 }
 function after(rr){markSaving();schedulePreview();renderRail();if(rr)renderStep()}
 var BC=q("[data-content]");
 BC.addEventListener("input",function(e){
  var t=e.target,d=t.dataset;
- if(d.letxt){var arr=S.lists[d.letxt];for(var i=0;i<arr.length;i++)if(arr[i].id===d.id){arr[i].text=t.value;break}t.style.height="auto";t.style.height=t.scrollHeight+"px";markSaving();schedulePreview();return}
- if(d.leq){var host=t.closest("[data-le]");host.dataset.q=t.value;var qq=norm(t.value);[].slice.call(host.querySelectorAll(".drx-row")).forEach(function(r){var it=null;S.lists[host.dataset.le].forEach(function(x){if(x.id===r.dataset.row)it=x});r.style.display=qq&&norm(it.text).indexOf(qq)<0?"none":""});return}
+ if(d.letxt){var arr=S.lists[d.letxt];for(var i=0;i<arr.length;i++)if(arr[i].id===d.id){if(!orderLocked(arr[i]))arr[i].text=t.value;break}t.style.height="auto";t.style.height=t.scrollHeight+"px";markSaving();schedulePreview();return}
+ if(d.leq){var host=t.closest("[data-le]");host.dataset.q=t.value;var qq=norm(t.value);[].slice.call(host.querySelectorAll(".drx-row")).forEach(function(r){var it=null;S.lists[host.dataset.le].forEach(function(x){if(x.id===r.dataset.row)it=x});r.style.display=qq&&norm(it?(orderLocked(it)?T(it.text):it.text):"").indexOf(qq)<0?"none":""});return}
  if(d.tq){var c=d.tq;TQ[c]=t.value;var q2=norm(t.value),a=AREA_BY[c];[].slice.call(t.closest(".drx-tc").querySelectorAll(".drx-tl .drx-to")).forEach(function(o,i){o.style.display=q2&&norm(c+"."+(i+1)+" "+a.t[i]).indexOf(q2)<0?"none":""});return}
  if(d.cpq){CPQ[d.cpq]=t.value;var q3=norm(t.value);[].slice.call(t.closest(".drx-cp").querySelectorAll(".drx-cpl .drx-opt")).forEach(function(o){o.style.display=q3&&norm(o.textContent).indexOf(q3)<0?"none":""});return}
  var p=d.path;if(!p||t.type==="checkbox"||t.tagName==="SELECT")return;
- setPath(S,p,t.value);special(p,t.value);markSaving();schedulePreview();renderRail();
+ setPath(S,p,t.value);special(p,t.value);
+ if(p==="other.curatedDepartments"){syncOrderedLists();var auto=q('[data-letxt="duty"][data-id="ordered-leadership"]');if(auto){auto.value=leadershipDuty(S.position,S.other);auto.style.height="auto";auto.style.height=auto.scrollHeight+"px"}}
+ markSaving();schedulePreview();renderRail();
 });
 BC.addEventListener("change",function(e){
  var t=e.target,d=t.dataset;
- if(d.leon){var arr=S.lists[d.leon];for(var i=0;i<arr.length;i++)if(arr[i].id===d.id){arr[i].on=t.checked;if(arr[i].text===D_CHIEF)arr[i].touched=true;break}
+ if(d.leon){var arr=S.lists[d.leon];for(var i=0;i<arr.length;i++)if(arr[i].id===d.id){if(orderLocked(arr[i])){t.checked=true;return}arr[i].on=t.checked;break}
   t.closest(".drx-row").classList.toggle("off",!t.checked);var b=t.closest(".drx-le").querySelector(".cnt b");if(b)b.textContent=arr.filter(function(x){return x.on}).length;markSaving();schedulePreview();return}
  if(d.ta){var c=d.ta,ti=+d.ti;if(!S.activity.types[c])S.activity.types[c]=[];var a=S.activity.types[c],ix=a.indexOf(ti);
   if(t.checked&&ix<0)a.push(ti);if(!t.checked&&ix>=0)a.splice(ix,1);markSaving();schedulePreview();renderTypes();renderRail();return}
@@ -4028,7 +4148,7 @@ BC.addEventListener("click",function(e){
  if(d.leadd){addLI(d.leadd);return}
  if(d.ledel){delLI(d.ledel,d.id);return}
  if(d.lemv){moveLI(d.lemv,d.id,+d.d);return}
- if(d.leall){var k=d.leall,on=d.v==="1";S.lists[k].forEach(function(x){x.on=on});renderList(k);markSaving();schedulePreview();return}
+ if(d.leall){var k=d.leall,on=d.v==="1";S.lists[k].forEach(function(x){if(!orderLocked(x))x.on=on});renderList(k);markSaving();schedulePreview();return}
  if(d.tt){TOPEN[d.tt]=!(TOPEN[d.tt]!==false);var el=q('[data-tc="'+d.tt+'"]');if(el)el.classList.toggle("open");return}
  if(d.tall){S.activity.types[d.tall]=d.v==="1"?AREA_BY[d.tall].t.map(function(_,i){return i}):[];markSaving();schedulePreview();renderTypes();renderRail();return}
  if(d.tadd){var inp=q('[data-tnew="'+d.tadd+'"]'),v=inp.value.trim();if(!v)return;if(!S.activity.custom[d.tadd])S.activity.custom[d.tadd]=[];S.activity.custom[d.tadd].push(activityLower(v));markSaving();schedulePreview();renderTypes();return}
@@ -4063,22 +4183,22 @@ function addLI(key){
 }
 function delLI(key,id){
  var arr=S.lists[key],ix=-1;for(var i=0;i<arr.length;i++)if(arr[i].id===id)ix=i;
- if(ix<0)return;var item=arr.splice(ix,1)[0];renderList(key);markSaving();schedulePreview();
+ if(ix<0||orderLocked(arr[ix]))return;var item=arr.splice(ix,1)[0];renderList(key);markSaving();schedulePreview();
  toast("Удалено: «"+esc(item.text.slice(0,60))+(item.text.length>60?"…":"")+"»","",{label:"Вернуть",fn:function(){arr.splice(Math.min(ix,arr.length),0,item);renderList(key);markSaving();schedulePreview()}});
 }
 function moveLI(key,id,dd){
  var arr=S.lists[key],ix=-1;for(var i=0;i<arr.length;i++)if(arr[i].id===id)ix=i;
- var j=ix+dd;if(ix<0||j<0||j>=arr.length)return;
+ var j=ix+dd;if(ix<0||j<0||j>=arr.length||key==="npa"||orderLocked(arr[ix])||orderLocked(arr[j])||(key==="duty"&&(dutyRank(arr[ix].text)!==10||dutyRank(arr[j].text)!==10)))return;
  var tmp=arr[ix];arr[ix]=arr[j];arr[j]=tmp;renderList(key);markSaving();schedulePreview();
 }
 var dragId=null,dragKey=null;
-BC.addEventListener("dragstart",function(e){var r=e.target.closest(".drx-row");if(!r)return;dragId=r.dataset.row;dragKey=r.closest("[data-le]").dataset.le;e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",dragId)}catch(x){}});
+BC.addEventListener("dragstart",function(e){var r=e.target.closest(".drx-row");if(!r||r.getAttribute("draggable")!=="true")return;dragId=r.dataset.row;dragKey=r.closest("[data-le]").dataset.le;e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",dragId)}catch(x){}});
 BC.addEventListener("dragover",function(e){var r=e.target.closest(".drx-row");if(!r||!dragId)return;e.preventDefault();qa(".drx-row.dov").forEach(function(x){x.classList.remove("dov")});r.classList.add("dov")});
 BC.addEventListener("drop",function(e){
  var r=e.target.closest(".drx-row");if(!r||!dragId||r.closest("[data-le]").dataset.le!==dragKey)return;e.preventDefault();
  var arr=S.lists[dragKey],from=-1,to=-1;
  for(var i=0;i<arr.length;i++){if(arr[i].id===dragId)from=i;if(arr[i].id===r.dataset.row)to=i}
- if(from>=0&&to>=0&&from!==to){var it=arr.splice(from,1)[0];arr.splice(to,0,it);renderList(dragKey);markSaving();schedulePreview()}
+ if(from>=0&&to>=0&&from!==to&&dragKey!=="npa"&&!orderLocked(arr[from])&&!orderLocked(arr[to])&&(dragKey!=="duty"||(dutyRank(arr[from].text)===10&&dutyRank(arr[to].text)===10))){var it=arr.splice(from,1)[0];arr.splice(to,0,it);renderList(dragKey);markSaving();schedulePreview()}
  dragId=null;dragKey=null;qa(".drx-row.dov").forEach(function(x){x.classList.remove("dov")});
 });
 BC.addEventListener("dragend",function(){dragId=null;dragKey=null;qa(".drx-row.dov").forEach(function(x){x.classList.remove("dov")})});
@@ -4166,6 +4286,8 @@ window.PascalConstructorKnowledge = function(add){
  reg("Справочник направлений подготовки по постановлению № 241",lines(DIRECTIONS),"2.1","список перечень специальностей направлений подготовки");
  reg("2.2 · Стаж",Object.keys(STAGE).map(function(k){return "• "+k.replace("|"," группа, ")+": "+STAGE[k]}).join("\n"),"2.2","стаж опыт работы лет требования");
  reg("2.3.1 · Базовые знания",lines(BASE_KNOW.concat(BASE_ACTS,BASE_TAIL)),"2.3.1","базовые знания обязательные");
+ reg("2.3.2.1 · Порядок НПА", "ФКЗ, кодексы, федеральные законы, указы Президента РФ, постановления и распоряжения Правительства РФ, конвенции, законы Липецкой области, указы Губернатора, постановления Правительства Липецкой области (последним — Регламент), распоряжения Губернатора и Правительства области, акты органа. Иные федеральные ведомственные документы сохраняются отдельно. Завершающая формулировка об иных НПА автоматически содержит отдел, орган и их сокращения.","2.3.2.1","иерархия нормативных актов сортировка порядок регламент");
+ reg("3.2 · Порядок должностных обязанностей", "Руководитель органа или отдела: первой включается организация и контроль работы соответствующего органа или отдела, распределение обязанностей, поручения и анализ эффективности. Заместитель руководителя органа: первой включается координация и контроль деятельности указанных пользователем курируемых подразделений. В конце перечня: при выборе работа с государственной тайной, разработка НПА, рассмотрение обращений, затем обязательный отечественный многофункциональный сервис обмена информацией и завершающая типовая обязанность.","3.2","порядок обязанностей курируемые отделы руководитель заместитель гостайна обращения мессенджер");
  reg("2.3.4 · Базовые и управленческие умения",lines(BASE_SK.concat(BASE_SK_SUB,MGMT))+"\nУправленческие умения — для категории «руководители» и категории «специалисты» главной группы.","2.3.4","базовые управленческие умения компетенции");
  FUNCTIONS.forEach(function(f){reg(f.name+" — функциональные знания",lines(f.know),"2.3.3",f.name);reg(f.name+" — функциональные умения",lines(f.skill),"2.3.6",f.name)});
  BLOCKS.forEach(function(b){reg(b.name,b.desc+"\nРоли: "+(b.roles||[]).map(function(r){return r.name}).join("; "),"",b.name+" блок");data(b.name,b);(b.roles||[]).forEach(function(r){data(b.name+" · "+r.name,r)})});
