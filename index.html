@@ -2699,7 +2699,12 @@ try{
 }catch(e){}
 
 var prevOverflow=null;
+// Вход в конструктор: локальная блокировка интерфейса, не серверная авторизация.
 function openDR(){
+  if(root.classList.contains("drx-on"))return;
+  window.PascalConstructorGate.request(openAuthorizedDR);
+}
+function openAuthorizedDR(){
   applyPalette();
   prevOverflow=document.body.style.overflow;
   document.body.style.overflow="hidden";
@@ -4074,6 +4079,59 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 else boot();
 window.addEventListener("beforeunload",function(){if(root.classList.contains("drx-on"))saveNow()});
 window.addEventListener("pagehide",function(){if(root.classList.contains("drx-on"))saveNow()});
+
+// Публичный справочник конструктора для чата. Текущий черновик S не читается.
+window.PascalConstructorKnowledge = function(add){
+ var src="Конструктор ДР", fields={npa:"2.3.2.1 · Нормативные правовые акты",pk:"2.3.2.2 · Профессиональные знания",fk:"2.3.3 · Функциональные знания",ps:"2.3.5 · Профессиональные умения",fs:"2.3.6 · Функциональные умения",duty:"3.2 · Должностные обязанности",kpi:"9 · Показатели эффективности",rct:"3.2 · Обязанности РЦТ",spec:"3.2 · Обязанности специалиста"};
+ function reg(title,body,point,tags){add({title:title,body:body,point:point||"",tags:tags||"",source:src,link:"#constructor",priority:2})}
+ function lines(items){return (items||[]).map(function(v){return "• "+(typeof v==="string"?v:v.t||"")}).join("\n")}
+ function data(title,obj){Object.keys(fields).forEach(function(k){if(Array.isArray(obj[k])&&obj[k].length)reg(title+" — "+fields[k],lines(obj[k]),fields[k].split(" · ")[0],title)})}
+ STEPS.forEach(function(st,i){reg("Шаг "+i+". "+st.t,st.d+". "+st.pts,"", "конструктор этап заполнение")});
+ reg("Шапка: согласование и утверждение", "Согласующее лицо выбирается из двух вариантов: "+SOGLAS_ROLES.map(function(r,i){return r+" — "+SOGLAS_NAMES[i]}).join("; ")+". ФИО утверждающего вводится вручную. Если утверждает "+UGS_ROLE+", блок «Согласовано» не включается. Для утверждения Губернатором, первым заместителем или заместителем Губернатора орган выбирается вручную; для других утверждающих он связан автоматически.","","шапка согласовано утверждаю подпись фио сноска 1");
+ reg("1.1 · Должность и орган", "На шаге 1 выберите исполнительный орган или подразделение Правительства. Должность и отдел приводятся к родительному падежу. Полное наименование формируется без запятых между должностью, отделом и органом, а в заголовке документа пишется прописными буквами. Если утверждающий связан с органом, орган определяется автоматически на шаге 0.","1.1","должность отдел название наименование падеж запятая");
+ reg("1.2 · Группа и категория должности",POSITIONS.map(function(p){var gc=deriveGC(p);return "• "+p+" — "+gc.g+" группа, «"+gc.c+"»"}).join("\n"),"1.2","реестр категория группа должности");
+ reg("1.3 · Области деятельности", "Справочник содержит "+AREAS.length+" областей. Можно выбрать несколько. Наименования начинаются со строчной буквы.\n"+AREAS.map(function(a){return a.c+" — "+a.n}).join("\n"),"1.3","область профессиональной служебной деятельности справочник");
+ reg("1.4 · Виды деятельности", "В конструкторе "+TYPES_TOTAL+" видов. Выберите минимум один вид для каждой выбранной области; можно добавить собственный вид. Названия начинаются со строчной буквы.","1.4","вид профессиональной служебной деятельности справочник");
+ AREAS.forEach(function(a){reg(a.c+" · "+a.n,"Виды деятельности для этой области:\n"+lines(a.t),"", "1.3 1.4 справочник области виды")});
+ reg("1.5 · Назначение на должность", "Представитель нанимателя определяется автоматически, ручного выбора нет. Приоритет правил:\n1. Для должностей: "+APPOINT_GOVERNOR_POSTS.join(", ")+" — "+appointmentAuthority({title:APPOINT_GOVERNOR_POSTS[0],organName:""})+".\n2. Для иных должностей в министерствах "+APPOINT_MINISTRIES.join(", ")+" — соответствующим министром.\n3. Во всех остальных случаях — "+appointmentAuthority({title:"консультант",organName:""})+". В пункте 1.5 используется творительный падеж.","1.5","назначение назначает освобождает представитель нанимателя губернатор министр указ");
+ reg("1.6 · Подчинение", "Для руководящих должностей из правила 1.5 непосредственное подчинение — Губернатору Липецкой области. По желанию добавляется курирующий заместитель Губернатора с полным названием органа. Оперативное подчинение — утверждающему, без дублирования. Для остальных служащих непосредственное подчинение — утверждающему; в оперативной работе можно выбрать первого заместителя или заместителя руководителя, а также начальника отдела, если отдел указан и служащий сам не является его начальником. После определения сокращения (далее – министр, начальник управления, руководитель инспекции и т. п.) используются в следующих автоматических формулировках. Для одного лица: «либо лицу, исполняющему его должностные обязанности», для нескольких: «либо лицам, исполняющим их должностные обязанности».","1.6","подчинение подчиняется оперативная работа руководитель заместитель сокращение");
+ reg("1.7 · Замещение", "Если замещения нет, пункт не включается. В обычном случае укажите только замещаемую должность: конструктор добавит отдел и орган из шага 1 в родительном падеже, без повторов. При выборе «Должность из другой группы» добавляется без скобок: «при условии соответствия квалификационным требованиям, предъявляемым для замещения указанной должности». При замещении министра используется отдельная формулировка о полномочиях по пункту 3.2 Положения о министерстве.","1.7","замещение замещает отсутствие исполняет обязанности другая группа");
+ reg("2.1 · Образование", "Уровень определяется по группе и категории (ст. 12 Федерального закона № 79-ФЗ). В конструкторе для старшей группы обеспечивающих специалистов предусмотрено профессиональное образование, соответствующее направлению деятельности, для остальных — высшее образование. Возможна ручная корректировка формулировки. Направления подготовки выбираются с учётом области и вида деятельности; ДПО указывается при необходимости.","2.1","образование специальность диплом квалификация дпо");
+ reg("2.2 · Стаж",Object.keys(STAGE).map(function(k){return "• "+k.replace("|"," группа, ")+": "+STAGE[k]}).join("\n"),"2.2","стаж опыт работы лет требования");
+ reg("2.3.1 · Базовые знания",lines(BASE_KNOW.concat(BASE_ACTS,BASE_TAIL)),"2.3.1","базовые знания обязательные");
+ reg("2.3.4 · Базовые и управленческие умения",lines(BASE_SK.concat(BASE_SK_SUB,MGMT))+"\nУправленческие умения — для категории «руководители» и категории «специалисты» главной группы.","2.3.4","базовые управленческие умения компетенции");
+ FUNCTIONS.forEach(function(f){reg(f.name+" — функциональные знания",lines(f.know),"2.3.3",f.name);reg(f.name+" — функциональные умения",lines(f.skill),"2.3.6",f.name)});
+ BLOCKS.forEach(function(b){reg(b.name,b.desc+"\nРоли: "+(b.roles||[]).map(function(r){return r.name}).join("; "),"",b.name+" блок");data(b.name,b);(b.roles||[]).forEach(function(r){data(b.name+" · "+r.name,r)})});
+ [["ИИ · руководители",AI_MGR],["ИИ · цифровая трансформация и ИТ",AI_IT],["Персональные данные",PDN],["Государственная тайна",GT],["Цифровая трансформация",DIG]].forEach(function(a){data(a[0],a[1])});
+ [["3.1 · Обязательные ограничения",S31,"3.1"],["3.3 · Уведомление о коррупции",S33,"3.3"],["3.4 · Защита персональных данных",S34,"3.4"],["6 · Сроки и процедуры",SEC6,"6"],["7 · Служебное взаимодействие",SEC7,"7"],["9 · Показатели эффективности",lines(KPI),"9"],["3.2 · Рабочие коммуникации",D_MSG,"3.2"],["3.2 · Обращения граждан",D_OBR,"3.2"],["3.2 · Работа с НПА",D_NPA,"3.2"],["3.2 · Руководство отделом",D_CHIEF,"3.2"]].forEach(function(a){reg(a[0],a[1],a[2],a[0])});
+ reg("Работа с конструктором и предпросмотром", "Вход — через кнопку «Конструктор ДР». Черновик хранится только в текущей вкладке (sessionStorage). Примерный ДР скачивается кнопкой «Примерный ДР». Предпросмотр пролистывается вертикально, масштаб от 50 до 200 %. Кнопка «Просмотр» разворачивает документ. «Очистить» удаляет заполненные поля после подтверждения. «Создать ДР» проверяет поля и формирует Word на основе размеченного шаблона. Перед закрытием вкладки сохраните документ Word.","","как пользоваться конструктором скачать создать word масштаб очистить черновик сохранить пароль вход просмотр");
+};
+// Ответы, вычисляемые теми же правилами конструктора на данных из вопроса, а не из черновика.
+window.PascalConstructorAnswer=function(raw,previous){
+ var text=norm(raw), old=previous||{}, ptext=text;
+ var posts=POSITIONS.slice().sort(function(a,b){return b.length-a.length});
+ function formsMatch(hay,v){var a=norm(v),b=norm(positionGen(v));return (" "+hay+" ").includes(" "+a+" ")||(" "+hay+" ").includes(" "+b+" ")}
+ // Границы очищаются от знаков препинания, но сохраняют дефисы в должностях.
+ ptext=ptext.replace(/[.,?!;:()«»]/g," ").replace(/\s+/g," ").trim();
+ var post=posts.find(function(v){return formsMatch(ptext,v)});
+ var organs=ORGANS_IOGV.concat(ORGANS_GOV).slice().sort(function(a,b){return b.length-a.length});
+ var organ=organs.find(function(v){var key=norm(v).replace(/(?: правительства)? липецкой области$/,""),prep=norm(organInfo({organName:v}).organ).replace(/(?: правительства)? липецкой области$/,"");return ptext.includes(key)||ptext.includes(prep)||ptext.includes(key.replace(/^министерства /,"министерство ").replace(/^управления /,"управление "))});
+ var intent=/назнач|нанимател|освобожд|1\.5/.test(text)?"appoint":/стаж|выслуг|2\.2/.test(text)?"stage":/категор|групп|1\.2/.test(text)?"group":/образован|2\.1(?!\d)/.test(text)?"edu":"";
+ var follow=/^(а |и |а если|если |а в |тогда)/.test(text);
+ if(follow&&old.intent){intent=intent||old.intent;post=post||old.post;organ=organ||old.organ;}
+ if(!intent||!post)return null;
+ var gc=deriveGC(post),body="",point="";
+ if(intent==="appoint"){
+  if(!governorAppointmentPost({title:post})&&!organ)return {title:"1.5 · Уточнение органа",body:"Уточните исполнительный орган или подразделение Правительства, где служащий замещает должность «"+post+"». От этого зависит представитель нанимателя.",point:"1.5",source:"Конструктор ДР",caseData:{intent,post,organ}};
+  body="Для должности «"+post+"»"+(organ?" ("+organ+")":"")+": гражданский служащий назначается на должность и освобождается от должности "+appointmentAuthority({title:post,organName:organ||""})+" в порядке, установленном Федеральным законом от 27 июля 2004 года № 79-ФЗ. Это результат автоматического правила конструктора.";point="1.5";
+ }else if(intent==="stage"&&STAGE[gc.g+"|"+gc.c]){body="Должность: "+post+" — "+gc.g+" группа, категория «"+gc.c+"».\n"+STAGE[gc.g+"|"+gc.c];point="2.2";}
+ else if(intent==="group"&&gc.g){body=post+" — "+gc.g+" группа должностей, категория «"+gc.c+"» (по справочнику конструктора).";point="1.2";}
+ else if(intent==="edu"&&gc.g){body="Должность «"+post+"»: "+(gc.g==="старшая"&&gc.c==="обеспечивающие специалисты"?"профессиональное образование, соответствующее направлению деятельности":"высшее образование")+". Направление подготовки зависит от области и вида деятельности. Это стандартная автоматическая формулировка конструктора.";point="2.1";}
+ if(!body)return null;
+ return {title:point+" · Ответ по указанной должности",body,point,source:"Конструктор ДР",caseData:{intent,post,organ}};
+};
+
+
 window.DRX={open:openDR,close:closeDR};
 })();
 </script>
@@ -4305,6 +4363,87 @@ document.addEventListener("blur", function (e) {
   if (e.target && e.target.matches && e.target.matches("textarea,input")) schedule();
 }, true);
 })();
+</script>
+<script>
+/* ================ Паскаль: локальный экспертный поиск и вход ================ */
+(function(){
+"use strict";
+// Не является защитой от просмотра исходного кода. Пароль не хранится в браузере.
+const style=document.createElement('style');
+style.textContent=`#pascal-gate{position:fixed;inset:0;z-index:2147483646;background:rgba(4,8,18,.78);backdrop-filter:blur(9px);display:grid;place-items:center;padding:20px}#pascal-gate[hidden]{display:none!important}#pascal-gate form{width:min(100%,420px);background:var(--bg2);color:var(--text);border:1px solid var(--stroke2);border-radius:24px;padding:28px;box-shadow:var(--shadow);display:grid;gap:15px}#pascal-gate h2{font-size:20px}#pascal-gate p{font-size:14px;color:var(--muted)}#pascal-gate input{width:100%;padding:13px 14px;border:1px solid var(--stroke2);border-radius:12px;background:var(--card);color:var(--text);font:inherit}#pascal-gate input:focus{outline:2px solid var(--acc)}#pascal-gate .gate-error{color:#fb7185;font-weight:700;min-height:1.4em;font-size:13px}#pascal-gate .gate-actions{display:flex;gap:10px;flex-wrap:wrap}#pascal-gate .gate-actions button{flex:1;justify-content:center}#chatPanel .expert-note{font-size:11px;color:var(--muted);padding:6px 14px;border-bottom:1px solid var(--stroke);flex:none}#chatPanel .msg.bot{white-space:normal;overflow-wrap:anywhere}`;
+document.head.append(style);
+const gate=document.createElement('div');gate.id='pascal-gate';gate.hidden=true;gate.setAttribute('role','dialog');gate.setAttribute('aria-modal','true');gate.setAttribute('aria-labelledby','pascal-gate-title');
+gate.innerHTML='<form><span class="f-ico" aria-hidden="true">🔐</span><h2 id="pascal-gate-title">Вход в конструктор ДР</h2><p>Введите пароль для продолжения работы.</p><label for="pascal-gate-pass">Пароль</label><input type="password" id="pascal-gate-pass" autocomplete="off" required><div class="gate-error" role="status" aria-live="polite"></div><div class="gate-actions"><button type="button" class="btn btn-g" data-cancel>Отмена</button><button type="submit" class="btn btn-p">Войти</button></div></form>';
+document.body.append(gate);
+const input=gate.querySelector('input'),error=gate.querySelector('.gate-error');let pending=null,previous=null,locked=[];
+function closeGate(){gate.hidden=true;input.value='';error.textContent='';pending=null;locked.forEach(e=>e.inert=false);locked=[];if(previous&&previous.isConnected)previous.focus({preventScroll:true});previous=null;}
+window.PascalConstructorGate={request(fn){if(!gate.hidden)return;previous=document.activeElement;pending=fn;locked=Array.from(document.body.children).filter(e=>e!==gate&&!e.inert&&!['SCRIPT','STYLE'].includes(e.tagName));locked.forEach(e=>e.inert=true);gate.hidden=false;input.focus();}};
+gate.querySelector('[data-cancel]').addEventListener('click',closeGate);
+gate.addEventListener('click',e=>{if(e.target===gate)closeGate()});
+gate.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeGate()}if(e.key==='Tab'){const els=[input,...gate.querySelectorAll('button')];const i=els.indexOf(document.activeElement);if((e.shiftKey&&i===0)||(!e.shiftKey&&i===els.length-1)){e.preventDefault();els[e.shiftKey?els.length-1:0].focus()}}});
+gate.querySelector('form').addEventListener('submit',e=>{e.preventDefault();if(input.value!==String.fromCharCode(48,56,49,48,50,48,48,49)){error.textContent='Неверный пароль. Попробуйте ещё раз.';input.select();return;}const cb=pending;closeGate();if(cb)cb()});
+
+// Источники читаются из действующих публичных данных при каждом поиске.
+// Ни черновик конструктора, ни localStorage/sessionStorage не индексируются.
+const stop=new Set('а и или в во на по к ко с со у из за для о об от до при не ли же как что какой какая какие куда где когда кто чем чего это мне меня я мой моя надо нужно можно ли пожалуйста скажи расскажи подскажи дай напиши покажи ли про который которое которых все очень более ответ вопрос регламент др гражданский служащий должностной'.split(' '));
+const normText=x=>String(x||'').toLowerCase().replace(/ё/g,'е').replace(/[–—]/g,'-');
+function words(t){return normText(t).match(/[а-яa-z0-9]+(?:-[а-яa-z0-9]+)*/g)||[]}
+// Поисковая нормализация русских словоформ, не машинный перевод.
+function stem(w){if(w.length<5||/\d/.test(w))return w;return w.replace(/(?:иями|ями|ами|ого|ему|ому|ыми|ими|ией|иях|ах|ях|ов|ев|ей|ую|юю|ая|яя|ое|ее|ые|ие|ый|ий|ой|ом|ем|ам|ям|ия|ие|ию|ии|ть|ться|ет|ют|ит|ат|ят|а|я|ы|и|е|у|ю|о)$/,'')}
+const synonyms=[[/(?:^|[^а-я])др(?=$|[^а-я])/gi,'регламент'],[/госслужб[а-я]*/gi,'государственная служба'],[/госуслуг[а-я]*/gi,'государственные услуги'],[/квалтребован[а-я]*/gi,'квалификационные требования'],[/персданн[а-я]*|пдн/gi,'персональные данные'],[/гостайн[а-я]*/gi,'государственная тайна'],[/\bllm\b/gi,'llm искусственный интеллект'],[/нейросет[а-я]*|промпт[а-я]*/gi,'искусственный интеллект'],[/(?:^|[^а-я])ии(?=$|[^а-я])/gi,'искусственный интеллект'],[/закупк[а-я]*/gi,'закупки контракт'],[/стаж[а-я]*|выслуг[а-я]*/gi,'стаж опыт работы'],[/замен[а-я]*|замещ[а-я]*/gi,'замещение временное отсутствие'],[/нанимател[а-я]*|назнача[а-я]*|назначен[а-я]*/gi,'назначение представитель нанимателя']];
+function expand(t){let out=normText(t);synonyms.forEach(([r,v])=>{const matches=out.match(r);if(matches)out+=' '+v});return out}
+function tokens(t){return [...new Set(words(t).filter(w=>!stop.has(w)&&w.length>1).map(stem))]}
+function clean(t){const el=document.createElement('div');el.textContent=String(t||'');return el.textContent.trim()}
+function collect(){const docs=[],seen=new Set();function add(o){const title=clean(o.title),body=clean(o.body);if(!body)return;const key=title+'\n'+body;if(seen.has(key))return;seen.add(key);docs.push({...o,title,body,ts:tokens(expand(title+' '+(o.tags||''))),bs:tokens(body)});}
+ SECTIONS.forEach(s=>{if(s.subs)s.subs.forEach(([point,body])=>add({title:'Пункт '+point+' — '+s.full,body,point,source:'Инструкция по пунктам',link:'#constructor',priority:1,tags:point}));else add({title:s.title,body:s.desc,point:String(s.id),source:'Инструкция по пунктам',link:'#constructor',priority:1})});
+ BLOCKS.forEach(b=>{const title='Блок '+b.id+'. '+b.title;add({title,body:b.sub+'\n'+b.groups.map(g=>'• '+g.t+' → '+(g.target||'')).join('\n'),source:'Готовые формулировки',link:'#blocks',tags:b.title+' '+b.sub,block:b.id,overview:true});b.groups.forEach(g=>add({title:title+' — '+g.t,body:[g.note,g.role,...g.items.map(t=>'• '+t)].filter(Boolean).join('\n'),source:'Готовые формулировки',link:'#blocks',tags:b.title+' '+b.sub+' '+g.target,point:(g.target||'').match(/\d+(?:\.\d+)+/)?.[0]||'',block:b.id}));});
+ FAQ.forEach(([q,a])=>add({title:q,body:a,source:'Частые вопросы',link:'#faq',priority:1}));
+ NPA.forEach(a=>add({title:a.t,body:a.t+'\n'+a.u,source:'Библиотека НПА',link:'#links',tags:'закон нормативный правовой акт'}));
+ SITES.forEach(a=>add({title:a.t,body:a.u,source:'Официальные ресурсы',link:'#links'}));
+ [['Кому направить ДР — контакты',TEXTS.contacts,'#contacts'],['Как согласовать ДР — сроки и порядок',TEXTS.approval,'#approval'],['Обратная связь',TEXTS.feedback,'#feedback']].forEach(([title,body,link])=>add({title,body,source:'Информация сайта',link,priority:2}));
+ document.querySelectorAll('#phrases .ph-card').forEach(e=>add({title:e.querySelector('h3')?.textContent,body:e.querySelector('.ph-text')?.textContent,point:'3.2',source:'Фразы в пункт 3.2',link:'#phrases'}));
+ if(typeof window.PascalConstructorKnowledge==='function')window.PascalConstructorKnowledge(add);
+ // Новые публичные FAQ и дополнительные материалы можно регистрировать без изменения алгоритма.
+ document.querySelectorAll('[data-pascal-knowledge]').forEach(e=>add({title:e.getAttribute('data-title')||e.querySelector('h2,h3')?.textContent||'Материал сайта',body:e.textContent,source:'Материалы сайта',link:e.id?'#'+e.id:''}));
+ return docs;}
+let context=null,caseData=null;
+function search(raw){const docs=collect(),q=normText(raw).trim(),qt=tokens(expand(raw));const counts=new Map();docs.forEach(d=>new Set(d.ts.concat(d.bs)).forEach(w=>counts.set(w,(counts.get(w)||0)+1)));
+ const point=q.match(/(?:^|[^\d])(?:п(?:ункт)?\.?\s*)?(\d+(?:\.\d+){1,3})(?![\d.])/i)?.[1];
+ const block=q.match(/(?:блок(?:а|е|у|ом)?\s*)(\d{1,2})(?!\d)/)?.[1];
+ const sec=q.match(/раздел(?:а|е|у|ом)?\s*(\d)(?!\d)/)?.[1];
+ const explicit=point||sec;
+ if(explicit){const exact=docs.filter(d=>d.point===explicit&&(/^(Пункт |Раздел |\d)/.test(d.title)));if(exact.length){if(['1.1','1.2','1.3','1.4','1.5','1.6','1.7','2.1','2.2','2.3.1','2.3.4'].includes(explicit))return [exact.sort((a,b)=>(b.priority||0)-(a.priority||0))[0]];const general=exact.find(d=>d.source==='Инструкция по пунктам');return general?[general,...exact.filter(d=>d!==general&&d.source==='Конструктор ДР').slice(0,2)]:exact.slice(0,3)}}
+ if(block){const found=docs.filter(d=>d.block===+block);if(found.length)return found.filter(d=>!d.overview).length?found.filter(d=>!d.overview):found;}
+ if(!qt.length)return [];
+ // При тематическом запросе не подменяем конкретные положения общим FAQ.
+ const topics=[[/закуп|контрактн|44-фз|223-фз/,/закуп|контрактн/],[/персональн.*данн|пдн|152-фз/,/персональн.*данн/],[/гостайн|государственн.*тайн|секретн.*делопроизвод/,/гостайн|государственн.*тайн/],[/искусственн.*интеллект|(?:^|[^а-я])ии(?:$|[^а-я])|промпт|нейросет|llm/,/искусственн.*интеллект|(?:^|[^а-я])ии(?:$|[^а-я])/],[/кнд|досудебн.*обжал|надзор/,/кнд|досудебн.*обжал|надзор/],[/антитеррор|терроризм/,/антитеррор|терроризм/],[/мобилизац/,/мобилизац/],[/клиентоцентр/,/клиентоцентр/],[/антикоррупц|коррупц/,/антикоррупц|коррупц/]];
+ const topic=topics.find(x=>x[0].test(q));
+ const wants=/знани[яйе]|знать/.test(q)?['2.3.2.1','2.3.2.2','2.3.3']:/умени[яйе]|уметь|навык/.test(q)?['2.3.5','2.3.6']:/обязанност|должен делать|функци/.test(q)?['3.2']:null;
+ const scores=docs.map(d=>{let score=0,matched=0;if(topic&&!topic[1].test(normText(d.title)))return {d,score:0,matched};if(topic&&wants&&d.point&&!wants.includes(d.point))return {d,score:0,matched};for(const w of qt){const t=d.ts.includes(w),b=d.bs.includes(w);if(t||b){matched++;const idf=Math.log(1+(docs.length+1)/(1+(counts.get(w)||0)));score+=(t?3.2:1)*idf;}}if(!matched)return {d,score:0,matched};score*=0.5+0.5*matched/qt.length;score+=(d.priority||0)*0.3;if(topic&&wants&&wants.includes(d.point))score+=6;if(topic&&d.overview)score*=0.45;if(context&&/^(а |и |а если|а что|подробнее|еще|ещё|почему|приведи)/i.test(q)&&d.point&&d.point===context.point)score+=2;return {d,score,matched}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+ if(!scores.length||scores[0].score<4)return [];
+ const best=scores[0],selected=[best.d];
+ // Если запрошена формулировка, отдаём наиболее подходящий полный фрагмент, а не только меню.
+ for(const x of scores.slice(1)){if(selected.length>=3||x.score<best.score*0.68)break;if(x.d.body===best.d.body||selected.some(d=>d.title===x.d.title))continue;if(best.d.point&&x.d.point===best.d.point&&x.d.source==='Инструкция по пунктам'&&best.d.priority===2&&['1.5','1.6','1.7'].includes(best.d.point))continue;selected.push(x.d)}
+ return selected;}
+function answer(raw){const q=normText(raw).trim();if(/^(спасибо|благодарю|огромное спасибо)[!. ]*$/.test(q)){botSay(TEXTS.gratitude,MAIN);return true;}
+ if(/(?:скач|загруз|пришл|дай|нужен|отправ)[а-я ]{0,30}(?:примерн|шаблон|образец|бланк)|^(?:примерный др|образец|шаблон)$/.test(q)){botSay(TEXTS.sendExample,MAIN,attachCard,'Примерный документ');return true;}
+ if(/(?:^|[^а-я])(?:парол[ьяюе]|код доступа)(?:$|[^а-я])/.test(q)){botSay('Конструктор ДР защищён экраном входа. Пароль необходимо получить у администратора. Чат не сообщает пароли.',MAIN);return true;}
+ const computed=typeof window.PascalConstructorAnswer==='function'?window.PascalConstructorAnswer(raw,caseData):null;
+ if(computed){caseData=computed.caseData;context=computed;botSay('*'+computed.title+'*\n'+computed.body+'\n\nИсточник: '+computed.source,MAIN,null,'Расчёт по правилам конструктора');return true;}
+ if(!/^(а |и |а если|если |тогда)/.test(q))caseData=null;
+ let found=search(raw);
+ if(context&&/^(подробнее|расскажи подробнее|еще|ещё|продолжай|а подробнее|а пример)[!.? ]*$/.test(q)){found=collect().filter(d=>context.point&&d.point===context.point||context.block&&d.block===context.block);if(!found.length)found=[context];}
+ if(!found.length){context=null;botSay('В материалах сайта не нашёл достаточно точного ответа. Уточните номер пункта, должность, орган или направление деятельности. Если вопрос требует официального разъяснения, обратитесь в отдел кадровой экспертизы. Я не буду придумывать правовые требования.',MAIN,null,'Недостаточно сведений');return true;}
+ context=found[0];const parts=[];let length=0;for(const d of found){const t='*'+d.title+'*\n'+d.body+'\nИсточник: '+d.source;if(length+t.length>14000&&parts.length)break;parts.push(t);length+=t.length;}
+ chat.state='main';botSay(parts.join('\n\n──────────\n\n')+'\n\nОтвет по материалам сайта; индивидуальные вопросы согласуйте с отделом кадровой экспертизы.',MAIN,null,'Найдено в базе знаний Паскаля');return true;}
+// Исходные кнопки меню и навигация сохранены. Свободный текст обрабатывает новая база.
+understand=answer;
+const originalRoute=route;route=function(label){const b=BLOCKS.find(b=>`${b.icon} ${b.title}`===label);if(b)return answer('блок '+b.id);const sec=SECTIONS.find(s=>s.title===label);if(sec&&sec.subs)return originalRoute(label);if(/^\d+(?:\.\d+)+$/.test(label))return answer(label);return originalRoute(label)};
+const reset=document.getElementById('chReset');reset.addEventListener('click',()=>{context=null;caseData=null});
+const head=document.querySelector('#chatPanel .ch-head');if(head){const label=head.querySelector('div span');if(label)label.textContent='● Экспертный поиск по регламентам';const note=document.createElement('div');note.className='expert-note';note.textContent='Ответы по базе сайта и конструктора · без внешней нейросети';head.after(note)}
+const lead=document.querySelector('#chInput');if(lead)lead.placeholder='Например: кому подчиняется консультант?';
+})();
+
 </script>
 </body>
 </html>
