@@ -4399,7 +4399,7 @@ async function createDR(){
  download(lastBlob,lastName);saveNow();confetti();
  showM('<button class="drx-mx" data-mclose>✕</button><div style="text-align:center;font-size:46px">🗂️</div><h3 style="text-align:center">Готово! 🎉</h3><p style="text-align:center">Регламент собран по всем 9 разделам и 22 пунктам и скачан в Word. Проверьте документ и направьте его в отдел кадровой экспертизы.</p>'+
   '<div class="drx-fc"><div class="fi">DOCX</div><div><b>'+esc(lastName)+"</b><span>"+(lastBlob.size/1024).toFixed(0)+" КБ · Times New Roman 14</span></div></div>"+
-  '<div class="drx-ma"><button class="drx-btn drx-btn-p" data-mredl>⬇️ Скачать ещё раз</button><a class="drx-btn drx-btn-g" href="mailto:d.chebotarev@gosservice48.ru?subject='+encodeURIComponent("Должностной регламент на согласование — "+S.position.title)+"&body="+encodeURIComponent("Добрый день!\n\nНаправляю на согласование должностной регламент по должности: "+S.position.title+(S.position.department?", "+S.position.department:"")+", "+S.position.organName+".\n\nФайл «"+lastName+"» прилагаю к письму.\n\nС уважением,\n"+(S.header.utvName||""))+'">✉️ Направить в отдел</a><button class="drx-btn drx-btn-g" data-mclose>Остаться</button></div>'+
+  '<div class="drx-ma"><button class="drx-btn drx-btn-p" data-mredl>⬇️ Скачать ещё раз</button><button class="drx-btn drx-btn-g" data-mclose>Остаться</button></div>'+
   '<p style="font-size:11.5px;margin-top:13px;color:var(--drx-mut)">📩 Не забудьте прикрепить скачанный файл к письму. При отсутствии Д.Д. Чеботарева — Н.М. Ханыковой.</p>');
 }
 function confetti(){
